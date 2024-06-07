@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "name": "Butano",
+            "includePath": [
+                //"D:/Adonai/Programas/Butano/butano/include",
+                "F:/Adonai/Programas/Butano/butano/include",
+                "${workspaceFolder}/**"
+            ],
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++20",
+            "defines": [],
+            "compilerPath": "C:/devkitPro/devkitARM/bin/arm-none-eabi-gcc.exe",
+            "intelliSenseMode": "windows-gcc-arm"
+        }
+    ],
+    "version": 4
+}
