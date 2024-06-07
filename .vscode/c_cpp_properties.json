@@ -3,9 +3,9 @@
         {
             "name": "Butano",
             "includePath": [
-                //"D:/Adonai/Programas/Butano/butano/include",
                 "F:/Adonai/Programas/Butano/butano/include",
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/include/actors"
             ],
             "cStandard": "gnu17",
             "cppStandard": "gnu++20",

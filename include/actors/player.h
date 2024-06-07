@@ -16,8 +16,9 @@ namespace adonai
 
         public:
             Player(bn::sprite_ptr sprite);
+            
             bn::fixed_point pos();
-
+            void spawn(bn::fixed_point location);
     };
 
 }

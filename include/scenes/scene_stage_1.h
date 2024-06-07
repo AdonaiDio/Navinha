@@ -1,6 +1,8 @@
 #pragma once
 
 #include "scene.h"
+#include "../actors/player.h"
+#include "bn_fixed_point.h"
 
 namespace adonai 
 {
@@ -9,7 +11,7 @@ namespace adonai
         private:
             Player* _player;
         public:
-            Dungeon(Player& player);
+            Stage_1(Player& player);
             Scene execute(bn::fixed_point spawn);
     };
 }
