@@ -4,9 +4,10 @@
 
 namespace adonai 
 {
-    class LOGO_STUDIO
+    class Logo_Studio
     {       
         public:
+            Logo_Studio();
             Scene execute();
     };
 }

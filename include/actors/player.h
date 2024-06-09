@@ -17,8 +17,11 @@ namespace adonai
         public:
             Player(bn::sprite_ptr sprite);
             
+            bn::sprite_ptr sprite();
             bn::fixed_point pos();
+            void set_pos(bn::fixed_point location);
             void spawn(bn::fixed_point location);
+            void update_sprite_position(adonai::Player& player);
     };
 
 }

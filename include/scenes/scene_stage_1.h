@@ -1,11 +1,13 @@
 #pragma once
 
 #include "scene.h"
-#include "../actors/player.h"
 #include "bn_fixed_point.h"
+
 
 namespace adonai 
 {
+    class Player;
+    
     class Stage_1
     {       
         private:

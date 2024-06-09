@@ -28,19 +28,19 @@
 #
 # All directories are specified relative to the project directory where the makefile is found.
 #---------------------------------------------------------------------------------------------------------------------
-export BUTANO = F:/Adonai/Programas/Butano
-export MGBA = F:/Adonai/Miscelaneous/Projetos/Jogos/GBA_dev/Emulador/mGBA
-# export BUTANO = D:/Adonai/Programas/Butano
-# export MGBA = D:/Adonai/Miscelaneous/Projetos/Jogos/GBA_dev/Emulador/mGBA
+# export BUTANO = F:/Adonai/Programas/Butano
+# export MGBA = F:/Adonai/Miscelaneous/Projetos/Jogos/GBA_dev/Emulador/mGBA
+export BUTANO = D:/Adonai/Programas/Butano
+export MGBA = D:/Adonai/Miscelaneous/Projetos/Jogos/GBA_dev/Emulador/mGBA
 
 TARGET      	:=  $(notdir $(CURDIR))
 BUILD       	:=  build
 LIBBUTANO   	:=  $(BUTANO)/butano
 PYTHON      	:=  python
-SOURCES     	:=  src src/actors
-INCLUDES    	:=  include include/actors
+SOURCES     	:=  src src/actors src/scenes
+INCLUDES    	:=  include include/actors include/scenes
 DATA        	:=
-GRAPHICS    	:=  graphics
+GRAPHICS    	:=  graphics 
 AUDIO       	:=  audio
 DMGAUDIO    	:=  dmg_audio
 ROMTITLE    	:=  Navinha

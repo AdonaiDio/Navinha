@@ -39,7 +39,7 @@
             "dependsOn": ["make debug"],
             "isBackground": false,
             "windows": {
-                "command": "F:/Adonai/Miscelaneous/Projetos/Jogos/GBA_dev/Emulador/mGBA/mGBA.exe -g ${workspaceFolder}/${workspaceFolderBasename}.gba;sleep 5;echo debuggerReady"
+                "command": "D:/Adonai/Miscelaneous/Projetos/Jogos/GBA_dev/Emulador/mGBA/mGBA.exe -g ${workspaceFolder}/${workspaceFolderBasename}.gba;sleep 5;echo debuggerReady"
             },
             "presentation": {
                 "clear": true,
@@ -51,7 +51,7 @@
             "label": "run",
             "type": "shell",
             "isBackground": true,
-            "command": "F:/Adonai/Miscelaneous/Projetos/Jogos/GBA_dev/Emulador/mGBA/mGBA.exe  ${workspaceFolder}/${workspaceFolderBasename}.elf",
+            "command": "D:/Adonai/Miscelaneous/Projetos/Jogos/GBA_dev/Emulador/mGBA/mGBA.exe  ${workspaceFolder}/${workspaceFolderBasename}.elf",
             "problemMatcher": []
         }
     ]
