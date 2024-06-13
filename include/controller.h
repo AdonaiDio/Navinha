@@ -11,5 +11,6 @@ namespace adonai
         public:
             Controller();
             void InputAction_Move(adonai::Player& player);
+            void InputAction_Shoot(adonai::Player& player);
     };
 }

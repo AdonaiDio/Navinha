@@ -26,7 +26,7 @@
                     {
                     "description": "Enable pretty-printing for gdb",
                     "ignoreFailures": true,
-                    "text": "shell start /b \"\" \"D:/Adonai/Miscelaneous/Projetos/Jogos/GBA_dev/Emulador/mGBA/mGBA.exe\" -g \"${workspacedolder}/${workspaceFolderBasename}.elf\""
+                    "text": "shell start /b \"\" \"D:/Adonai/Miscelaneous/Projetos/Jogos/GBA_dev/Emulador/mGBA/mGBA.exe\" -g \"${workspaceFolder}/${workspaceFolderBasename}.elf\""
                     }
                 ]
             },
