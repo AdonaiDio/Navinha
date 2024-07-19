@@ -8,9 +8,11 @@ namespace adonai
     class Controller
     {
         private:
+            adonai::Player& _player;
         public:
-            Controller();
-            void InputAction_Move(adonai::Player& player);
-            void InputAction_Shoot(adonai::Player& player);
+            Controller(adonai::Player &player);
+            void InputAction_Move();
+            void InputAction_Shoot();
+            void update();
     };
 }

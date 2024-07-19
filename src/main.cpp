@@ -15,12 +15,15 @@
 #include "scene_stage_1.h"
 #include "scene_logo_studio.h"
 
+#include "shoot.h"
+
 int main()
 {
     bn::core::init();
+
     //Inicar o player no main para o player sempre ser o mesmo durante o jogo.
-    adonai::Player player = adonai::Player( bn::sprite_items::nova.create_sprite(0, 0), 
-                                             bn::sprite_items::shoot );
+    adonai::Player player = adonai::Player( bn::sprite_items::nova, 0, 0, 
+                                            bn::sprite_items::shoot);
     player.sprite().set_visible(false);
     // inciar a primeira cena
     adonai::Scene scene = adonai::Scene::STAGE_1;
