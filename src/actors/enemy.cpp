@@ -4,6 +4,8 @@
 #include <bn_sprite_palette_ptr.h>
 #include "bn_display.h"
 #include "bn_array.h"
+#include "bn_sound_items.h"
+
 #include "bn_sprite_palette_items_feedback_palette.h"
 
 #include "enemy.h"
@@ -93,6 +95,7 @@ namespace adonai
         if (_hp <= 0) {return;}//assegurar que não vai receber hit se já estiver morto
         _hp -= 1;
         if (_hp > 0) {
+            bn::sound_items::hit.play();
             hit_feedback_duration = 15; //frames de duração do hit_feedback
             return;
         }

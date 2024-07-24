@@ -1,5 +1,6 @@
 #include "bn_sprite_palette_ptr.h"
 #include "bn_colors.h"
+#include "bn_sound_items.h"
 
 #include "bn_sprite_palette_items_feedback_palette.h"
 #include "bn_sprite_items_nova_shadow_rgb.h"
@@ -81,6 +82,7 @@ namespace adonai
         _hp -= 1;
         BN_LOG("HP: ",_hp);
         if (_hp > 0) {
+            bn::sound_items::hit.play();
             hit_feedback_duration = 120; //frames de duração do hit_feedback
             return;
         }

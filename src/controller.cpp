@@ -3,6 +3,7 @@
 #include "bn_sprite_tiles_ptr.h"
 #include "bn_display.h"
 #include "bn_log.h"
+#include "bn_sound_items.h"
 
 //temp
 #include "bn_sprite_animate_actions.h"
@@ -153,6 +154,8 @@ namespace adonai
                     _player._shoots[i].sprite().set_visible(true);
                     _player._shoots[i]._state = adonai::Shoot_State::SHOOTING;
                     //BN_LOG("shoot index: ",i," x:", _player._shoots[i].pos().x(), " y:", _player._shoots[i].pos().y());
+                    
+                    bn::sound_items::laser.play();
                     return;
                 }
             }

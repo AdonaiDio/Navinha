@@ -1,4 +1,5 @@
 #include "bn_log.h"
+#include "bn_sound_items.h"
 
 #include "../../include/actors/explosion_fx.h"
 
@@ -15,6 +16,7 @@ namespace adonai
             bn::sprite_items::explosion.tiles_item(),
             0,1,2,3,4
         );
+        bn::sound_items::explode.play();
     }
     Explosion_FX::~Explosion_FX()
     {
