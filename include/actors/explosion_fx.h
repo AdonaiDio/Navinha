@@ -14,7 +14,6 @@ namespace adonai
     struct Explosion_FX
     {
         private:
-            bn::fixed_point _pos;
             bn::sprite_ptr _sprite;
         public:
             Explosion_FX(bn::fixed_point& pos);

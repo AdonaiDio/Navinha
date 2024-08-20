@@ -58,8 +58,8 @@ namespace adonai
             // ponto 1: width+,height0 ; ponto 2: width0,height- ; ponto 3: width-,height0 ;
             // Moveset_1 -> ZigZag 
             //está no lugar errado?
-            const bn::array<bn::point,3> path_1 = { bn::point(16*7,(16*2)+8),
-                                            bn::point(0, -80+8),
+            const bn::array<bn::point,3> path_1 = { bn::point(16*7,(16*1)+8),
+                                            bn::point(0, -64+8),
                                             bn::point(-16*7,(16*2)+8) };
 
             int dir(bn::fixed this_axis, bn::fixed target_axis);//codigo repetitivo

@@ -22,6 +22,7 @@
 #include "bn_sprite_items_gizmos_16x16.h"
 #include "bn_regular_bg_items_sky_solid_color.h"
 #include "bn_sprite_items_shoot.h"
+#include "bn_music_items.h"
 
 //this
 #include "scene_stage_1.h"
@@ -74,6 +75,8 @@ namespace adonai
         
         // bn::sprite_ptr gizmos = bn::sprite_items::gizmos_16x16.create_sprite(0,0,1);
         
+        bn::music_items::nova_theme.play();
+
         while(true)
         {
             //eu não sei... Coloquei isso aí para reutilizar igual em outro lugar. eu acho.

@@ -6,8 +6,7 @@
 namespace adonai
 {
     Explosion_FX::Explosion_FX(bn::fixed_point& pos) :
-    _sprite(bn::sprite_items::explosion.create_sprite(pos.x(),pos.y(),0)),
-    _pos(pos)
+    _sprite(bn::sprite_items::explosion.create_sprite(pos.x(),pos.y(),0))
     {
         _sprite.set_z_order(-1);
         _explosion_anim = bn::create_sprite_animate_action_once(
@@ -31,6 +30,8 @@ namespace adonai
     void Explosion_FX::update()
     {
         _explosion_anim.update();
+        _sprite.set_position(bn::fixed_point(_sprite.position().x()-1.5, _sprite.position().y()));
+
         if(_explosion_anim.done()){
             Explosion_FX::~Explosion_FX();
         }

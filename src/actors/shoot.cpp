@@ -85,7 +85,7 @@ namespace adonai
             _state = Shoot_State::NONE;
             return;
         }
-        const int velocity = 2;
+        const int velocity = 3;
         //incrementa a posição em X do shoot
         set_pos(pos() + bn::fixed_point( bn::fixed(direction_axis_x() * velocity), 0) );
         //corrigir a posição do sprite em relação a posição 'pos' dele
