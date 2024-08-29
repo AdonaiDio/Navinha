@@ -28,8 +28,8 @@ namespace adonai
         if (bn::keypad::up_held())
         {
             _player.pos( move_towards( _player.pos(), 
-                                    _player.pos() + bn::fixed_point(0, -1*_player.speed()), 
-                                    _player.speed() ) );
+                                    _player.pos() + bn::fixed_point(0, -1*_player.velocity()), 
+                                    _player.velocity() ) );
             _player._movement_states = adonai::Player_States::Player_NONE;
 
             if (bn::keypad::left_held())
@@ -40,8 +40,8 @@ namespace adonai
         if (bn::keypad::down_held())
         {
             _player.pos( move_towards( _player.pos(), 
-                                    _player.pos() + bn::fixed_point(0, 1*_player.speed()), 
-                                    _player.speed() ) );
+                                    _player.pos() + bn::fixed_point(0, 1*_player.velocity()), 
+                                    _player.velocity() ) );
             _player._movement_states = adonai::Player_States::Player_NONE;
             
             if (bn::keypad::left_held())
@@ -54,16 +54,16 @@ namespace adonai
         if (bn::keypad::right_held())
         {
             _player.pos( move_towards( _player.pos(), 
-                                    _player.pos() + bn::fixed_point(1*_player.speed(), 0), 
-                                    _player.speed() ) );
+                                    _player.pos() + bn::fixed_point(1*_player.velocity(), 0), 
+                                    _player.velocity() ) );
 
             _player._movement_states = adonai::Player_States::Player_HOLD_MOVE_RIGHT;
         }
         else if (bn::keypad::left_held())
         {
             _player.pos( move_towards( _player.pos(), 
-                                    _player.pos() + bn::fixed_point(-1*_player.speed(), 0), 
-                                    _player.speed() ) );
+                                    _player.pos() + bn::fixed_point(-1*_player.velocity(), 0), 
+                                    _player.velocity() ) );
             _player._movement_states = adonai::Player_States::Player_HOLD_MOVE_LEFT;
         }
         
@@ -138,7 +138,7 @@ namespace adonai
         if( old_player_state == _player._movement_states && 
             old_player_state == adonai::Player_States::Player_HOLD_MOVE_LEFT)
         {
-            _player.moved_to_left += _player.speed();
+            _player.moved_to_left += _player.velocity();
         }
         _player.propulsion_hold_anim.update();
     }

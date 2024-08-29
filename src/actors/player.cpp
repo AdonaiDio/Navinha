@@ -128,7 +128,7 @@ namespace adonai
             shadow_delay <= 0){
             for (int i = 0; i < shadow_sprites.size(); i++)
             {
-                if(shadow_sprites.at(i).position().x() <= _pos.x()+_speed ){
+                if(shadow_sprites.at(i).position().x() <= _pos.x()+_velocity ){
                     shadow_sprites.at(i).set_visible(false);
                     shadow_sprites.at(i).set_position(bn::fixed_point(_pos.x(), _pos.y()));
                 }
@@ -141,7 +141,7 @@ namespace adonai
             if(!is_collapsing_shadow){
                 BN_LOG("moved_to_left: ", moved_to_left,", shadow_delay: ", shadow_delay);
             //starta o shadow blue e contagem regresiva do delay
-                if(moved_to_left == 0 || (moved_to_left <= _speed && shadow_delay == 0)) {
+                if(moved_to_left == 0 || (moved_to_left <= _velocity && shadow_delay == 0)) {
                     BN_LOG("shadow blue");
                     shadow_sprites.at(2).set_visible(true);
                     shadow_sprites.at(2).set_position(bn::fixed_point(_pos.x()+1, _pos.y()));
@@ -173,7 +173,7 @@ namespace adonai
             if( shadow_delay <= 0 && 
                 shadow_sprites.at(i).position() != _pos){
                 shadow_sprites.at(i).set_position(
-                        move_towards(shadow_sprites.at(i).position(), pos(), 1.1*_speed)
+                        move_towards(shadow_sprites.at(i).position(), pos(), 1.1*_velocity)
                     );
                 if(i==2){
                     is_collapsing_shadow = true;
@@ -193,7 +193,7 @@ namespace adonai
 
     }
 
-    void Player::test_collision()
+    void Player::check_collision()
     {
         if(hit_feedback_duration > 0){return;}
         for (int i = 0; i < ntt_enemies.size(); i++)
@@ -229,7 +229,7 @@ namespace adonai
         _propulsion_sprite.set_position(_pos + bn::fixed_point(-16,0));
 
         hit_feedback();
-        test_collision();
+        check_collision();
 
         if(explosion && !explosion->_explosion_anim.done()){
             explosion->update();

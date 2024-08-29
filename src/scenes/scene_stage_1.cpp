@@ -76,11 +76,10 @@ namespace adonai
         
         bn::music_items::nova_theme.play();
 
-        //teste tiro inimigo
-        Shot_Enemy* shot_e = new Shot_Enemy(bn::sprite_items::shoot, bn::fixed_point(0,0));
-
-        shot_e->sprite().set_visible(true);
-        shot_e->_state = adonai::Shot_State::SHOOTING;
+        // //teste tiro inimigo
+        // Shot_Enemy* shot_e = new Shot_Enemy(bn::sprite_items::shoot, bn::fixed_point(0,0));
+        // shot_e->sprite().set_visible(true);
+        // shot_e->_state = adonai::Shot_State::SHOOTING;
 
         // //DEBUG CPU USAGE=======
         // bn::fixed max_cpu_usage;
@@ -113,7 +112,8 @@ namespace adonai
             if(_player->hp() <= 0){ game_over.update(); }
 
 
-            shot_e->Move_Forward();
+            // //teste tiro inimigo
+            // shot_e->Move_Forward();
             
             // //DEBUG CPU USAGE=================
             // bn::fixed max_cpu_usage = bn::max(max_cpu_usage, bn::core::last_cpu_usage());
