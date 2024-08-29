@@ -6,6 +6,8 @@
 #include "bn_array.h"
 #include "bn_sound_items.h"
 
+#include "utility.h"
+
 #include "bn_sprite_palette_items_feedback_palette.h"
 
 #include "enemy.h"
@@ -17,7 +19,7 @@ namespace adonai
         _sprite(sprite_item.create_sprite(x,y)),
         _sprite_clone(sprite_item.create_sprite(x,y)),
         _pos(x,y),
-        _shoot(adonai::Shoot(shoot_sprite_item, bn::fixed_point(0,0), adonai::Direction::Left, _tag)),
+        _shot(adonai::Shot_Enemy(shoot_sprite_item, bn::fixed_point(0,0))),
         _hp(max_hp),
         _snake_group(snake_group)
     {
@@ -90,7 +92,7 @@ namespace adonai
         }        
     }
     
-    void Enemy::receive_hit(const int i)
+    void Enemy::receive_hit(const int index)
     {
         if (_hp <= 0) {return;}//assegurar que não vai receber hit se já estiver morto
         _hp -= 1;
@@ -101,7 +103,7 @@ namespace adonai
         }
         wait_to_destroy = true;
         //se foi o suficiente para destruir então apagar do vector
-        ntt_enemies.erase(ntt_enemies.begin()+i);
+        ntt_enemies.erase(ntt_enemies.begin()+index);
         explode();
         
         //this->~Enemy();
@@ -115,56 +117,20 @@ namespace adonai
         explosion = new Explosion_FX(_pos);
     }
 
-
-    int Enemy::dir(bn::fixed this_axis, bn::fixed target_axis) {
-        if(this_axis > target_axis){
-            return -1;
-        }
-        else if(this_axis < target_axis){
-            return 1;
-        }
-        return 0;
-    };
-
-    //funciona apenas no Update()
-    void Enemy::translate_pos_to(const bn::fixed_point& target_pos)
+    void Enemy::moveset_follow_path(const bn::array<bn::fixed_point,3>& path)
     {
-        const bn::array<bn::fixed, 2> vector_pos_magnetude = {
-            (target_pos.x() - _pos.x()>0)?target_pos.x() - _pos.x():-(target_pos.x() - _pos.x()),
-            (target_pos.y() - _pos.y()>0)?target_pos.y() - _pos.y():-(target_pos.y() - _pos.y())};
-        
-        const int x_dir = dir(_pos.x(), target_pos.x());
-        const int y_dir = dir(_pos.y(), target_pos.y());
-        //se x>y logo x dividir por y, para saber quantos passos pro x para cada y
-        #define __x_ vector_pos_magnetude.at(0)
-        #define __y_ vector_pos_magnetude.at(1)
-        bn::fixed mx;
-        if(__y_ != 0) {
-            mx = __x_ / __y_;
-        }
-        mx = (__x_ == __y_) ? 0 : 1;
-        bn::fixed my; // = vector_pos_pointer.at(1) / vector_pos_pointer.at(0);
-        if(__x_ != 0) {
-            my = __y_ / __x_;
-        }
-        else if(__y_ == __x_) {
-            my = 0;
-        }
-        else { 
-            my = 1;
-        }
-        //atualiza posição em 1px mais próximo do alvo
-        // BN_LOG("x:",_pos.x()," (x_dir: ",x_dir," mx: ",mx,")");
-        // BN_LOG("y:",_pos.y()," (y_dir: ",y_dir," my: ",my,")");
-        _pos = bn::fixed_point ( _pos.x() + (x_dir*mx).round_integer(), 
-                                _pos.y() + (y_dir*my).round_integer());
-    }
-
-    void Enemy::moveset_follow_path(const bn::array<bn::point,3>& path)
-    {
+        // if(_pos != path.at(path_pos_current_index))  
+        // {
+        //     translate_pos_to(path.at(path_pos_current_index));
+        //     if(_pos == path.at(path_pos_current_index)){
+        //         // BN_LOG("chegou no ponto: ", path_pos_current_index);
+        //         path_pos_current_index = bn::clamp(path_pos_current_index+1, 0, path.size()-1);
+        //     }
+        // }
+        //usando moveTo
         if(_pos != path.at(path_pos_current_index))  
         {
-            translate_pos_to(path.at(path_pos_current_index));
+            pos(move_towards(_pos, path.at(path_pos_current_index), velocity));
             if(_pos == path.at(path_pos_current_index)){
                 // BN_LOG("chegou no ponto: ", path_pos_current_index);
                 path_pos_current_index = bn::clamp(path_pos_current_index+1, 0, path.size()-1);

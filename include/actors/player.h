@@ -5,9 +5,8 @@
 #include "bn_sprite_ptr.h"
 #include "bn_sprite_animate_actions.h"
 
-#include "shoot.h"
+#include "shot_player.h"
 #include "explosion_fx.h"
-#include "e_tags.h"
 #include "enemy.h"
 
 #include "bn_sprite_items_nova.h"
@@ -44,7 +43,6 @@ namespace adonai
             bn::fixed_point _pos;
             bn::rect _col = bn::rect( 0, 0, 0, 0 );
             bn::sprite_ptr _propulsion_sprite;
-            Tag _tag = Tag::TAG_PLAYER;
 
             int _hp = 4;
             bn::fixed _speed = 2;
@@ -58,7 +56,10 @@ namespace adonai
         public:
             // TODO: futuramente com mais tiros, pode ser que passar sprite não seja a melhor solução. 
             // Organizar uma lista de tiros em forma de Enum pode ser o melhor caminho.
-            Player(bn::sprite_item sprite_item, bn::fixed x, bn::fixed y, bn::sprite_item shoot_sprite_item);
+            Player(
+                bn::sprite_item sprite_item, 
+                bn::fixed x, bn::fixed y, 
+                bn::sprite_item shot_sprite_item);
             
             bn::array<bn::sprite_ptr, 3> shadow_sprites;
             bn::sprite_ptr sprite() { return _sprite; }
@@ -68,7 +69,7 @@ namespace adonai
             bool can_act = false;
             bn::fixed moved_to_left = 0;
             
-            bn::array<adonai::Shoot, 12> _shoots;
+            bn::array<adonai::Shot_Player, 12> _shots;
             Player_States _movement_states = Player_States::Player_NONE;
 
             bn::sprite_animate_action<3> propulsion_hold_anim = 
@@ -84,20 +85,18 @@ namespace adonai
             void hp(int new_value) { _hp = new_value; }
             bn::fixed speed(){return _speed;};
             
-            int dir(bn::fixed this_axis, bn::fixed target_axis);//codigo repetitivo
-
             void hit_feedback();
             void receive_hit();
             void explode();
 
             bn::fixed_point pos() { return _pos; }
             void pos(bn::fixed_point position) { _pos = position; }
+            bn::rect col() { return _col; }
 
-            void set_shoot_sprite(bn::sprite_ptr shoot_sprite); 
+            void set_shot_sprite(bn::sprite_ptr shot_sprite); 
 
             void check_sprites_states();
 
-            bn::fixed_point translate_pos_to(bn::fixed_point owner_pos, const bn::fixed_point &target_pos);
             void handle_shadows_rgb();
 
             void update();

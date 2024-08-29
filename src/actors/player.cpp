@@ -2,6 +2,8 @@
 #include "bn_colors.h"
 #include "bn_sound_items.h"
 
+#include "utility.h"
+
 #include "bn_sprite_palette_items_feedback_palette.h"
 #include "bn_sprite_items_nova_shadow_rgb.h"
 
@@ -10,7 +12,7 @@
 
 namespace adonai
 {
-    Player::Player(bn::sprite_item sprite_item, bn::fixed x, bn::fixed y, bn::sprite_item shoot_sprite_item) : 
+    Player::Player(bn::sprite_item sprite_item, bn::fixed x, bn::fixed y, bn::sprite_item shot_sprite_item) : 
         _sprite(sprite_item.create_sprite(x,y)),
         _sprite_clone(sprite_item.create_sprite(x,y)),
         shadow_sprites({
@@ -20,19 +22,19 @@ namespace adonai
         }),
         _pos(x,y),
         _propulsion_sprite(bn::sprite_items::propulsion.create_sprite(0,0,8)),
-        _shoots({
-            adonai::Shoot(shoot_sprite_item, bn::fixed_point(0,0), adonai::Direction::Right, _tag),
-            adonai::Shoot(shoot_sprite_item, bn::fixed_point(0,0), adonai::Direction::Right, _tag),
-            adonai::Shoot(shoot_sprite_item, bn::fixed_point(0,0), adonai::Direction::Right, _tag),
-            adonai::Shoot(shoot_sprite_item, bn::fixed_point(0,0), adonai::Direction::Right, _tag),
-            adonai::Shoot(shoot_sprite_item, bn::fixed_point(0,0), adonai::Direction::Right, _tag),
-            adonai::Shoot(shoot_sprite_item, bn::fixed_point(0,0), adonai::Direction::Right, _tag),
-            adonai::Shoot(shoot_sprite_item, bn::fixed_point(0,0), adonai::Direction::Right, _tag),
-            adonai::Shoot(shoot_sprite_item, bn::fixed_point(0,0), adonai::Direction::Right, _tag),
-            adonai::Shoot(shoot_sprite_item, bn::fixed_point(0,0), adonai::Direction::Right, _tag),
-            adonai::Shoot(shoot_sprite_item, bn::fixed_point(0,0), adonai::Direction::Right, _tag),
-            adonai::Shoot(shoot_sprite_item, bn::fixed_point(0,0), adonai::Direction::Right, _tag),
-            adonai::Shoot(shoot_sprite_item, bn::fixed_point(0,0), adonai::Direction::Right, _tag)
+        _shots({
+            adonai::Shot_Player(shot_sprite_item, bn::fixed_point(0,0)),
+            adonai::Shot_Player(shot_sprite_item, bn::fixed_point(0,0)),
+            adonai::Shot_Player(shot_sprite_item, bn::fixed_point(0,0)),
+            adonai::Shot_Player(shot_sprite_item, bn::fixed_point(0,0)),
+            adonai::Shot_Player(shot_sprite_item, bn::fixed_point(0,0)),
+            adonai::Shot_Player(shot_sprite_item, bn::fixed_point(0,0)),
+            adonai::Shot_Player(shot_sprite_item, bn::fixed_point(0,0)),
+            adonai::Shot_Player(shot_sprite_item, bn::fixed_point(0,0)),
+            adonai::Shot_Player(shot_sprite_item, bn::fixed_point(0,0)),
+            adonai::Shot_Player(shot_sprite_item, bn::fixed_point(0,0)),
+            adonai::Shot_Player(shot_sprite_item, bn::fixed_point(0,0)),
+            adonai::Shot_Player(shot_sprite_item, bn::fixed_point(0,0))
         }) 
     {
         shadow_sprites.at(1).set_z_order(1);
@@ -102,11 +104,11 @@ namespace adonai
     
     
     // TODO: é mesmo necessário?
-    void Player::set_shoot_sprite(bn::sprite_ptr shoot_sprite)
+    void Player::set_shot_sprite(bn::sprite_ptr shoot_sprite)
     {
-        for(int i=0; i<_shoots.max_size(); i++)
+        for(int i=0; i<_shots.max_size(); i++)
         {
-            _shoots[i].set_sprite(shoot_sprite);
+            _shots[i].sprite(shoot_sprite);
         }
     }
 
@@ -159,32 +161,19 @@ namespace adonai
                 for (int i = 0; i < shadow_sprites.size(); i++)
                 {
                     shadow_sprites.at(i).set_position(
-                        bn::fixed_point( clamp(shadow_sprites.at(i).position().x(), _pos.x(), _pos.x()+(i==2? 24 :i==1? 16 : 8)),
-                                        clamp(shadow_sprites.at(i).position().y(), _pos.y(), _pos.y()+(i==2? 24 :i==1? 16 : 8)) )
+                        bn::fixed_point( bn::clamp(shadow_sprites.at(i).position().x(), _pos.x(), _pos.x()+(i==2? 24 :i==1? 16 : 8)),
+                                        bn::clamp(shadow_sprites.at(i).position().y(), _pos.y(), _pos.y()+(i==2? 24 :i==1? 16 : 8)) )
                         );
                 }
             }
         }
         if(shadow_delay > 0) shadow_delay--;
-        // if( shadow_delay <= 0 && 
-        //     shadow_sprites.at(2).position() != _pos){
-        //     shadow_sprites.at(2).set_position(
-        //             translate_pos_to(shadow_sprites.at(2).position(), _pos)
-        //         );
-        //     shadow_sprites.at(1).set_position(
-        //             translate_pos_to(shadow_sprites.at(1).position(), _pos)
-        //         );
-        //     shadow_sprites.at(0).set_position(
-        //             translate_pos_to(shadow_sprites.at(0).position(), _pos)
-        //         );
-        //     is_collapsing_shadow = true;
-        // }
         for (int i = 0; i < shadow_sprites.size(); i++)
         {
             if( shadow_delay <= 0 && 
                 shadow_sprites.at(i).position() != _pos){
                 shadow_sprites.at(i).set_position(
-                        translate_pos_to(shadow_sprites.at(i).position(), _pos)
+                        move_towards(shadow_sprites.at(i).position(), pos(), 1.1*_speed)
                     );
                 if(i==2){
                     is_collapsing_shadow = true;
@@ -201,20 +190,6 @@ namespace adonai
                 }
             }
         }
-        
-        // if(shadow_sprites.at(2).position() == _pos){
-        //     //defazer-se da shadow
-        //     shadow_sprites.at(2).set_visible(false);
-        //     is_collapsing_shadow = false;
-        // }
-        // if(shadow_sprites.at(1).position() == _pos){
-        //     //defazer-se da shadow
-        //     shadow_sprites.at(1).set_visible(false);
-        // }
-        // if(shadow_sprites.at(0).position() == _pos){
-        //     //defazer-se da shadow
-        //     shadow_sprites.at(0).set_visible(false);
-        // }
 
     }
 
@@ -230,50 +205,6 @@ namespace adonai
                 receive_hit();
             }            
         }
-    }
-
-    int Player::dir(bn::fixed this_axis, bn::fixed target_axis) {
-        if(this_axis > target_axis){
-            return -1;
-        }
-        else if(this_axis < target_axis){
-            return 1;
-        }
-        return 0;
-    };
-
-    //funciona apenas no Update()
-    bn::fixed_point Player::translate_pos_to(bn::fixed_point owner_pos, const bn::fixed_point& target_pos)
-    {
-        const bn::array<bn::fixed, 2> vector_pos_magnetude = {
-            (target_pos.x() - owner_pos.x()>0)?target_pos.x() - owner_pos.x():-(target_pos.x() - owner_pos.x()),
-            (target_pos.y() - owner_pos.y()>0)?target_pos.y() - owner_pos.y():-(target_pos.y() - owner_pos.y())};
-        
-        const int x_dir = dir(owner_pos.x(), target_pos.x());
-        const int y_dir = dir(owner_pos.y(), target_pos.y());
-        //se x>y logo x dividir por y, para saber quantos passos pro x para cada y
-        #define __x_ vector_pos_magnetude.at(0)
-        #define __y_ vector_pos_magnetude.at(1)
-        bn::fixed mx;
-        if(__y_ != 0) {
-            mx = __x_ / __y_;
-        }
-        mx = (__x_ == __y_) ? 0 : 1;
-        bn::fixed my; // = vector_pos_pointer.at(1) / vector_pos_pointer.at(0);
-        if(__x_ != 0) {
-            my = __y_ / __x_;
-        }
-        else if(__y_ == __x_) {
-            my = 0;
-        }
-        else { 
-            my = 1;
-        }
-        //atualiza posição em 1px mais próximo do alvo
-        // BN_LOG("x:",_pos.x()," (x_dir: ",x_dir," mx: ",mx,")");
-        // BN_LOG("y:",_pos.y()," (y_dir: ",y_dir," my: ",my,")");
-        return bn::fixed_point ( owner_pos.x() + (x_dir*mx*_speed).round_integer(), 
-                                owner_pos.y() + (y_dir*my*_speed).round_integer());
     }
 
     void Player::update_collider()
@@ -294,9 +225,7 @@ namespace adonai
         //sprite correction
         _sprite.set_position(_pos);
         _sprite_clone.set_position(_pos);
-        // shadow_sprites.at(0).set_position(bn::fixed_point(_pos.x()+8,_pos.y()));
-        // shadow_sprites.at(1).set_position(bn::fixed_point(_pos.x()+16,_pos.y()));
-        // shadow_sprites.at(2).set_position(bn::fixed_point(_pos.x()+24,_pos.y()));
+        
         _propulsion_sprite.set_position(_pos + bn::fixed_point(-16,0));
 
         hit_feedback();

@@ -5,6 +5,8 @@
 #include "bn_log.h"
 #include "bn_sound_items.h"
 
+#include "utility.h"
+
 //temp
 #include "bn_sprite_animate_actions.h"
 #include "bn_sprite_items_propulsion.h"
@@ -25,7 +27,9 @@ namespace adonai
         _player._movement_states = adonai::Player_States::Player_NONE;
         if (bn::keypad::up_held())
         {
-            _player.pos(_player.pos() + bn::fixed_point(0, -1*_player.speed()));
+            _player.pos( move_towards( _player.pos(), 
+                                    _player.pos() + bn::fixed_point(0, -1*_player.speed()), 
+                                    _player.speed() ) );
             _player._movement_states = adonai::Player_States::Player_NONE;
 
             if (bn::keypad::left_held())
@@ -35,7 +39,9 @@ namespace adonai
         }
         if (bn::keypad::down_held())
         {
-            _player.pos(_player.pos() + bn::fixed_point(0, 1*_player.speed()));
+            _player.pos( move_towards( _player.pos(), 
+                                    _player.pos() + bn::fixed_point(0, 1*_player.speed()), 
+                                    _player.speed() ) );
             _player._movement_states = adonai::Player_States::Player_NONE;
             
             if (bn::keypad::left_held())
@@ -47,13 +53,17 @@ namespace adonai
 
         if (bn::keypad::right_held())
         {
-            _player.pos(_player.pos() + bn::fixed_point(1*_player.speed(), 0));
+            _player.pos( move_towards( _player.pos(), 
+                                    _player.pos() + bn::fixed_point(1*_player.speed(), 0), 
+                                    _player.speed() ) );
 
             _player._movement_states = adonai::Player_States::Player_HOLD_MOVE_RIGHT;
         }
         else if (bn::keypad::left_held())
         {
-            _player.pos(_player.pos() + bn::fixed_point(-1*_player.speed(), 0));
+            _player.pos( move_towards( _player.pos(), 
+                                    _player.pos() + bn::fixed_point(-1*_player.speed(), 0), 
+                                    _player.speed() ) );
             _player._movement_states = adonai::Player_States::Player_HOLD_MOVE_LEFT;
         }
         
@@ -145,14 +155,14 @@ namespace adonai
         {
             // usar um shoot do player que não está no estado de shooting
             // se não houver shoot no estado none, então não atira.
-            for(int i=0; i<_player._shoots.max_size(); i++)
+            for(int i=0; i<_player._shots.max_size(); i++)
             {
-                if(_player._shoots[i]._state == adonai::Shoot_State::NONE)
+                if(_player._shots[i]._state == adonai::Shot_State::NONE)
                 {
                     //reseta a posição e muda o estado para shooting
-                    _player._shoots[i].set_pos(bn::fixed_point(_player.pos().x() +3, _player.pos().y() +4));
-                    _player._shoots[i].sprite().set_visible(true);
-                    _player._shoots[i]._state = adonai::Shoot_State::SHOOTING;
+                    _player._shots[i].pos(bn::fixed_point(_player.pos().x() +3, _player.pos().y() +4));
+                    _player._shots[i].sprite().set_visible(true);
+                    _player._shots[i]._state = adonai::Shot_State::SHOOTING;
                     //BN_LOG("shoot index: ",i," x:", _player._shoots[i].pos().x(), " y:", _player._shoots[i].pos().y());
                     
                     bn::sound_items::laser.play();
@@ -164,11 +174,11 @@ namespace adonai
 
         // FIXME: AO COMEÇAR O TIRO, CADA TIRO DEVE CUIDAR DO MOVIMENTO 
         // INDEPENDENTEMENTE.
-        for(int i=0; i<_player._shoots.max_size(); i++)
+        for(int i=0; i<_player._shots.max_size(); i++)
         {
-            if(_player._shoots[i]._state == adonai::Shoot_State::SHOOTING)
+            if(_player._shots[i]._state == adonai::Shot_State::SHOOTING)
             {
-                _player._shoots[i].Move_Forward();
+                _player._shots[i].Move_Forward();
             }
         }
         

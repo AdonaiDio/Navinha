@@ -10,6 +10,7 @@ namespace adonai
         BUTANO,
         LOADING,
         TITLE,
-        END
+        END,
+        TEST_SCENE
     };
 }

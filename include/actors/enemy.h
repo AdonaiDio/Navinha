@@ -8,9 +8,8 @@
 #include "bn_sprite_palette_ptr.h"
 //#include "bn_sprite_actions.h"
 
-#include "shoot.h"
+#include "shot_enemy.h"
 #include "explosion_fx.h"
-#include "e_tags.h"
 
 #include "bn_sprite_items_spaceship_1.h"
 #include "bn_sprite_items_spaceship_2.h"
@@ -26,9 +25,10 @@ namespace adonai
             bn::sprite_ptr _sprite_clone;
             bn::fixed_point _pos;
             bn::rect _col = bn::rect( 0, 0, 0, 0 );
-            Tag _tag = Tag::TAG_ENEMY;
             int _hp;
             
+            bn::fixed velocity = 1;
+
             //TODO: testar até onde da para aumentar sem sentir muito delay
             // const int frames_skipped = 5;
             // int frame_counter = 0;
@@ -40,11 +40,15 @@ namespace adonai
             Explosion_FX* explosion; 
             
         public:
-            Enemy(bn::sprite_item sprite_item, bn::fixed x, bn::fixed y, bn::sprite_item shoot_sprite_item, int max_hp = 1, int snake_group = 0);
+            Enemy(
+                bn::sprite_item sprite_item, 
+                bn::fixed x, bn::fixed y, 
+                bn::sprite_item shoot_sprite_item, 
+                int max_hp = 1, int snake_group = 0);
             ~Enemy();
             bool wait_to_destroy = false;
 
-            adonai::Shoot _shoot;
+            adonai::Shot_Enemy _shot;
             bn::sprite_ptr sprite();
 
             bn::fixed_point pos();
@@ -58,19 +62,15 @@ namespace adonai
             // ponto 1: width+,height0 ; ponto 2: width0,height- ; ponto 3: width-,height0 ;
             // Moveset_1 -> ZigZag 
             //está no lugar errado?
-            const bn::array<bn::point,3> path_1 = { bn::point(16*7,(16*1)+8),
-                                            bn::point(0, -64+8),
-                                            bn::point(-16*7,(16*2)+8) };
-
-            int dir(bn::fixed this_axis, bn::fixed target_axis);//codigo repetitivo
+            const bn::array<bn::fixed_point,3> path_1 = { bn::fixed_point(16*7,(16*1)+8),
+                                            bn::fixed_point(0, -64+8),
+                                            bn::fixed_point(-16*7,(16*2)+8) };
 
             void hit_feedback();
             void receive_hit(const int i);
             void explode();
 
-            void translate_pos_to(const bn::fixed_point& target_pos);
-
-            void moveset_follow_path(const bn::array<bn::point, 3> &path);
+            void moveset_follow_path(const bn::array<bn::fixed_point,3> &path);
 
             void identify_snakeGroup();
 

@@ -13,9 +13,12 @@
 #include "player.h"
 #include "scene.h"
 #include "scene_stage_1.h"
+#include "scene_test.h"
 #include "scene_logo_studio.h"
 
-#include "shoot.h"
+#include "ntt_list_stage_1.h"
+
+#include "shot.h"
 
 int main()
 {
@@ -25,6 +28,8 @@ int main()
     adonai::Player player = adonai::Player( bn::sprite_items::nova, 0, 0, 
                                             bn::sprite_items::shoot);
     player.sprite().set_visible(false);
+    //guardar referencia global
+    adonai::GLOBALS::global_player = &player;
     // inciar a primeira cena
     adonai::Scene scene = adonai::Scene::STAGE_1;
 
@@ -32,7 +37,11 @@ int main()
     {
         // se o enum for stage_1 então criamos uma instancia da cena stage_1.
         // passamos para a cena atual(scene) a instancia de cena criada.
-        if(scene == adonai::Scene::STAGE_1){
+        if(scene == adonai::Scene::TEST_SCENE){
+            adonai::Test test_scene = adonai::Test(player);
+            scene = test_scene.execute(bn::fixed_point(-104,0));
+        }
+        else if(scene == adonai::Scene::STAGE_1){
             adonai::Stage_1 stage_1 = adonai::Stage_1(player);
             scene = stage_1.execute(bn::fixed_point(-104,0));
         }

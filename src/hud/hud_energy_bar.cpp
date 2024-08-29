@@ -39,9 +39,9 @@ namespace adonai
     
     int hud_energy_bar::available_shoots(){
         int available_shoots = 0;
-        for(int i=0; i<_player._shoots.max_size(); i++)
+        for(int i=0; i<_player._shots.max_size(); i++)
         {
-            if(_player._shoots[i]._state == adonai::Shoot_State::NONE)
+            if(_player._shots[i]._state == adonai::Shot_State::NONE)
             {
                 available_shoots++;
             }

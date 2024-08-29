@@ -12,10 +12,9 @@
 #include "enemy.h"
 #include "controller.h"
 #include "../../include/effects/bg_fx.h"
-#include "shoot.h"
+#include "../../include/actors/shot_enemy.h"
 #include "../../include/hud/hud_energy_bar.h"
 #include "../../include/hud/hud_hp_bar.h"
-#include "ntt_list_stage_1.h"
 #include "hud_game_over.h"
 
 //assets
@@ -77,6 +76,17 @@ namespace adonai
         
         bn::music_items::nova_theme.play();
 
+        //teste tiro inimigo
+        Shot_Enemy* shot_e = new Shot_Enemy(bn::sprite_items::shoot, bn::fixed_point(0,0));
+
+        shot_e->sprite().set_visible(true);
+        shot_e->_state = adonai::Shot_State::SHOOTING;
+
+        // //DEBUG CPU USAGE=======
+        // bn::fixed max_cpu_usage;
+        // int counter = 1;
+        // //======================
+
         while(true)
         {
             //eu não sei... Coloquei isso aí para reutilizar igual em outro lugar. eu acho.
@@ -101,6 +111,21 @@ namespace adonai
             hud_hp_bar.update();
             
             if(_player->hp() <= 0){ game_over.update(); }
+
+
+            shot_e->Move_Forward();
+            
+            // //DEBUG CPU USAGE=================
+            // bn::fixed max_cpu_usage = bn::max(max_cpu_usage, bn::core::last_cpu_usage());
+            // --counter;
+
+            // if(! counter)
+            // {
+            //     BN_LOG((max_cpu_usage * 100).right_shift_integer(), "%");
+            //     max_cpu_usage = 0;
+            //     counter = 10;
+            // }
+            // //=================
 
             bn::core::update();
         }
