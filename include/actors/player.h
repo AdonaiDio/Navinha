@@ -35,45 +35,25 @@ namespace adonai
     // inline Player_States& operator^= (Player_States& a, Player_States b) { return (Player_States&)((int&)a ^= (int)b); }
 
         
-    class Player
+    class Player : public Actor
     {
+        using Actor::Actor;
         private:
-            bn::sprite_ptr _sprite;
-            bn::sprite_ptr _sprite_clone;//Usado no <feedback> de hit
-            bn::fixed_point _pos;
-            bn::rect _col = bn::rect( 0, 0, 0, 0 );
             bn::sprite_ptr _propulsion_sprite;
 
-            int _hp = 4;
-            bn::fixed _velocity = 2;
-
-            int hit_feedback_duration = 0;
-            bn::fixed intensity = 1;
-            Explosion_FX* explosion; 
-
-            int shadow_delay=0;
+            int shadow_delay = 0;
             bool is_collapsing_shadow = false;
 
         public:
             // TODO: futuramente com mais tiros, pode ser que passar sprite não seja a melhor solução. 
             // Organizar uma lista de tiros em forma de Enum pode ser o melhor caminho.
-            Player(
-                bn::sprite_item sprite_item, 
-                bn::fixed x, bn::fixed y, 
-                bn::sprite_item shot_sprite_item);
+            Player( bn::sprite_item sprite_item,
+                    bn::fixed_point position, 
+                    bn::sprite_item shot_sprite_item, 
+                    int max_hp = 4);
             
-            bn::fixed_point pos() { return _pos; }
-            void pos(bn::fixed_point position) { _pos = position; }
-            bn::rect col() { return _col; }
-            bn::sprite_ptr sprite() { return _sprite; }
-            int hp() { return _hp; }
-            void hp(int new_value) { _hp = new_value; }
-            bn::fixed velocity(){return _velocity;};
-
             bn::array<bn::sprite_ptr, 3> shadow_sprites;
             bn::sprite_ptr propulsion_sprite() { return _propulsion_sprite; }
-            
-            bool wait_to_destroy = false;
 
             bool can_act = false;
             bn::fixed moved_to_left = 0;
@@ -91,19 +71,12 @@ namespace adonai
                 );
         
             
-            void hit_feedback();
             void receive_hit();
             void explode();
-
-
-            void set_shot_sprite(bn::sprite_ptr shot_sprite); 
-
-            void check_sprites_states();
 
             void handle_shadows_rgb();
 
             void update();
-            void check_collision();
             void update_collider();
     };
 

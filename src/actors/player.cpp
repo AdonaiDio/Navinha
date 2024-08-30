@@ -12,15 +12,17 @@
 
 namespace adonai
 {
-    Player::Player(bn::sprite_item sprite_item, bn::fixed x, bn::fixed y, bn::sprite_item shot_sprite_item) : 
-        _sprite(sprite_item.create_sprite(x,y)),
-        _sprite_clone(sprite_item.create_sprite(x,y)),
+    Player::Player( bn::sprite_item sprite_item, bn::fixed_point position, 
+                    bn::sprite_item shot_sprite_item, int max_hp) 
+        : Actor(    sprite_item,
+                    position, 
+                    shot_sprite_item, 
+                    max_hp ),
         shadow_sprites({
-            bn::sprite_items::nova_shadow_rgb.create_sprite(x,y,0),
-            bn::sprite_items::nova_shadow_rgb.create_sprite(x,y,1),
-            bn::sprite_items::nova_shadow_rgb.create_sprite(x,y,2)
+            bn::sprite_items::nova_shadow_rgb.create_sprite(position,0),
+            bn::sprite_items::nova_shadow_rgb.create_sprite(position,1),
+            bn::sprite_items::nova_shadow_rgb.create_sprite(position,2)
         }),
-        _pos(x,y),
         _propulsion_sprite(bn::sprite_items::propulsion.create_sprite(0,0,8)),
         _shots({
             adonai::Shot_Player(shot_sprite_item, bn::fixed_point(0,0)),
@@ -44,45 +46,16 @@ namespace adonai
         shadow_sprites.at(2).set_visible(false);
 
         _sprite_clone.set_z_order(-2);
-        _sprite_clone.set_visible(false);
-        _sprite_clone.set_palette(bn::sprite_palette_items::feedback_palette);
+        // _sprite_clone.set_visible(false);
+        // _sprite_clone.set_palette(bn::sprite_palette_items::feedback_palette);
+        _velocity = 2;
     }
 
-    void Player::hit_feedback()
-    {
-        if (hit_feedback_duration > 0)
-        {
-            //!!! Codigo RUIM. Paleta trocando para todos os tipos de sprite !!!
-            _sprite_clone.set_visible(true);
-            bn::sprite_palette_ptr clone_palette = _sprite_clone.palette();
-            //muda as cores para as cores do enemy que está levando hit já que a palette é compartilhada
-            for (int i = 0; i < _sprite.palette().colors().size(); i++)
-            {
-                clone_palette.set_color(i,_sprite.palette().colors().at(i));
-            }
-            
-            if (hit_feedback_duration % 15 == 0) //se for divisível por 15
-            {
-                clone_palette.set_fade(bn::colors::white, intensity);
-                intensity = 1;
-            }
-            else
-            {
-                intensity = bn::clamp((bn::fixed(-0.1) + intensity), bn::fixed(0), bn::fixed(1));
-                clone_palette.set_fade(bn::colors::white, intensity);
-            }
-            hit_feedback_duration--;
-            if(hit_feedback_duration == 0){
-                _sprite_clone.set_visible(false);
-            }
-        }        
-    }
-    
     void Player::receive_hit()
     {
         if (_hp <= 0 || hit_feedback_duration > 0) {return;}//assegurar que não vai receber hit se já estiver morto
         _hp -= 1;
-        BN_LOG("HP: ",_hp);
+        //BN_LOG("HP: ",_hp);
         if (_hp > 0) {
             bn::sound_items::hit.play();
             hit_feedback_duration = 120; //frames de duração do hit_feedback
@@ -96,29 +69,8 @@ namespace adonai
     //Spawn EXPLOSION_FX
     void Player::explode()
     {
-        _sprite.set_visible(false);
-        _sprite_clone.set_visible(false);
+        Actor::explode();
         _propulsion_sprite.set_visible(false);
-        explosion = new Explosion_FX(_pos);
-    }
-    
-    
-    // TODO: é mesmo necessário?
-    void Player::set_shot_sprite(bn::sprite_ptr shoot_sprite)
-    {
-        for(int i=0; i<_shots.max_size(); i++)
-        {
-            _shots[i].sprite(shoot_sprite);
-        }
-    }
-
-    void Player::check_sprites_states()
-    {
-        if (_movement_states == Player_States::Player_NONE)
-        {
-            /* code */
-        }
-        
     }
 
     void Player::handle_shadows_rgb()
@@ -178,9 +130,7 @@ namespace adonai
                 if(i==2){
                     is_collapsing_shadow = true;
                 }
-
             }
-
             if(shadow_sprites.at(i).position() == _pos){
                 //defazer-se da shadow
                 shadow_sprites.at(i).set_visible(false);
@@ -190,11 +140,17 @@ namespace adonai
                 }
             }
         }
-
     }
 
-    void Player::check_collision()
+    void Player::update_collider()
     {
+        if(!wait_to_destroy){
+            _col = bn::rect((int)_pos.x(), (int)_pos.y() + 2,
+                            13, 7);
+        }else{
+            _col = bn::rect(-128,-88,0,0);
+        }
+        //check_collision
         if(hit_feedback_duration > 0){return;}
         for (int i = 0; i < ntt_enemies.size(); i++)
         {
@@ -207,29 +163,17 @@ namespace adonai
         }
     }
 
-    void Player::update_collider()
-    {
-        if(!wait_to_destroy){
-            _col = bn::rect((int)_pos.x(), (int)_pos.y() + 2,
-                            13, 7);
-        }else{
-            _col = bn::rect(-128,-88,0,0);
-        }
-    }
-
     //TODO: Update deve ser chamado todo frame.
     void Player::update()
     {
-        //reposicionar em relação ao _pos
-        update_collider();
         //sprite correction
         _sprite.set_position(_pos);
         _sprite_clone.set_position(_pos);
         
         _propulsion_sprite.set_position(_pos + bn::fixed_point(-16,0));
 
+        update_collider();
         hit_feedback();
-        check_collision();
 
         if(explosion && !explosion->_explosion_anim.done()){
             explosion->update();

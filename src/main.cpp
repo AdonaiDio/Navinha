@@ -25,8 +25,10 @@ int main()
     bn::core::init();
 
     //Inicar o player no main para o player sempre ser o mesmo durante o jogo.
-    adonai::Player player = adonai::Player( bn::sprite_items::nova, 0, 0, 
-                                            bn::sprite_items::shoot);
+    adonai::Player player = adonai::Player( bn::sprite_items::nova,
+                                            bn::fixed_point(0, 0), 
+                                            bn::sprite_items::shoot );
+                                            
     player.sprite().set_visible(false);
     //guardar referencia global
     adonai::GLOBALS::global_player = &player;

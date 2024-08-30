@@ -46,8 +46,6 @@ namespace adonai
 
             void identify_snakeGroup();
 
-            void moveset_snake();
-
             void update_moveset();
             
             void receive_hit(const int index);

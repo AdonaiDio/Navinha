@@ -47,7 +47,7 @@ namespace adonai
                     _sprite_clone.set_z_order(-1);
                     _sprite_clone.set_visible(false);
                     _sprite_clone.set_palette(bn::sprite_palette_items::feedback_palette);
-                    BN_LOG("Actor constructor: FINISHED");
+                    //BN_LOG("Actor constructor: FINISHED");
                 };
             ~Actor() = default;
 
@@ -61,6 +61,7 @@ namespace adonai
             int hp()                                 { return _hp; }
             void hp(int new_value)              { _hp = new_value; }
             bn::fixed velocity()               { return _velocity; }
+            void velocity(bn::fixed new_vel){ _velocity = new_vel; }
 
             //--methods--
             void hit_feedback()

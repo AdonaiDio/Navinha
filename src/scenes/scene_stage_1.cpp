@@ -87,8 +87,8 @@ namespace adonai
         // shot_e->_state = adonai::Shot_State::SHOOTING;
 
         // //DEBUG CPU USAGE=======
-        // bn::fixed max_cpu_usage;
-        // int counter = 1;
+        bn::fixed max_cpu_usage;
+        int counter = 1;
         // //======================
 
         while(true)
@@ -121,15 +121,15 @@ namespace adonai
             // shot_e->Move_Forward();
             
             // //DEBUG CPU USAGE=================
-            // bn::fixed max_cpu_usage = bn::max(max_cpu_usage, bn::core::last_cpu_usage());
-            // --counter;
+            bn::fixed max_cpu_usage = bn::max(max_cpu_usage, bn::core::last_cpu_usage());
+            --counter;
 
-            // if(! counter)
-            // {
-            //     BN_LOG((max_cpu_usage * 100).right_shift_integer(), "%");
-            //     max_cpu_usage = 0;
-            //     counter = 10;
-            // }
+            if(! counter)
+            {
+                BN_LOG((max_cpu_usage * 100).right_shift_integer(), "%");
+                max_cpu_usage = 0;
+                counter = 10;
+            }
             // //=================
 
             bn::core::update();
