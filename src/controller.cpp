@@ -23,49 +23,25 @@ namespace adonai
     {
         adonai::Player_States old_player_state = _player._movement_states;
 
+        int _vx = 0, _vy = 0;
 
-        _player._movement_states = adonai::Player_States::Player_NONE;
-        if (bn::keypad::up_held())
-        {
-            _player.pos( move_towards( _player.pos(), 
-                                    _player.pos() + bn::fixed_point(0, -1*_player.velocity()), 
-                                    _player.velocity() ) );
-            _player._movement_states = adonai::Player_States::Player_NONE;
+        if (bn::keypad::up_held() && bn::keypad::right_held())          { _vx = 1;  _vy =  -1; }
+        else if (bn::keypad::down_held() && bn::keypad::left_held())    { _vx = -1;  _vy =  1; }
+        else if (bn::keypad::left_held() && bn::keypad::up_held())     { _vx = -1;  _vy =  -1; }
+        else if (bn::keypad::right_held() && bn::keypad::down_held())    { _vx = 1;  _vy =  1; }
+        else if (bn::keypad::up_held())                                           { _vy =  -1; }
+        else if (bn::keypad::right_held())                                          { _vx = 1; }
+        else if (bn::keypad::down_held())                                          { _vy =  1; }
+        else if (bn::keypad::left_held())                                          { _vx = -1; }
 
-            if (bn::keypad::left_held())
-            {
-                _player._movement_states = adonai::Player_States::Player_HOLD_MOVE_LEFT;
-            }
-        }
-        if (bn::keypad::down_held())
-        {
-            _player.pos( move_towards( _player.pos(), 
-                                    _player.pos() + bn::fixed_point(0, 1*_player.velocity()), 
-                                    _player.velocity() ) );
-            _player._movement_states = adonai::Player_States::Player_NONE;
-            
-            if (bn::keypad::left_held())
-            {
-                _player._movement_states = adonai::Player_States::Player_HOLD_MOVE_LEFT;
-            }
-        }
+        _player.pos( move_towards( _player.pos(), 
+                                _player.pos() + bn::fixed_point(_vx*_player.velocity(), _vy*_player.velocity()), 
+                                _player.velocity() ) );
 
-
-        if (bn::keypad::right_held())
-        {
-            _player.pos( move_towards( _player.pos(), 
-                                    _player.pos() + bn::fixed_point(1*_player.velocity(), 0), 
-                                    _player.velocity() ) );
-
-            _player._movement_states = adonai::Player_States::Player_HOLD_MOVE_RIGHT;
-        }
-        else if (bn::keypad::left_held())
-        {
-            _player.pos( move_towards( _player.pos(), 
-                                    _player.pos() + bn::fixed_point(-1*_player.velocity(), 0), 
-                                    _player.velocity() ) );
-            _player._movement_states = adonai::Player_States::Player_HOLD_MOVE_LEFT;
-        }
+        _player._movement_states = 
+            _vx==0? adonai::Player_States::Player_NONE : 
+                    _vx>0?  adonai::Player_States::Player_HOLD_MOVE_RIGHT : 
+                            adonai::Player_States::Player_HOLD_MOVE_LEFT ;
         
         // clamp em X
         const bn::fixed _x = bn::clamp(_player.pos().x(), 
@@ -81,59 +57,35 @@ namespace adonai
         //SE ESTADO MUDOU ENTÃO TRATAR ANIMAÇÃO
         if(old_player_state != _player._movement_states)
         {
+            //index do sprite e frames de animações
+            int spr_i, gr_1, gr_2, gr_3;
+
+            switch (_player._movement_states) {
+                case adonai::Player_States::Player_HOLD_MOVE_RIGHT:
+                    spr_i = 1;
+                    gr_1 = 5; gr_2 = 6; gr_3 = 7;
+                    break;
+                
+                case adonai::Player_States::Player_HOLD_MOVE_LEFT:
+                    spr_i = 0;
+                    gr_1 = 8; gr_2 = 8; gr_3 = 8;
+                    break;
+                
+                default:
+                    spr_i = 0;
+                    gr_1 = 8; gr_2 = 8; gr_3 = 8;
+                    break;
+            }
             
-            switch (_player._movement_states)
-            {
-            case 0:
-                BN_LOG("Player STATE: NONE");
-                break;
-            case 2:
-                BN_LOG("Player STATE: HOLD_MOVE_RIGHT");
-                break;
-            case 4:
-                BN_LOG("Player STATE: HOLD_MOVE_LEFT");
-                break;
-            default:
-                break;
-            }
-            //BN_LOG("Player STATE: ", _player._movement_states);
-            
-            if (_player._movement_states == adonai::Player_States::Player_NONE) //parou
-            {
-                _player.sprite().set_tiles(bn::sprite_items::nova.tiles_item().create_tiles(0));
-                _player.propulsion_hold_anim = 
-                    bn::create_sprite_animate_action_forever(
-                        _player.propulsion_sprite(), 
-                        15, 
-                        bn::sprite_items::propulsion.tiles_item(), 
-                        8,8,8
-                    );
-                _player.moved_to_left = 0;
-            }
-            else if (_player._movement_states == adonai::Player_States::Player_HOLD_MOVE_RIGHT)
-            {
-                _player.sprite().set_tiles(bn::sprite_items::nova.tiles_item().create_tiles(1));
-                _player.propulsion_hold_anim = 
-                    bn::create_sprite_animate_action_forever(
-                        _player.propulsion_sprite(), 
-                        15, 
-                        bn::sprite_items::propulsion.tiles_item(), 
-                        5,6,7
-                    );
-                _player.moved_to_left = 0;
-            }
-            else if (_player._movement_states == adonai::Player_States::Player_HOLD_MOVE_LEFT) //start left
-            {
-                _player.sprite().set_tiles(bn::sprite_items::nova.tiles_item().create_tiles(0));
-                _player.propulsion_hold_anim = 
-                    bn::create_sprite_animate_action_forever(
-                        _player.propulsion_sprite(), 
-                        15, 
-                        bn::sprite_items::propulsion.tiles_item(), 
-                        8,8,8
-                    );
-                _player.moved_to_left = 0;
-            }
+            _player.sprite().set_tiles(bn::sprite_items::nova.tiles_item().create_tiles(spr_i));
+            _player.propulsion_hold_anim = 
+                bn::create_sprite_animate_action_forever(
+                    _player.propulsion_sprite(), 
+                    15, 
+                    bn::sprite_items::propulsion.tiles_item(), 
+                    gr_1,gr_2,gr_3
+                );
+            _player.moved_to_left = 0;
         }
         if( old_player_state == _player._movement_states && 
             old_player_state == adonai::Player_States::Player_HOLD_MOVE_LEFT)
@@ -171,9 +123,6 @@ namespace adonai
             }
         }
         // percorre todos os shoots e e move_forward apenas os com state SHOOTING
-
-        // FIXME: AO COMEÇAR O TIRO, CADA TIRO DEVE CUIDAR DO MOVIMENTO 
-        // INDEPENDENTEMENTE.
         for(int i=0; i<_player._shots.max_size(); i++)
         {
             if(_player._shots[i]._state == adonai::Shot_State::SHOOTING)
@@ -181,7 +130,6 @@ namespace adonai
                 _player._shots[i].Move_Forward();
             }
         }
-        
     };
 
     void Controller::update()
