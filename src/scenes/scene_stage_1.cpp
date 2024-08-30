@@ -58,18 +58,23 @@ namespace adonai
         adonai::Controller controller = adonai::Controller(*_player);
 
         //inimigos
-        Enemy* enemy_1 = new Enemy( bn::sprite_items::spaceship_2, 16*(7+1), (16*2)+8,
+        Enemy* enemy_1 = new Enemy( bn::sprite_items::spaceship_2, 
+                                    bn::fixed_point(16*(7+1), (16*2)+8),
                                     bn::sprite_items::shoot, 3, 1);
-        Enemy* enemy_2 = new Enemy( bn::sprite_items::spaceship_1, 16*(7+2), (16*2)+8,
+        Enemy* enemy_2 = new Enemy( bn::sprite_items::spaceship_1,
+                                    bn::fixed_point(16*(7+2), (16*2)+8),
                                     bn::sprite_items::shoot, 3, 1);
-        Enemy* enemy_3 = new Enemy( bn::sprite_items::spaceship_1, 16*(7+3), (16*2)+8,
+        Enemy* enemy_3 = new Enemy( bn::sprite_items::spaceship_1,
+                                    bn::fixed_point(16*(7+3), (16*2)+8),
                                     bn::sprite_items::shoot, 3, 1);
         //identificar o grupo de inimigos
         //enemy_1.identify_snakeGroup();
 
-        Enemy* enemy_4 = new Enemy( bn::sprite_items::spaceship_1, 0, 0,
+        Enemy* enemy_4 = new Enemy( bn::sprite_items::spaceship_1,
+                                    bn::fixed_point(0, 0),
                                     bn::sprite_items::shoot, 3);
-        Enemy* enemy_5 = new Enemy( bn::sprite_items::spaceship_1, 0, 32,
+        Enemy* enemy_5 = new Enemy( bn::sprite_items::spaceship_1,
+                                    bn::fixed_point(0, 32),
                                     bn::sprite_items::shoot, 3);
         
         // bn::sprite_ptr gizmos = bn::sprite_items::gizmos_16x16.create_sprite(0,0,1);

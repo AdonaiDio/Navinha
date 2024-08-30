@@ -1,96 +1,61 @@
-#include "bn_log.h"
-#include "bn_color.h"
-#include "bn_colors.h"
-#include <bn_sprite_palette_ptr.h>
+
 #include "bn_display.h"
 #include "bn_array.h"
 #include "bn_sound_items.h"
 
 #include "utility.h"
 
-#include "bn_sprite_palette_items_feedback_palette.h"
-
 #include "enemy.h"
 
 namespace adonai
 {
-
-    Enemy::Enemy(bn::sprite_item sprite_item, bn::fixed x, bn::fixed y, bn::sprite_item shoot_sprite_item, int max_hp, int snake_group) :
-        _sprite(sprite_item.create_sprite(x,y)),
-        _sprite_clone(sprite_item.create_sprite(x,y)),
-        _pos(x,y),
-        _shot(adonai::Shot_Enemy(shoot_sprite_item, bn::fixed_point(0,0))),
-        _hp(max_hp),
+    Enemy::Enemy(bn::sprite_item sprite_item, bn::fixed_point position, bn::sprite_item shot_sprite_item, int max_hp, int snake_group)
+        : Actor(    sprite_item,
+                    position, 
+                    shot_sprite_item, 
+                    _hp = 3),
+        _shot(adonai::Shot_Enemy(shot_sprite_item, bn::fixed_point(0,0))),
         _snake_group(snake_group)
     {
         ntt_enemies.push_back(this);
-        _sprite_clone.set_z_order(-1);
-        _sprite_clone.set_visible(false);
-        _sprite_clone.set_palette(bn::sprite_palette_items::feedback_palette);
+        _col = bn::rect(  (int)_pos.x(), (int)_pos.y() + 1, 
+                        15, 9);
+        BN_LOG("Enemy constructor: FINISHED");
     }
     Enemy::~Enemy(){
         // BN_LOG("Enemy destruido");
         // BN_LOG("enemies: ", ntt_enemies.size());
     }
 
-    bn::sprite_ptr Enemy::sprite()
-    {
-        return _sprite;
-    }
-
-    bn::fixed_point Enemy::pos()
-    {
-        return _pos;
-    }
-
-    void Enemy::pos(bn::fixed_point location)
-    {
-        _pos = location;
-    }
-
-    bn::rect Enemy::col()
-    {
-        return _col;
-    }
-
-    int Enemy::hp()
-    {
-        return _hp;
-    }
-    void Enemy::hp(int new_value)
-    {
-        _hp = new_value;
-    }
-
-    void Enemy::hit_feedback()
-    {
-        if (hit_feedback_duration > 0)
-        {
-            //!!! Codigo RUIM. Paleta trocando para todos os tipos de enemy !!!
-            _sprite_clone.set_visible(true);
-            bn::sprite_palette_ptr clone_palette = _sprite_clone.palette();
-            //muda as cores para as cores do enemy que está levando hit já que a palette é compartilhada
-            for (int i = 0; i < _sprite.palette().colors().size(); i++)
-            {
-                clone_palette.set_color(i,_sprite.palette().colors().at(i));
-            }
+    // void Enemy::hit_feedback()
+    // {
+    //     if (hit_feedback_duration > 0)
+    //     {
+    //         //!!! Codigo RUIM. Paleta trocando para todos os tipos de enemy !!!
+    //         _sprite_clone.set_visible(true);
+    //         bn::sprite_palette_ptr clone_palette = _sprite_clone.palette();
+    //         //muda as cores para as cores do enemy que está levando hit já que a palette é compartilhada
+    //         for (int i = 0; i < _sprite.palette().colors().size(); i++)
+    //         {
+    //             clone_palette.set_color(i,_sprite.palette().colors().at(i));
+    //         }
             
-            if (hit_feedback_duration % 15 == 0) //se for divisível por 15
-            {
-                clone_palette.set_fade(bn::colors::white, intensity);
-                intensity = 1;
-            }
-            else
-            {
-                intensity = bn::clamp((bn::fixed(-0.1) + intensity), bn::fixed(0), bn::fixed(1));
-                clone_palette.set_fade(bn::colors::white, intensity);
-            }
-            hit_feedback_duration--;
-            if(hit_feedback_duration == 0){
-                _sprite_clone.set_visible(false);
-            }
-        }        
-    }
+    //         if (hit_feedback_duration % 15 == 0) //se for divisível por 15
+    //         {
+    //             clone_palette.set_fade(bn::colors::white, intensity);
+    //             intensity = 1;
+    //         }
+    //         else
+    //         {
+    //             intensity = bn::clamp((bn::fixed(-0.1) + intensity), bn::fixed(0), bn::fixed(1));
+    //             clone_palette.set_fade(bn::colors::white, intensity);
+    //         }
+    //         hit_feedback_duration--;
+    //         if(hit_feedback_duration == 0){
+    //             _sprite_clone.set_visible(false);
+    //         }
+    //     }        
+    // }
     
     void Enemy::receive_hit(const int index)
     {
@@ -109,13 +74,13 @@ namespace adonai
         //this->~Enemy();
     }
 
-    //Spawn EXPLOSION_FX
-    void Enemy::explode()
-    {
-        _sprite.set_visible(false);
-        _sprite_clone.set_visible(false);
-        explosion = new Explosion_FX(_pos);
-    }
+    // //Spawn EXPLOSION_FX
+    // void Enemy::explode()
+    // {
+    //     _sprite.set_visible(false);
+    //     _sprite_clone.set_visible(false);
+    //     explosion = new Explosion_FX(_pos);
+    // }
 
     void Enemy::moveset_follow_path(const bn::array<bn::fixed_point,3>& path)
     {
@@ -130,7 +95,7 @@ namespace adonai
         //usando moveTo
         if(_pos != path.at(path_pos_current_index))  
         {
-            pos(move_towards(_pos, path.at(path_pos_current_index), velocity));
+            pos(move_towards(_pos, path.at(path_pos_current_index), velocity()));
             if(_pos == path.at(path_pos_current_index)){
                 // BN_LOG("chegou no ponto: ", path_pos_current_index);
                 path_pos_current_index = bn::clamp(path_pos_current_index+1, 0, path.size()-1);

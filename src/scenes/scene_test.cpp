@@ -56,7 +56,8 @@ namespace adonai
         adonai::Controller controller = adonai::Controller(*_player);
 
         //inimigos
-        Enemy* enemy_1 = new Enemy( bn::sprite_items::spaceship_1, 0, 0,
+        Enemy* enemy_1 = new Enemy( bn::sprite_items::spaceship_1,
+                                    bn::fixed_point(0, 0),
                                     bn::sprite_items::shoot, 3);
         
         bn::music_items::nova_theme.play();
