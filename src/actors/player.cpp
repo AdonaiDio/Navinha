@@ -15,8 +15,7 @@ namespace adonai
     Player::Player( bn::sprite_item sprite_item, bn::fixed_point position, 
                     bn::sprite_item shot_sprite_item, int max_hp) 
         : Actor(    sprite_item,
-                    position, 
-                    shot_sprite_item, 
+                    position,
                     max_hp ),
         shadow_sprites({
             bn::sprite_items::nova_shadow_rgb.create_sprite(position,0),

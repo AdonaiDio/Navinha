@@ -9,22 +9,74 @@
 
 namespace adonai
 {
-    Enemy::Enemy(bn::sprite_item sprite_item, bn::fixed_point position, bn::sprite_item shot_sprite_item, int max_hp, int snake_group)
+    Enemy::Enemy(   bn::sprite_item sprite_item, bn::fixed_point position, 
+                    bn::sprite_item shot_sprite_item, int max_hp)
         : Actor(    sprite_item,
-                    position, 
-                    shot_sprite_item, 
+                    position,
                     max_hp),
-        _shot(adonai::Shot_Enemy(shot_sprite_item, bn::fixed_point(0,0))),
-        _snake_group(snake_group)
+        _shot(adonai::Shot_Enemy(shot_sprite_item, bn::fixed_point(0,0)))
     {
         ntt_enemies.push_back(this);
         _col = bn::rect(  (int)_pos.x(), (int)_pos.y() + 1, 
                         15, 9);
+
+
+        enemy_anim = 
+            bn::create_sprite_animate_action_forever
+            (
+                _sprite,
+                0,
+                sprite_item.tiles_item(),
+                0,0,0,0,0,0,0
+        );
+        enemy_clone_anim = 
+            bn::create_sprite_animate_action_forever
+            (
+                _sprite_clone,
+                0,
+                sprite_item.tiles_item(),
+                0,0,0,0,0,0,0
+        );
+
         //BN_LOG("Enemy constructor: FINISHED");
     }
     Enemy::~Enemy(){
         // BN_LOG("Enemy destruido");
         // BN_LOG("enemies: ", ntt_enemies.size());
+    }
+
+    
+    Enemy::Enemy(   bn::sprite_item sprite_item, bn::fixed_point position, 
+                    bn::sprite_item shot_sprite_item, bool has_animation, int max_hp)
+        : Actor(    sprite_item,
+                    position,
+                    max_hp),
+        _shot(adonai::Shot_Enemy(shot_sprite_item, bn::fixed_point(0,0)))
+    {
+        ntt_enemies.push_back(this);
+        _col = bn::rect(  (int)_pos.x(), (int)_pos.y() + 1, 
+                        15, 9);
+ 
+        
+        enemy_anim = 
+            bn::create_sprite_animate_action_forever
+            (
+                _sprite,
+                5,
+                sprite_item.tiles_item(),
+                0,1,2,3,4,5,6
+        );
+        enemy_clone_anim = 
+            bn::create_sprite_animate_action_forever
+            (
+                _sprite_clone,
+                5,
+                sprite_item.tiles_item(),
+                0,1,2,3,4,5,6
+        );
+
+
+        //BN_LOG("Enemy with Animation and Collider Dinamic constructor: FINISHED");
     }
 
     void Enemy::receive_hit(const int index)
@@ -42,24 +94,24 @@ namespace adonai
         explode();
     }
 
-    void Enemy::moveset_follow_path(const bn::array<bn::fixed_point,3>& path)
-    {
-        if(_pos != path.at(path_pos_current_index))  
-        {
-            pos(move_towards(_pos, path.at(path_pos_current_index), velocity()));
-            if(_pos == path.at(path_pos_current_index)){
-                // BN_LOG("chegou no ponto: ", path_pos_current_index);
-                path_pos_current_index = bn::clamp(path_pos_current_index+1, 0, path.size()-1);
-            }
-        }
-    }
+    // void Enemy::moveset_follow_path(const bn::array<bn::fixed_point,3>& path)
+    // {
+    //     if(_pos != path.at(path_pos_current_index))  
+    //     {
+    //         pos(move_towards(_pos, path.at(path_pos_current_index), velocity()));
+    //         if(_pos == path.at(path_pos_current_index)){
+    //             // BN_LOG("chegou no ponto: ", path_pos_current_index);
+    //             path_pos_current_index = bn::clamp(path_pos_current_index+1, 0, path.size()-1);
+    //         }
+    //     }
+    // }
 
-    void Enemy::update_moveset()
-    {
-        if(_snake_group > 0){
-            this->moveset_follow_path(path_1);
-        }
-    }
+    // void Enemy::update_moveset()
+    // {
+    //     if(_snake_group > 0){
+    //         this->moveset_follow_path(path_1);
+    //     }
+    // }
 
     void Enemy::update_collider()
     {
@@ -72,8 +124,10 @@ namespace adonai
     }
     void Enemy::update()
     {
+        enemy_anim.update();
+        enemy_clone_anim.update();
         //atualiza posicao com o moveset
-        update_moveset();
+        //update_moveset();
         //reposicionar em relação ao _pos
         update_collider();
         //sprite correction

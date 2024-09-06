@@ -60,19 +60,19 @@ namespace adonai
         //inimigos
         Enemy* enemy_1 = new Enemy( bn::sprite_items::spaceship_2, 
                                     bn::fixed_point(16*(7+1), (16*2)+8),
-                                    bn::sprite_items::shoot, 3, 1);
+                                    bn::sprite_items::shoot, 3);
         Enemy* enemy_2 = new Enemy( bn::sprite_items::spaceship_1,
                                     bn::fixed_point(16*(7+2), (16*2)+8),
-                                    bn::sprite_items::shoot, 3, 1);
+                                    bn::sprite_items::shoot, 3);
         Enemy* enemy_3 = new Enemy( bn::sprite_items::spaceship_1,
                                     bn::fixed_point(16*(7+3), (16*2)+8),
-                                    bn::sprite_items::shoot, 3, 1);
+                                    bn::sprite_items::shoot, 3);
         //identificar o grupo de inimigos
         //enemy_1.identify_snakeGroup();
 
-        Enemy* enemy_4 = new Enemy( bn::sprite_items::spaceship_1,
+        Enemy* enemy_4 = new Enemy( bn::sprite_items::spaceship_2,
                                     bn::fixed_point(0, 0),
-                                    bn::sprite_items::shoot, 3);
+                                    bn::sprite_items::shoot, false, 3); 
         Enemy* enemy_5 = new Enemy( bn::sprite_items::spaceship_1,
                                     bn::fixed_point(0, 32),
                                     bn::sprite_items::shoot, 3);
@@ -87,8 +87,8 @@ namespace adonai
         // shot_e->_state = adonai::Shot_State::SHOOTING;
 
         // //DEBUG CPU USAGE=======
-        bn::fixed max_cpu_usage;
-        int counter = 1;
+        // bn::fixed max_cpu_usage;
+        // int counter = 1;
         // //======================
 
         while(true)
@@ -121,15 +121,15 @@ namespace adonai
             // shot_e->Move_Forward();
             
             // //DEBUG CPU USAGE=================
-            bn::fixed max_cpu_usage = bn::max(max_cpu_usage, bn::core::last_cpu_usage());
-            --counter;
+            // bn::fixed max_cpu_usage = bn::max(max_cpu_usage, bn::core::last_cpu_usage());
+            // --counter;
 
-            if(! counter)
-            {
-                BN_LOG((max_cpu_usage * 100).right_shift_integer(), "%");
-                max_cpu_usage = 0;
-                counter = 10;
-            }
+            // if(! counter)
+            // {
+            //     BN_LOG((max_cpu_usage * 100).right_shift_integer(), "%");
+            //     max_cpu_usage = 0;
+            //     counter = 10;
+            // }
             // //=================
 
             bn::core::update();

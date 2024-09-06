@@ -36,8 +36,7 @@ namespace adonai
 
         public:
             Actor(  bn::sprite_item sprite_item,
-                    bn::fixed_point position, 
-                    bn::sprite_item shot_sprite_item, 
+                    bn::fixed_point position,
                     int max_hp = 1) :
                     _sprite(sprite_item.create_sprite(position)),
                     _sprite_clone(sprite_item.create_sprite(position)),
