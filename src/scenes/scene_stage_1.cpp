@@ -17,6 +17,8 @@
 #include "../../include/hud/hud_hp_bar.h"
 #include "hud_game_over.h"
 
+#include "ntt_list_stage_1.h"
+
 //assets
 #include "bn_sprite_items_gizmos_16x16.h"
 #include "bn_regular_bg_items_sky_solid_color.h"
@@ -72,7 +74,7 @@ namespace adonai
 
         Enemy* enemy_4 = new Enemy( bn::sprite_items::spaceship_2,
                                     bn::fixed_point(0, 0),
-                                    bn::sprite_items::shoot, false, 3); 
+                                    bn::sprite_items::shoot, false, 15, 7, 3); 
         Enemy* enemy_5 = new Enemy( bn::sprite_items::spaceship_1,
                                     bn::fixed_point(0, 32),
                                     bn::sprite_items::shoot, 3);
@@ -90,7 +92,7 @@ namespace adonai
         // bn::fixed max_cpu_usage;
         // int counter = 1;
         // //======================
-
+        int count_frames_update = 0;
         while(true)
         {
             //eu não sei... Coloquei isso aí para reutilizar igual em outro lugar. eu acho.
@@ -114,9 +116,29 @@ namespace adonai
             hud_energy_bar.update();
             hud_hp_bar.update();
             
+            // teste de tiro
+            // TODO: Isso tem que ser coisa de script futuramente
+            if(_player->hp() > 0){
+                count_frames_update++;
+                if (count_frames_update > 14){
+                    count_frames_update = 0;
+                    if(enemy_4->hp()>0)
+                    {
+                        enemy_4->shoot();
+                    }
+                }
+            }
+            if(ntt_shots.size() > 0){
+                for (int i = 0; i < ntt_shots.size(); i++)
+                {
+                    ntt_shots.at(i)->Move_Forward();
+                }
+            }
+
+
             if(_player->hp() <= 0){ game_over.update(); }
 
-
+            
             // //teste tiro inimigo
             // shot_e->Move_Forward();
             

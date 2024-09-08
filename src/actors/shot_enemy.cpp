@@ -10,17 +10,35 @@
 
 namespace adonai
 {
+
+    extern bn::vector<Shot*, 30> ntt_shots;
+
     Shot_Enemy::Shot_Enemy(   
             const bn::sprite_item& sprite_item, 
             const bn::fixed_point& initial_position)
         :Shot(sprite_item,
             initial_position),
-        _sprite(sprite_item.create_sprite(bn::fixed_point(bn::display::width()+8,0)))
+        _sprite(sprite_item.create_sprite(bn::fixed_point(bn::display::width()+8,0))),
+        _sprite_item(sprite_item)
     {
         _state = Shot_State::NONE;
         _sprite.set_visible(false);
     }
-    Shot_Enemy::~Shot_Enemy(){}
+    Shot_Enemy::~Shot_Enemy() {
+        for (int i = 0; i < ntt_shots.size(); i++)
+        {
+            if(ntt_shots.at(i) == this){
+                ntt_shots.erase(ntt_shots.begin()+i);
+                BN_LOG("Destroy Shot! ntt_shots size: ", ntt_shots.size());
+                break;
+            }
+        }
+    }
+
+    bn::sprite_item Shot_Enemy::sprite_item()
+    {
+        return _sprite_item;
+    }
 
     // o valor do owner_pos_y deve ser criado ao disparar o tiro
     void Shot_Enemy::Move_Forward()
@@ -28,7 +46,7 @@ namespace adonai
         //não mover se colidir
         if(check_collision()){
             //se colidir resetar estado do tiro
-            _pos.set_x((bn::display::width()/2)+4);
+            _pos = bn::fixed_point(((-1 * bn::display::width()/2)-8),0);
             _sprite.set_position(_pos);
             _state = Shot_State::NONE;
             return;
@@ -40,9 +58,10 @@ namespace adonai
         _sprite.set_position(_pos);
 
         // ao chegar no fim da tela a direita, volta a ser NONE
-        if(_sprite.position().x() > (bn::display::width()/2)+4)
+        if(_sprite.position().x() < (-1 * bn::display::width()/2)-4)
         {
             _state = Shot_State::NONE;
+            this->~Shot_Enemy();
         }
     }
 

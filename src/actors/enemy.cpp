@@ -2,13 +2,18 @@
 #include "bn_display.h"
 #include "bn_array.h"
 #include "bn_sound_items.h"
+#include "bn_span.h"
 
 #include "utility.h"
 
 #include "enemy.h"
 
+
 namespace adonai
 {
+
+    extern bn::vector<Shot*, 30> ntt_shots;
+
     Enemy::Enemy(   bn::sprite_item sprite_item, bn::fixed_point position, 
                     bn::sprite_item shot_sprite_item, int max_hp)
         : Actor(    sprite_item,
@@ -19,7 +24,6 @@ namespace adonai
         ntt_enemies.push_back(this);
         _col = bn::rect(  (int)_pos.x(), (int)_pos.y() + 1, 
                         15, 9);
-
 
         enemy_anim = 
             bn::create_sprite_animate_action_forever
@@ -47,7 +51,11 @@ namespace adonai
 
     
     Enemy::Enemy(   bn::sprite_item sprite_item, bn::fixed_point position, 
-                    bn::sprite_item shot_sprite_item, bool has_animation, int max_hp)
+                    bn::sprite_item shot_sprite_item, bool has_animation, 
+                    const int anim_frames_duration, 
+                    //anim_frames_count: 1 < value < 11
+                    const int anim_frames_count, 
+                    int max_hp)
         : Actor(    sprite_item,
                     position,
                     max_hp),
@@ -56,24 +64,222 @@ namespace adonai
         ntt_enemies.push_back(this);
         _col = bn::rect(  (int)_pos.x(), (int)_pos.y() + 1, 
                         15, 9);
- 
+
+        #pragma region Setup Anim
+        // =============================================
+        // ALETAR DE CODIGO FEIO!!
+        // ALERTA DE CODIGO FEIO!!
+        // Configurando animação conforme a quantidade de frames
+        switch (anim_frames_count)
+        {
+        case 2:
+            enemy_anim = 
+                bn::create_sprite_animate_action_forever
+                (
+                    _sprite,
+                    anim_frames_duration,
+                    sprite_item.tiles_item(),
+                    0,1
+
+            );
+            enemy_clone_anim = 
+                bn::create_sprite_animate_action_forever
+                (
+                    _sprite_clone,
+                    anim_frames_duration,
+                    sprite_item.tiles_item(),
+                    0,1
+
+            );
+            break;
+        case 3:
+            enemy_anim = 
+                bn::create_sprite_animate_action_forever
+                (
+                    _sprite,
+                    anim_frames_duration,
+                    sprite_item.tiles_item(),
+                    0,1,2
+
+            );
+            enemy_clone_anim = 
+                bn::create_sprite_animate_action_forever
+                (
+                    _sprite_clone,
+                    anim_frames_duration,
+                    sprite_item.tiles_item(),
+                    0,1,2
+
+            );
+            break;
+        case 4:
+            enemy_anim = 
+                bn::create_sprite_animate_action_forever
+                (
+                    _sprite,
+                    anim_frames_duration,
+                    sprite_item.tiles_item(),
+                    0,1,2,3
+
+            );
+            enemy_clone_anim = 
+                bn::create_sprite_animate_action_forever
+                (
+                    _sprite_clone,
+                    anim_frames_duration,
+                    sprite_item.tiles_item(),
+                    0,1,2,3
+
+            );
+            break;
+        case 5:
+            enemy_anim = 
+                bn::create_sprite_animate_action_forever
+                (
+                    _sprite,
+                    anim_frames_duration,
+                    sprite_item.tiles_item(),
+                    0,1,2,3,4
+
+            );
+            enemy_clone_anim = 
+                bn::create_sprite_animate_action_forever
+                (
+                    _sprite_clone,
+                    anim_frames_duration,
+                    sprite_item.tiles_item(),
+                    0,1,2,3,4
+
+            );
+            break;
+        case 6:
+            enemy_anim = 
+                bn::create_sprite_animate_action_forever
+                (
+                    _sprite,
+                    anim_frames_duration,
+                    sprite_item.tiles_item(),
+                    0,1,2,3,4,5
+
+            );
+            enemy_clone_anim = 
+                bn::create_sprite_animate_action_forever
+                (
+                    _sprite_clone,
+                    anim_frames_duration,
+                    sprite_item.tiles_item(),
+                    0,1,2,3,4,5
+
+            );
+            break;
+        case 7:
+            enemy_anim = 
+                bn::create_sprite_animate_action_forever
+                (
+                    _sprite,
+                    anim_frames_duration,
+                    sprite_item.tiles_item(),
+                    0,1,2,3,4,5,6
+
+            );
+            enemy_clone_anim = 
+                bn::create_sprite_animate_action_forever
+                (
+                    _sprite_clone,
+                    anim_frames_duration,
+                    sprite_item.tiles_item(),
+                    0,1,2,3,4,5,6
+
+            );
+            break;
+        case 8:
+            enemy_anim = 
+                bn::create_sprite_animate_action_forever
+                (
+                    _sprite,
+                    anim_frames_duration,
+                    sprite_item.tiles_item(),
+                    0,1,2,3,4,5,6,7
+
+            );
+            enemy_clone_anim = 
+                bn::create_sprite_animate_action_forever
+                (
+                    _sprite_clone,
+                    anim_frames_duration,
+                    sprite_item.tiles_item(),
+                    0,1,2,3,4,5,6,7
+
+            );
+            break;
+        case 9:
+            enemy_anim = 
+                bn::create_sprite_animate_action_forever
+                (
+                    _sprite,
+                    anim_frames_duration,
+                    sprite_item.tiles_item(),
+                    0,1,2,3,4,5,6,7,8
+
+            );
+            enemy_clone_anim = 
+                bn::create_sprite_animate_action_forever
+                (
+                    _sprite_clone,
+                    anim_frames_duration,
+                    sprite_item.tiles_item(),
+                    0,1,2,3,4,5,6,7,8
+
+            );
+            break;
+        case 10:
+            enemy_anim = 
+                bn::create_sprite_animate_action_forever
+                (
+                    _sprite,
+                    anim_frames_duration,
+                    sprite_item.tiles_item(),
+                    0,1,2,3,4,5,6,7,8,9
+
+            );
+            enemy_clone_anim = 
+                bn::create_sprite_animate_action_forever
+                (
+                    _sprite_clone,
+                    anim_frames_duration,
+                    sprite_item.tiles_item(),
+                    0,1,2,3,4,5,6,7,8,9
+
+            );
+            break;
         
-        enemy_anim = 
-            bn::create_sprite_animate_action_forever
-            (
-                _sprite,
-                5,
-                sprite_item.tiles_item(),
-                0,1,2,3,4,5,6
-        );
-        enemy_clone_anim = 
-            bn::create_sprite_animate_action_forever
-            (
-                _sprite_clone,
-                5,
-                sprite_item.tiles_item(),
-                0,1,2,3,4,5,6
-        );
+        default:
+            BN_ERROR("ERRO! anim_frames_count tem que ser no minimo 2 e no maximo 10");
+            enemy_anim = 
+                bn::create_sprite_animate_action_forever
+                (
+                    _sprite,
+                    anim_frames_duration,
+                    sprite_item.tiles_item(),
+                    0,0
+
+            );
+            enemy_clone_anim = 
+                bn::create_sprite_animate_action_forever
+                (
+                    _sprite_clone,
+                    anim_frames_duration,
+                    sprite_item.tiles_item(),
+                    0,0
+
+            );
+            break;
+        }
+        
+        // ALETAR DE CODIGO FEIO!!
+        // ALERTA DE CODIGO FEIO!!
+        // =============================================
+        #pragma endregion
 
 
         //BN_LOG("Enemy with Animation and Collider Dinamic constructor: FINISHED");
@@ -92,6 +298,19 @@ namespace adonai
         //se foi o suficiente para destruir então apagar do vector
         ntt_enemies.erase(ntt_enemies.begin()+index);
         explode();
+    }
+
+    void Enemy::shoot()
+    {
+        //shoot faz uma instancia de shot a frente do enemy dando inicio ao movimento automático.
+        Shot_Enemy* instance_shot = new Shot_Enemy(_shot.sprite_item(),_pos);
+
+        instance_shot->pos(bn::fixed_point(_pos.x()-4, _pos.y()));
+        BN_LOG("Position: x:", instance_shot->pos().x(), ", y:", instance_shot->pos().y());
+        instance_shot->sprite().set_visible(true);
+
+        ntt_shots.push_back(instance_shot);
+        BN_LOG("Spawn Shot! ntt_shots index: ", ntt_shots.size()-1);
     }
 
     // void Enemy::moveset_follow_path(const bn::array<bn::fixed_point,3>& path)

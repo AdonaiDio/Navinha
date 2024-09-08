@@ -33,8 +33,8 @@ namespace adonai
             const int velocity = 3;
 
         public:
-            Shot(  const bn::sprite_item& sprite_item, 
-                    const bn::fixed_point& initial_position)
+            Shot( const bn::sprite_item& sprite_item, 
+                  const bn::fixed_point& initial_position )
                 :
                 _sprite(sprite_item.create_sprite(bn::fixed_point(bn::display::width()+8,0))),
                 _pos(initial_position){};

@@ -16,7 +16,6 @@
 #include "scene_test.h"
 #include "scene_logo_studio.h"
 
-#include "ntt_list_stage_1.h"
 
 #include "shot.h"
 
