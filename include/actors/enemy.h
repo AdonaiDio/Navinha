@@ -13,6 +13,12 @@
 namespace adonai
 {  
     extern bn::vector<Enemy*, 20> ntt_enemies;
+
+    enum E_Shot_Type{
+        E_Shot_Type_1 = 0,
+        E_Shot_Type_2 = 2,
+        E_Shot_Type_3 = 4
+    };
     
     class Enemy : public Actor
     {
@@ -66,6 +72,7 @@ namespace adonai
 
             void receive_hit(const int index);
             void shoot();
+            void shoot(E_Shot_Type type);
 
             void update_collider();
             void update();

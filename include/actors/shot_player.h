@@ -24,7 +24,8 @@ namespace adonai
         void sprite(bn::sprite_ptr sprite) override{ _sprite = sprite; }
         bn::rect col() override{ return _col; }
 
-        void Move_Forward() override;
+        void move_forward() override;
+        void move_forward(bn::fixed_point point_direction) override;
         bool check_collision() override;
     };
 }

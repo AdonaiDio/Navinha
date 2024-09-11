@@ -9,6 +9,7 @@
 #include "bn_log.h"
 #include "bn_sprite_item.h"
 
+#include "utility.h"
 
 #include "e_direction.h"
 
@@ -48,7 +49,8 @@ namespace adonai
             virtual void sprite(bn::sprite_ptr sprite) = 0;
             virtual bn::rect col() = 0;
 
-            virtual void Move_Forward() = 0;
+            virtual void move_forward() = 0;
+            virtual void move_forward(bn::fixed_point point_direction) = 0;
             virtual bool check_collision() = 0;
     };
     

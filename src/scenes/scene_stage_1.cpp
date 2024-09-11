@@ -131,7 +131,12 @@ namespace adonai
             if(ntt_shots.size() > 0){
                 for (int i = 0; i < ntt_shots.size(); i++)
                 {
-                    ntt_shots.at(i)->Move_Forward();
+                    // ntt_shots.at(i)->move_forward(bn::fixed_point(
+                    //                                     ntt_shots.at(i)->pos().x()-16,
+                    //                                     ntt_shots.at(i)->pos().y()-16));
+                    ntt_shots.at(i)->move_forward(bn::fixed_point(
+                                                        _player->pos().x(),
+                                                        _player->pos().y()));
                 }
             }
 
@@ -140,7 +145,7 @@ namespace adonai
 
             
             // //teste tiro inimigo
-            // shot_e->Move_Forward();
+            // shot_e->move_forward();
             
             // //DEBUG CPU USAGE=================
             // bn::fixed max_cpu_usage = bn::max(max_cpu_usage, bn::core::last_cpu_usage());

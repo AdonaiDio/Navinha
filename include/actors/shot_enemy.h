@@ -16,7 +16,7 @@ namespace adonai
         bn::fixed_point _pos;
         bn::sprite_ptr _sprite;
         bn::rect _col;
-        const int velocity = 3;
+        const int velocity = 1;
         bn::sprite_item _sprite_item;
     public:
         Shot_Enemy( const bn::sprite_item& sprite_item, 
@@ -32,7 +32,8 @@ namespace adonai
         bn::rect col() override{ return _col; }
         bn::sprite_item sprite_item();
 
-        void Move_Forward() override;
+        void move_forward() override;
+        void move_forward(bn::fixed_point point_direction) override;
         bool check_collision() override;
     };
 }

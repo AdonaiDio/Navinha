@@ -3,6 +3,8 @@
 #include "bn_sprite_item.h"
 #include "bn_sprite_ptr.h"
 
+#include "utility.h"
+
 #include "enemy.h"
 
 #include "shot_player.h"
@@ -22,7 +24,7 @@ namespace adonai
     }
     Shot_Player::~Shot_Player(){}
 
-    void Shot_Player::Move_Forward()
+    void Shot_Player::move_forward()
     {
         //não mover se colidir
         if(check_collision()){
@@ -45,6 +47,30 @@ namespace adonai
         }
     }
 
+    void Shot_Player::move_forward(bn::fixed_point point_direction)
+    {
+        //não mover se colidir
+        if(check_collision()){
+            //se colidir resetar estado do tiro
+            _pos = bn::fixed_point(((-1 * bn::display::width()/2)-8),0);
+            _sprite.set_position(_pos);
+            _state = Shot_State::NONE;
+            return;
+        }
+        
+        //Mudar a posição em X e Y do shoot basiado na direção
+        _pos = move_towards_direction(_pos, point_direction, velocity);
+        //corrigir a posição do sprite em relação a posição 'pos' dele
+        _sprite.set_position(_pos);
+
+        // ao chegar no fim da tela a esquerda, volta a ser NONE
+        if(_sprite.position().x() < (-1 * bn::display::width()/2)-4)
+        {
+            _state = Shot_State::NONE;
+            this->~Shot_Player();
+        }
+    };
+    
     bool Shot_Player::check_collision()
     {
         //ATUALIZAR COLLISION

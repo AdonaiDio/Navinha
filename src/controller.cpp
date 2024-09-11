@@ -127,7 +127,7 @@ namespace adonai
         {
             if(_player._shots[i]._state == adonai::Shot_State::SHOOTING)
             {
-                _player._shots[i].Move_Forward();
+                _player._shots[i].move_forward();
             }
         }
     };

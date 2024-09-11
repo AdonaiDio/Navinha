@@ -16,10 +16,11 @@ namespace adonai
 
     extern bn::fixed_point normalize(bn::fixed_point a);
 
-    extern bn::fixed move_towards(bn::fixed current, bn::fixed target, bn::fixed maxDistanceDelta);
+    extern bn::fixed move_towards(bn::fixed current, bn::fixed target, bn::fixed offset);
 
-    extern bn::fixed_point move_towards(bn::fixed_point current, bn::fixed_point target, bn::fixed maxDistanceDelta);
-
+    extern bn::fixed_point move_towards(bn::fixed_point point_a, bn::fixed_point point_b, bn::fixed offset);
+    extern bn::fixed_point move_towards_direction(bn::fixed_point point_a, bn::fixed_point point_b, bn::fixed offset);
+    
     extern bn::fixed move_towards_angle(bn::fixed current, bn::fixed target, bn::fixed maxDistanceDelta);
 
     // extern int clamp(int i, int min, int max);

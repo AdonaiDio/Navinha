@@ -312,6 +312,23 @@ namespace adonai
         ntt_shots.push_back(instance_shot);
         BN_LOG("Spawn Shot! ntt_shots index: ", ntt_shots.size()-1);
     }
+    void Enemy::shoot(E_Shot_Type type)
+    {
+        //shoot faz uma instancia de shot a frente do enemy dando inicio ao movimento automático.
+        //baseado no typo de E_Shot_type
+        //E_Shot_type_1: tiro comum para frente.
+        //E_Shot_type_2: tiro triplo, 1 para frente e 2 diagonais.
+        //E_Shot_type_3: tiro vai para a ultima posição do player ao ser instanciado.
+        Shot_Enemy* instance_shot = new Shot_Enemy(_shot.sprite_item(),_pos);
+
+        instance_shot->pos(bn::fixed_point(_pos.x()-4, _pos.y()));
+        BN_LOG("Position: x:", instance_shot->pos().x(), ", y:", instance_shot->pos().y());
+        instance_shot->sprite().set_visible(true);
+
+        ntt_shots.push_back(instance_shot);
+        BN_LOG("Spawn Shot! ntt_shots index: ", ntt_shots.size()-1);
+    }
+
 
     // void Enemy::moveset_follow_path(const bn::array<bn::fixed_point,3>& path)
     // {

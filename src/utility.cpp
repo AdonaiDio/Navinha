@@ -84,11 +84,23 @@ namespace adonai
             //para obter apenas a direção normalize o vector2D
             //normalizar = (aToBx/length, aToBy/length)
             bn::fixed_point aToB_dir = normalize(aToB);
-            //Mover o vetor a partir do ponto inicial 'point_a' em uma quantidade definida por offset
             bn::fixed_point offsetVec = aToB_dir * offset;
 
+            //Mover o vetor a partir do ponto inicial 'point_a' em uma quantidade definida por offset
             return bn::fixed_point(point_a + offsetVec);
         }
+    }
+    bn::fixed_point move_towards_direction(bn::fixed_point point_a, bn::fixed_point point_b, bn::fixed offset)
+    {
+        bn::fixed_point aToB = point_b - point_a; //vec2 aToB = b - a
+
+        //para obter apenas a direção normalize o vector2D
+        //normalizar = (aToBx/length, aToBy/length)
+        bn::fixed_point aToB_dir = normalize(aToB);
+        bn::fixed_point offsetVec = aToB_dir * offset;
+
+        //Mover o vetor a partir do ponto inicial 'point_a' em uma quantidade definida por offset
+        return bn::fixed_point(point_a + offsetVec);
     }
     
     bn::fixed move_towards_angle(bn::fixed current, bn::fixed target, bn::fixed maxDelta)
