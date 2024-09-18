@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMP Collider Extractor</title>
+    <style>
+        /* Reset default browser styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* background-color: #f4f4f9; */
+            background-image: linear-gradient(to bottom right, #1b1721, #121212);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            color: white;
+        }
+        
+        .container {
+            margin: auto;
+            background-color: #302c36;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .upload-btn {
+            background-color: #007bff;
+            color: #121212;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .upload-btn:hover {
+            background-color: #0056b3;
+        }
+
+        input[type="file"] {
+            display: none;
+            margin-top: 20px;
+        }
+
+        #output {
+            margin-top: 30px;
+            font-size: 18px;
+            color: #555;
+        }
+
+        .custom-file-upload {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #8c64c8;
+            color: #121212;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .custom-file-upload:hover {
+            background-color: #673ab7;
+        }
+
+        .canvas {
+            margin-top: 20px;
+            display: none;
+            max-width: 100%;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        footer {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>BMP Collider Extractor</h1>
+
+        <!-- Custom button for file input -->
+        <label for="fileInput" class="custom-file-upload">Choose BMP Image</label>
+        <input type="file" id="fileInput" accept=".bmp" />
+
+        <div id="output"></div>
+        <canvas id="canvas"></canvas>
+        <div id="colliderInfo"></div>
+
+        <footer>
+            <p>Supported Format: .bmp</p>
+        </footer>
+    </div>
+    
+    </div>
+
+    <script>
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        processImage(img);
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file); 
+            }
+        });
+
+        function processImage(img) {
+            const spriteHeight = parseInt(prompt("Enter sprite height:", "16")) || img.height;
+            const width = img.width;
+            const height = img.height;
+            const canvas = document.getElementById('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = width*2;
+            canvas.height = height*2;
+            context.drawImage(img, 0, 0, width, height);
+            const colliderInfo = [];
+
+            const frameHeight = parseInt(spriteHeight, 10);
+            
+            for (let i = 0; i < Math.floor(height / frameHeight); i++) {
+                console.log(`Collider frame index: ${i}`);
+                let topLeft = {x: 0, y: 0};
+                let bottomRight = {x: 0, y: 0};
+                let firstPixelChecked = false;
+                let firstPixel = context.getImageData(0, 0, 1, 1).data;
+                console.log("firstPixel: "+firstPixel);
+                let transparent = "255,0,255,255";
+
+                if(firstPixel != transparent){
+                    firstPixelChecked = true
+                }
+
+                for (let y = frameHeight * i; y < frameHeight * (i + 1); y++) {
+                    for (let x = 0; x < width; x++) {
+                        let pixel = context.getImageData(x, y, 1, 1).data;
+                        let _y = y;
+                        // Check for first pixel color change
+                        if (!firstPixelChecked && !comparePixels(pixel, firstPixel)) {
+                            //corrigir o y para valores de 0 a 15
+                            if (y != 0 && i != 0){
+                                _y = y % (frameHeight*i);
+                            }
+                            topLeft.x = x;
+                            topLeft.y = _y;
+                            firstPixelChecked = true;
+                        }
+                        // Detect the bottom-right boundary of the collider
+                        if (pixel != transparent) {
+                            //corrigir o y para valores de 0 a 15
+                            if (y != 0 && i != 0){
+                                _y = y % (frameHeight*i);
+                            }
+                            bottomRight.x = x;
+                            bottomRight.y = _y;
+                        }
+                    }
+                }
+                
+                console.log("tL.x: "+topLeft.x+" tL.y: "+topLeft.y);
+                console.log("bR.x: "+bottomRight.x+" bR.y: "+bottomRight.y);
+
+                let widthCol = bottomRight.x - topLeft.x + 1;
+                let heightCol = bottomRight.y - topLeft.y + 1;
+                // mais a esquerda para menos a esquerda no eixo X
+                let offsetX = calculateOffset(topLeft.x, bottomRight.x, 1, width);
+                // mais ao topo para menos ao topo no eixo Y
+                let offsetY = calculateOffset(topLeft.y, bottomRight.y, 1, frameHeight);
+                
+
+                function correctionCenter_0(n,widthOrHeight){
+                    if(n >= (widthOrHeight/2)){
+                        return Math.floor(n-((widthOrHeight/2)-1))
+                    }
+                    else{
+                        return Math.floor(n - (widthOrHeight/2))
+                    }
+                    return n
+                }
+
+
+                topLeft.x = correctionCenter_0(topLeft.x, width);
+                topLeft.y = correctionCenter_0(topLeft.y, frameHeight);
+
+                bottomRight.x = correctionCenter_0(bottomRight.x, width);
+                bottomRight.y = correctionCenter_0(bottomRight.y, frameHeight);
+
+                console.log("tL.x: "+topLeft.x+" tL.y: "+topLeft.y);
+                console.log("bR.x: "+bottomRight.x+" bR.y: "+bottomRight.y);
+                
+                offsetX_sign = offsetX<0?"":"+";
+                offsetY_sign = offsetY<0?"":"+";
+
+                let colliderOutput = `
+                    Collider Frame Index: ${i}\n
+                    topLeft: (${topLeft.x}, ${topLeft.y})\n
+                    bottomRight: (${bottomRight.x}, ${bottomRight.y})\n
+                    Width: ${widthCol}, Height: ${heightCol}\n
+                    Offset X: ${offsetX}, Offset Y: ${offsetY}\n\n
+                    bn::rect((int)_pos.x()${offsetX_sign}${offsetX}, (int)_pos.y()${offsetY_sign}${offsetY}, ${widthCol}, ${heightCol});\n
+                `;
+                
+                colliderInfo.push(colliderOutput);
+                console.log(colliderOutput);
+            }
+            document.getElementById('colliderInfo').innerText = colliderInfo.join('\n');
+            
+            context.drawImage(img, 0, 0, width*2, height*2);
+        }
+
+        function comparePixels(pixel1, pixel2) {
+            return pixel1[0] === pixel2[0] && pixel1[1] === pixel2[1] && pixel1[2] === pixel2[2] && pixel1[3] === pixel2[3];
+        }
+
+        function calculateOffset(mostEdgyCol, lesserEdgyCol, mostEdgyCanvas, lesserEdgyCanvas) {
+            const most = Math.abs(mostEdgyCol + 1 - mostEdgyCanvas);
+            const lesser = Math.abs(lesserEdgyCol + 1 - lesserEdgyCanvas);
+            if (most - lesser === 0) {
+                return 0;
+            } else if ((most + lesser) % 2 === 0) {
+                return Math.floor((most + lesser) / 2) - lesser;
+            } else {
+                return Math.floor((most + lesser - 1) / 2) - lesser;
+            }
+        }
+
+    </script>
+
+</body>
+</html>

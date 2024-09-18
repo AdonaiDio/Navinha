@@ -24,6 +24,8 @@ namespace adonai
         ~Shot_Enemy();
         
         Shot_State _state;
+        //Direção pré-definida para casos de tiros com movimento especial.
+        bn::fixed_point pre_direction = {0,0};
 
         bn::fixed_point pos() override{ return _pos; }
         void pos(bn::fixed_point position) override{ _pos = position; }
@@ -35,5 +37,7 @@ namespace adonai
         void move_forward() override;
         void move_forward(bn::fixed_point point_direction) override;
         bool check_collision() override;
+
+        void update();
     };
 }

@@ -9,7 +9,8 @@ namespace adonai
     private:
         bn::fixed_point _pos;
         bn::sprite_ptr _sprite;
-        bn::rect _col;
+        bn::rect _col = bn::rect( (int)_pos.x(), (int)_pos.y(),
+                        4, 2 );
         const int velocity = 3;
     public:
         Shot_Player(    const bn::sprite_item& sprite_item, 

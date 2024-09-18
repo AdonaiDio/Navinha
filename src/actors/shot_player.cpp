@@ -73,9 +73,8 @@ namespace adonai
     
     bool Shot_Player::check_collision()
     {
-        //ATUALIZAR COLLISION
-        _col = bn::rect( (int)_pos.x(), (int)_pos.y(),
-                        4, 1 );
+        //ATUALIZAR COLLISION POSITION
+        _col.set_position( (int)_pos.x(), (int)_pos.y() );
         //BN_LOG("CHECK COLLISION");
         for (int i = 0; i < ntt_enemies.size(); i++)
         {

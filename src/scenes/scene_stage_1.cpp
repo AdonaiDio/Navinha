@@ -62,23 +62,33 @@ namespace adonai
         //inimigos
         Enemy* enemy_1 = new Enemy( bn::sprite_items::spaceship_2, 
                                     bn::fixed_point(16*(7+1), (16*2)+8),
-                                    bn::sprite_items::shoot, 3);
+                                    bn::sprite_items::shoot, 
+                                    E_Shot_Type::E_Shot_Type_1, 
+                                    3);
         Enemy* enemy_2 = new Enemy( bn::sprite_items::spaceship_1,
                                     bn::fixed_point(16*(7+2), (16*2)+8),
-                                    bn::sprite_items::shoot, 3);
+                                    bn::sprite_items::shoot, 
+                                    E_Shot_Type::E_Shot_Type_1, 
+                                    3);
         Enemy* enemy_3 = new Enemy( bn::sprite_items::spaceship_1,
                                     bn::fixed_point(16*(7+3), (16*2)+8),
-                                    bn::sprite_items::shoot, 3);
+                                    bn::sprite_items::shoot, 
+                                    E_Shot_Type::E_Shot_Type_1, 
+                                    3);
         //identificar o grupo de inimigos
         //enemy_1.identify_snakeGroup();
 
         Enemy* enemy_4 = new Enemy( bn::sprite_items::spaceship_2,
                                     bn::fixed_point(0, 0),
-                                    bn::sprite_items::shoot, false, 15, 7, 3); 
+                                    bn::sprite_items::shoot, 
+                                    E_Shot_Type::E_Shot_Type_2, 
+                                    15, 7, 3); 
         Enemy* enemy_5 = new Enemy( bn::sprite_items::spaceship_1,
                                     bn::fixed_point(0, 32),
-                                    bn::sprite_items::shoot, 3);
-        
+                                    bn::sprite_items::shoot, 
+                                    E_Shot_Type::E_Shot_Type_1, 
+                                    3);
+        enemy_5->sprite().set_z_order(-5);
         // bn::sprite_ptr gizmos = bn::sprite_items::gizmos_16x16.create_sprite(0,0,1);
         
         bn::music_items::nova_theme.play();
@@ -134,13 +144,11 @@ namespace adonai
                     // ntt_shots.at(i)->move_forward(bn::fixed_point(
                     //                                     ntt_shots.at(i)->pos().x()-16,
                     //                                     ntt_shots.at(i)->pos().y()-16));
-                    ntt_shots.at(i)->move_forward(bn::fixed_point(
-                                                        _player->pos().x(),
-                                                        _player->pos().y()));
+                    ntt_shots.at(i)->update();
                 }
             }
 
-
+            BN_LOG("player x:",_player->pos().x(), " y:",_player->pos().y());
             if(_player->hp() <= 0){ game_over.update(); }
 
             

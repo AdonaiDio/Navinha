@@ -47,7 +47,7 @@ namespace adonai
         _sprite_clone.set_z_order(-2);
         // _sprite_clone.set_visible(false);
         // _sprite_clone.set_palette(bn::sprite_palette_items::feedback_palette);
-        _velocity = 2;
+        _velocity = 1;
     }
 
     void Player::receive_hit()
@@ -144,8 +144,7 @@ namespace adonai
     void Player::update_collider()
     {
         if(!wait_to_destroy){
-            _col = bn::rect((int)_pos.x(), (int)_pos.y() + 2,
-                            13, 7);
+            _col = bn::rect((int)_pos.x()-1, (int)_pos.y()+2, 7, 7);
         }else{
             _col = bn::rect(-128,-88,0,0);
         }

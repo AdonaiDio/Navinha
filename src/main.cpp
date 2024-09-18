@@ -7,6 +7,7 @@
 
 //assets
 //#include "bn_sprite_items_nova.h"
+#include "bn_sprite_items_gizmos_16x16.h"
 #include "bn_sprite_items_shoot.h"
 
 //my code
@@ -44,7 +45,7 @@ int main()
         }
         else if(scene == adonai::Scene::STAGE_1){
             adonai::Stage_1 stage_1 = adonai::Stage_1(player);
-            scene = stage_1.execute(bn::fixed_point(-104,0));
+            scene = stage_1.execute(bn::fixed_point(-48,-11));
         }
         else if(scene == adonai::Scene::LOGO_STUDIO){
             adonai::Logo_Studio logo_studio = adonai::Logo_Studio();

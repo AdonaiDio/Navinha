@@ -53,9 +53,21 @@ namespace adonai
             _state = Shot_State::NONE;
             return;
         }
-        
-        //incrementa a posição em X do shoot
-        _pos = _pos + bn::fixed_point( bn::fixed(-1 * velocity), 0);
+
+        // Se o valor da direção pre-definida estiver zerado, 
+        // então atirar para frente
+        // caso esteja diferente de {0,0},
+        // então mudar _pos com base na direção pre-definida
+        if(pre_direction == bn::fixed_point{0,0}){
+            //incrementa a posição em X do shoot
+            _pos = _pos + bn::fixed_point( bn::fixed(-1 * velocity), 0);
+        }
+        else{
+            //Mudar a posição em X e Y do shoot basiado na direção
+            bn::fixed_point new_pos = pre_direction + _pos;
+            _pos = move_towards_direction(_pos, new_pos, velocity);
+        }
+
         //corrigir a posição do sprite em relação a posição 'pos' dele
         _sprite.set_position(_pos);
 
@@ -67,6 +79,7 @@ namespace adonai
         }
     }
 
+#pragma region Codigo depreciado!!
     void Shot_Enemy::move_forward(bn::fixed_point point_direction)
     {
         //não mover se colidir
@@ -89,7 +102,9 @@ namespace adonai
             _state = Shot_State::NONE;
             this->~Shot_Enemy();
         }
-    };
+    }
+#pragma endregion
+
 
     bool Shot_Enemy::check_collision()
     {
@@ -104,5 +119,10 @@ namespace adonai
             return true;
         }            
         return false;
+    }
+    void Shot_Enemy::update()
+    {
+        move_forward();
+        //se tiver que piscar imagem ou algo que aconteça com o passar do tempo deve ser executado aqui.
     }
 }

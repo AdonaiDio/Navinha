@@ -10,6 +10,7 @@
 //temp
 #include "bn_sprite_animate_actions.h"
 #include "bn_sprite_items_propulsion.h"
+#include "bn_sprite_items_gizmos_16x16.h"
 
 #include "controller.h"
 
@@ -76,7 +77,6 @@ namespace adonai
                     gr_1 = 8; gr_2 = 8; gr_3 = 8;
                     break;
             }
-            
             _player.sprite().set_tiles(bn::sprite_items::nova.tiles_item().create_tiles(spr_i));
             _player.propulsion_hold_anim = 
                 bn::create_sprite_animate_action_forever(
