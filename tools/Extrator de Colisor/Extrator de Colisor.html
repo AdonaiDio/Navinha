@@ -22,6 +22,7 @@
             height: 100vh;
             text-align: center;
             color: white;
+            padding: 50px 10px 0px 10px;
         }
         
         .container {
@@ -32,6 +33,41 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
             max-width: 400px;
             width: 100%;
+        }
+
+        .card-container {
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            max-width: 90%;
+            width: 100%;
+        }
+        .card{
+            margin-bottom: 10px;
+            background-color: #302178;
+            border-radius: 20px;
+            max-height: 45px;
+            overflow: hidden;
+            transition: border-radius 250ms ease-in-out;
+            transition: max-height 1000ms ease-in-out;
+        }
+        .card:hover{
+            border-radius: 10px;
+            max-height: 250px;
+            transition: max-height 1000ms ease-in-out;
+        }
+        .card>h3{
+            padding: 10px;
+            border-radius: 0px 0px 10px 10px;
+        }
+        .card>h4{
+            padding: 10px;
+            background-color:#493787;
+        }
+        .card>p{
+            background-color: #271c4d;
+            padding: 20px;
+            border-radius: 0px 0px 10px 10px;
         }
 
         h1 {
@@ -48,23 +84,25 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-
+        
         .upload-btn:hover {
             background-color: #0056b3;
         }
-
+        
         input[type="file"] {
             display: none;
             margin-top: 20px;
         }
-
+        
         #output {
             margin-top: 30px;
             font-size: 18px;
             color: #555;
         }
-
+        
         .custom-file-upload {
+            font-family: "DM Sans", "Roboto", "Segoe UI", sans-serif;
+            font-weight: bold;
             display: inline-block;
             padding: 10px 20px;
             background-color: #8c64c8;
@@ -77,43 +115,133 @@
 
         .custom-file-upload:hover {
             background-color: #673ab7;
+            color: #e0e0e0;
         }
 
-        .canvas {
-            margin-top: 20px;
-            display: none;
+        #imgPreview {
+            margin: auto;
+            display: flex;
             max-width: 100%;
-            border-radius: 5px;
-            border: 1px solid #ddd;
+            max-height: 100%;
+            /* border: 1px solid #ddd; */
         }
-
+        .GBAicon{
+            position:fixed;
+            margin: -51dvh 100dvw 0 0 ;
+            width: 175px ;
+            height: 120px ;
+        }
         footer {
             margin-top: 30px;
             font-size: 14px;
             color: #888;
         }
+        
+        .droparea {
+            margin: 1rem auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 384px;
+            max-width: 75%;
+            height: 160px;
+            max-height: 25%;
+            border: 4px dashed grey;
+            border-radius: 15px;
+            padding: 5px 10px 5px 10px;
+        }
+
+        .droparea img {
+            font-size: 3rem;
+            flex-grow: 1;
+            padding-top: 1rem;
+            max-width: 50px;
+        }
+
+        .green-border {
+            border-color: #382bf0;
+        }
     </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>BMP Collider Extractor</h1>
+    <div class="icon"><img class="GBAicon" src="./src/GameBoyAdvance.png"></div>
+    <div id="containers" style="display: grid; grid-template-columns: 1fr 2fr;">
+        <div class="container">
+            <h1>BMP Collider Extractor</h1>
+            
+            <section class="droparea">
+                <img src="./src/imgs_icon.svg"></img>
+                <p>Drop your .bmp file here!</p>
+                <p><small>pink->rgb(255,0,255) is the transparent color.</small></p>
+            </section>
 
-        <!-- Custom button for file input -->
-        <label for="fileInput" class="custom-file-upload">Choose BMP Image</label>
-        <input type="file" id="fileInput" accept=".bmp" />
-
-        <div id="output"></div>
-        <canvas id="canvas"></canvas>
-        <div id="colliderInfo"></div>
-
-        <footer>
-            <p>Supported Format: .bmp</p>
-        </footer>
+            <!-- Custom button for file input -->
+            <label for="fileInput" class="custom-file-upload">Choose BMP Image</label>
+            <audio id="bong" src="./src/bong_001.ogg"></audio>
+            <audio id="question" src="./src/question_004.ogg"></audio>
+            <input type="file" id="fileInput" accept=".bmp" />
+            
+            <div id="output"></div>
+            <canvas id="imgPreview"></canvas>
+            <div id="colliderInfo"></div>
+            
+            <footer>
+                <p>Supported Format: .bmp</p>
+            </footer>
+        </div>
     </div>
     
-    </div>
-
     <script>
+        // Drag Drop BMP
+        const initApp = () => {
+            const droparea = document.querySelector('.droparea');
+            const active = () => droparea.classList.add("green-border");
+            const inactive = () => droparea.classList.remove("green-border");
+            const prevents = (e) => e.preventDefault();
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evtName => {
+                droparea.addEventListener(evtName, prevents);
+            });
+            ['dragenter', 'dragover'].forEach(evtName => {
+                droparea.addEventListener(evtName, active);
+            });
+            ['dragleave', 'drop'].forEach(evtName => {
+                droparea.addEventListener(evtName, inactive);
+            });
+            droparea.addEventListener("drop", handleDrop);
+        }
+            
+        // initialization
+        document.addEventListener("DOMContentLoaded", initApp);
+        const handleDrop = (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        try{
+                            $('.card-container').remove();
+                        } catch(error){
+                            console.error(error);
+                        }
+                        processImage(img);
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(files[0]); 
+            }
+        }
+
+        // Audio portion vvvv
+        let bong = document.getElementById('bong');
+        $(".custom-file-upload")[0].addEventListener('mouseenter', () => {
+            bong.play();
+        });
+        // audio portion ^^^^
+
         document.getElementById('fileInput').addEventListener('change', function(event) {
             const file = event.target.files[0];
             if (file) {
@@ -121,6 +249,11 @@
                 reader.onload = function(e) {
                     const img = new Image();
                     img.onload = function() {
+                        try{
+                            $('.card-container').remove();
+                        } catch(error){
+                            console.error(error);
+                        }
                         processImage(img);
                     };
                     img.src = e.target.result;
@@ -130,18 +263,26 @@
         });
 
         function processImage(img) {
+            // Audio portion vvvv
+            let question = document.getElementById('question');
+            question.play();
+            // audio portion ^^^^
             const spriteHeight = parseInt(prompt("Enter sprite height:", "16")) || img.height;
             const width = img.width;
             const height = img.height;
-            const canvas = document.getElementById('canvas');
+            const canvas = document.getElementById('imgPreview');
             const context = canvas.getContext('2d');
-            canvas.width = width*2;
-            canvas.height = height*2;
             context.drawImage(img, 0, 0, width, height);
             const colliderInfo = [];
 
             const frameHeight = parseInt(spriteHeight, 10);
             
+            const containers = document.getElementById('containers');
+
+            let cardContainer = document.createElement("div");
+            cardContainer.classList.add('card-container');
+            containers.appendChild(cardContainer);
+
             for (let i = 0; i < Math.floor(height / frameHeight); i++) {
                 console.log(`Collider frame index: ${i}`);
                 let topLeft = {x: 0, y: 0};
@@ -226,9 +367,48 @@
                 
                 colliderInfo.push(colliderOutput);
                 console.log(colliderOutput);
+                
+                // Create the cards of each frame of the colliders
+                // Structure of a card
+                // <div class="card-container"> PARENT
+                //     <div class="card"> THE CARD
+                //         <h3>
+                //         FRAME 0 
+                //         </h3>
+                //         <h4>bn::rect((int)_pos.x()-1, (int)_pos.y()-1, 11, 13);</h4>
+                //         <p>topLeft: (-4, -1)<br>
+                //             bottomRight: (3, 6)<br>
+                //             Width: 7, Height: 7<br>
+                //             Offset X: -1, Offset Y: 2</p>
+                //     </div>
+                let card = document.createElement("div");
+                card.classList.add('card');
+                card.addEventListener("click", copyToClipboard);
+                cardContainer.appendChild(card);
+
+
+                let h3 = document.createElement("h3");
+                h3.textContent = `FRAME ${i}`;
+                card.appendChild(h3);
+
+                let h4 = document.createElement("h4");
+                h4.textContent = `bn::rect((int)_pos.x()${offsetX_sign}${offsetX}, (int)_pos.y()${offsetY_sign}${offsetY}, ${widthCol}, ${heightCol});`;
+                card.appendChild(h4);
+
+                let p = document.createElement("p");
+                p.innerText = `topLeft: (${topLeft.x}, ${topLeft.y})
+                bottomRight: (${bottomRight.x}, ${bottomRight.y})
+                Width: ${widthCol}, Height: ${heightCol}
+                Offset X: ${offsetX}, Offset Y: ${offsetY}`;
+                card.appendChild(p);
+                
+
             }
-            document.getElementById('colliderInfo').innerText = colliderInfo.join('\n');
+            //document.getElementById('colliderInfo').innerText = colliderInfo.join('\n');
+
             
+            canvas.width = width*2;
+            canvas.height = height*2;
             context.drawImage(img, 0, 0, width*2, height*2);
         }
 
@@ -247,8 +427,13 @@
                 return Math.floor((most + lesser - 1) / 2) - lesser;
             }
         }
+        function copyToClipboard(){
+            let txt = document.getElementsByClassName("card")[1].innerHTML.split('h4>')[1];
+            txt = txt.replace('</', '');
+            navigator.clipboard.writeText(txt);
+            alert(`Copied To Clipboard!`);
+        }
 
     </script>
-
 </body>
 </html>
