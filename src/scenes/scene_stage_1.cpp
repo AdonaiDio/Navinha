@@ -7,6 +7,12 @@
 #include "bn_bg_palette_color_hbe_ptr.h"
 #include "bn_unique_ptr.h"
 
+//assets
+#include "bn_sprite_items_gizmos_16x16.h"
+#include "bn_regular_bg_items_sky_solid_color.h"
+#include "bn_sprite_items_shoot.h"
+#include "bn_music_items.h"
+
 //my code
 #include "player.h"
 #include "enemy.h"
@@ -19,11 +25,8 @@
 
 #include "ntt_list_stage_1.h"
 
-//assets
-#include "bn_sprite_items_gizmos_16x16.h"
-#include "bn_regular_bg_items_sky_solid_color.h"
-#include "bn_sprite_items_shoot.h"
-#include "bn_music_items.h"
+//scripts
+#include "move_test_script.cpp"
 
 //this
 #include "scene_stage_1.h"
@@ -103,14 +106,26 @@ namespace adonai
         // int counter = 1;
         // //======================
         int count_frames_update = 0;
+
+        //Start Scripts
+        Move_Test_Script move_script;
+        //conecte os scripts aos objetos que vão fazer algo no start() do script
+        move_script.start(*enemy_5);
+
+
         while(true)
         {
+            ///////
             //eu não sei... Coloquei isso aí para reutilizar igual em outro lugar. eu acho.
             #include  "../../include/effects/bg_fx.hpp"
             BG_GRADIENT_FX(r_bg_1);
-            
             // r_bg_1 side scroll
             r_bg_1.set_position( bn::fixed_point(r_bg_1.position().x()-((bn::fixed) 0.05f), 0));
+            ///////
+            
+            //chamar os update() dos scripts e seus associados
+            move_script.update(*enemy_5);
+            
 
             controller.update();
             
@@ -126,6 +141,7 @@ namespace adonai
             hud_energy_bar.update();
             hud_hp_bar.update();
             
+
             // teste de tiro
             // TODO: Isso tem que ser coisa de script futuramente
             if(_player->hp() > 0){

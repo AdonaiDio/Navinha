@@ -5,7 +5,10 @@
             "includePath": [
                 "D:/Adonai/Programas/Butano/butano/include",
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/include/actors"
+                "${workspaceFolder}/include/actors",
+                "${workspaceFolder}/include/scenes",
+                "${workspaceFolder}/include/hud",
+                "${workspaceFolder}/scripts"
             ],
             "cStandard": "gnu17",
             "cppStandard": "gnu++20",

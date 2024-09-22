@@ -46,7 +46,6 @@ namespace adonai
                 sprite_item.tiles_item(),
                 0,0
         );
-
         //BN_LOG("Enemy constructor: FINISHED");
     }
     Enemy::~Enemy(){
@@ -412,6 +411,10 @@ namespace adonai
     }
     void Enemy::update()
     {
+        // o update deve ocorrer enqunato a entidade existir em cena.
+        // can_update = hp() > 0 || wait_to_destroy;
+        // if(!can_update){ return; }
+
         enemy_anim.update();
         enemy_clone_anim.update();
         

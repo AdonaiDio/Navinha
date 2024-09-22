@@ -39,6 +39,7 @@ namespace adonai
     {
         using Actor::Actor;
         private:
+            //bool can_update = true;
         protected:
         
         public:
@@ -68,7 +69,7 @@ namespace adonai
 
             //_cols é uma lista de colliders 1 para cada frame do spritesheet
             bn::vector<bn::rect, MAX_FRAMES_ANIM> _cols;
-            
+
             bn::sprite_animate_action<MAX_FRAMES_ANIM> enemy_anim = 
                 bn::create_sprite_animate_action_forever
                 (
