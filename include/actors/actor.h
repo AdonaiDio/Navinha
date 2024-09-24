@@ -15,10 +15,13 @@
 
 #include "explosion_fx.h"
 
+#include "i_script.hpp"
+
 #include "enemy.h"
 
 namespace adonai
 {
+    template <class T>
     class Actor
     {
         protected:
@@ -33,6 +36,7 @@ namespace adonai
             int hit_feedback_duration = 0;
             bn::fixed intensity = 1;
             Explosion_FX* explosion;
+
 
         public:
             Actor(  bn::sprite_item sprite_item,
@@ -49,6 +53,9 @@ namespace adonai
                     //BN_LOG("Actor constructor: FINISHED");
                 };
             ~Actor() = default;
+
+            // lugar para guardar os scripts associados ao enemy
+            bn::vector<I_Script<T>*, 5> _scripts;
 
             bool wait_to_destroy = false;
 
@@ -114,6 +121,7 @@ namespace adonai
             };
             
             void update_collider();
+            void update_scripts();
             void update();
     };
 }

@@ -7,6 +7,8 @@
 
 #include "shot_enemy.h"
 
+#include "i_script.hpp"
+
 #include "bn_sprite_items_spaceship_1.h"
 #include "bn_sprite_items_spaceship_2.h"
 
@@ -35,7 +37,8 @@ namespace adonai
         E_Enemy_State_SHOOTING = 4
     };
     
-    class Enemy : public Actor
+    
+    class Enemy : public Actor<Enemy>
     {
         using Actor::Actor;
         private:
@@ -62,6 +65,7 @@ namespace adonai
                 int max_hp = 3);
 
             E_Enemy_State _enemy_state = E_Enemy_State::E_Enemy_State_NONE;
+            void add_script(I_Script<Enemy>& script);
 
             Shot_Enemy _shot;
             E_Shot_Type _shot_type;
@@ -98,6 +102,7 @@ namespace adonai
             void shoot();
 
             void update_collider();
+            void update_scripts();
             void update();
             
     };

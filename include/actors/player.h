@@ -35,7 +35,7 @@ namespace adonai
     // inline Player_States& operator^= (Player_States& a, Player_States b) { return (Player_States&)((int&)a ^= (int)b); }
 
         
-    class Player : public Actor
+    class Player : public Actor<Player>
     {
         using Actor::Actor;
         private:
@@ -77,6 +77,13 @@ namespace adonai
             void handle_shadows_rgb();
 
             void update();
+            void update_scripts() {
+                for (u_int8_t i = 0; i < _scripts.size(); i++)
+                {
+                    if(_scripts[i] == nullptr){continue;}
+                    _scripts[i]->update(this);
+                }
+            }
             void update_collider();
     };
 

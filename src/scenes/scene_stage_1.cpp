@@ -27,6 +27,7 @@
 
 //scripts
 #include "move_test_script.cpp"
+#include "shoot_script.cpp"
 
 //this
 #include "scene_stage_1.h"
@@ -39,10 +40,14 @@ namespace adonai
 
     Scene Stage_1::execute(bn::fixed_point spawn_location)
     {
-
+        //Start Background
         bn::regular_bg_ptr r_bg_1 = bn::regular_bg_items::sky_solid_color.create_bg(0, 0);
+
+        //Start Scripts
+        Move_Test_Script move_script;
+        Shoot_Script shoot_script;
         
-        
+        //Start HUD
         adonai::hud_energy_bar hud_energy_bar = adonai::hud_energy_bar(*_player);
         for (int i = 0; i < hud_energy_bar.energy_bar_sprites.size(); i++)
         {   hud_energy_bar.energy_bar_sprites.at(i).set_z_order(-2); }
@@ -55,6 +60,7 @@ namespace adonai
         
         BN_LOG("Entrou na cena Stage_1");
 
+        //Start Entities
         _player->pos(spawn_location);
         _player->sprite().set_visible(true);
         _player->sprite().set_z_order(-1);
@@ -106,12 +112,11 @@ namespace adonai
         // int counter = 1;
         // //======================
         int count_frames_update = 0;
-
-        //Start Scripts
-        Move_Test_Script move_script;
         //conecte os scripts aos objetos que vão fazer algo no start() do script
-        move_script.start(*enemy_5);
-
+        enemy_1->add_script(move_script);
+        enemy_2->add_script(move_script);
+        enemy_3->add_script(move_script);
+        enemy_4->add_script(shoot_script);
 
         while(true)
         {
@@ -120,11 +125,8 @@ namespace adonai
             #include  "../../include/effects/bg_fx.hpp"
             BG_GRADIENT_FX(r_bg_1);
             // r_bg_1 side scroll
-            r_bg_1.set_position( bn::fixed_point(r_bg_1.position().x()-((bn::fixed) 0.05f), 0));
+            r_bg_1.set_position( bn::fixed_point(r_bg_1.position().x()-((bn::fixed) 0.033f), 0));
             ///////
-            
-            //chamar os update() dos scripts e seus associados
-            move_script.update(*enemy_5);
             
 
             controller.update();
@@ -141,19 +143,7 @@ namespace adonai
             hud_energy_bar.update();
             hud_hp_bar.update();
             
-
-            // teste de tiro
-            // TODO: Isso tem que ser coisa de script futuramente
-            if(_player->hp() > 0){
-                count_frames_update++;
-                if (count_frames_update > 14){
-                    count_frames_update = 0;
-                    if(enemy_4->hp()>0)
-                    {
-                        enemy_4->shoot();
-                    }
-                }
-            }
+            // update todos os tiros na cena
             if(ntt_shots.size() > 0){
                 for (int i = 0; i < ntt_shots.size(); i++)
                 {
@@ -164,7 +154,7 @@ namespace adonai
                 }
             }
 
-            BN_LOG("player x:",_player->pos().x(), " y:",_player->pos().y());
+            //BN_LOG("player x:",_player->pos().x(), " y:",_player->pos().y());
             if(_player->hp() <= 0){ game_over.update(); }
 
             

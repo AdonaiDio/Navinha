@@ -307,6 +307,13 @@ namespace adonai
         //BN_LOG("Enemy with Animation and Collider Dinamic constructor: FINISHED");
     }
 
+    //add and start script
+    void Enemy::add_script(I_Script<Enemy>& script)
+    {
+        _scripts.push_back(dynamic_cast<I_Script<Enemy>*>(&script));
+        _scripts[_scripts.size()-1]->start(this);
+    }
+
     void Enemy::receive_hit(const int index)
     {
         if (_hp <= 0) {return;}//assegurar que não vai receber hit se já estiver morto
@@ -384,6 +391,7 @@ namespace adonai
             BN_LOG("Spawn Shot! ntt_shots index: ", ntt_shots.size()-1);
             break;
         }
+        _enemy_state = E_Enemy_State::E_Enemy_State_NONE;
     }
 
     void Enemy::update_collider()
@@ -409,8 +417,19 @@ namespace adonai
             _col = bn::rect(128,88,0,0);
         }
     }
+
+    void Enemy::update_scripts() {
+        for (u_int8_t i = 0; i < _scripts.size(); i++)
+        {
+            if(_scripts[i] == nullptr){continue;}
+            _scripts[i]->update(this);
+        }
+    };
+
     void Enemy::update()
     {
+        // scripts
+        update_scripts();
         // o update deve ocorrer enqunato a entidade existir em cena.
         // can_update = hp() > 0 || wait_to_destroy;
         // if(!can_update){ return; }
