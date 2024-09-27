@@ -55,7 +55,7 @@ namespace adonai
             ~Actor() = default;
 
             // lugar para guardar os scripts associados ao enemy
-            bn::vector<I_Script<T>*, 5> _scripts;
+            bn::vector<I_Script<T>*, 12> _scripts;
 
             bool wait_to_destroy = false;
 

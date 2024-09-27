@@ -14,7 +14,7 @@ namespace adonai
         
     }
     
-    bn::vector<Enemy*, 20> ntt_enemies;
-    bn::vector<Shot_Enemy*, 30> ntt_shots;
+    bn::vector<Enemy*, 28> ntt_enemies;
+    bn::vector<Shot_Enemy*, 60> ntt_shots;
 }
     

@@ -28,6 +28,7 @@
 //scripts
 #include "move_test_script.cpp"
 #include "shoot_script.cpp"
+#include "stage_1_script.cpp"
 
 //this
 #include "scene_stage_1.h"
@@ -46,7 +47,8 @@ namespace adonai
         //Start Scripts
         Move_Test_Script move_script;
         Shoot_Script shoot_script;
-        
+        Stage_1_Script stage_1_script;
+        stage_1_script.start(this);
         //Start HUD
         adonai::hud_energy_bar hud_energy_bar = adonai::hud_energy_bar(*_player);
         for (int i = 0; i < hud_energy_bar.energy_bar_sprites.size(); i++)
@@ -69,35 +71,35 @@ namespace adonai
         adonai::Controller controller = adonai::Controller(*_player);
 
         //inimigos
-        Enemy* enemy_1 = new Enemy( bn::sprite_items::spaceship_2, 
-                                    bn::fixed_point(16*(7+1), (16*2)+8),
-                                    bn::sprite_items::shoot, 
-                                    E_Shot_Type::E_Shot_Type_1, 
-                                    3);
-        Enemy* enemy_2 = new Enemy( bn::sprite_items::spaceship_1,
-                                    bn::fixed_point(16*(7+2), (16*2)+8),
-                                    bn::sprite_items::shoot, 
-                                    E_Shot_Type::E_Shot_Type_1, 
-                                    3);
-        Enemy* enemy_3 = new Enemy( bn::sprite_items::spaceship_1,
-                                    bn::fixed_point(16*(7+3), (16*2)+8),
-                                    bn::sprite_items::shoot, 
-                                    E_Shot_Type::E_Shot_Type_1, 
-                                    3);
+        // Enemy* enemy_1 = new Enemy( bn::sprite_items::spaceship_2, 
+        //                             bn::fixed_point(16*(7+1), (16*2)+8),
+        //                             bn::sprite_items::shoot, 
+        //                             E_Shot_Type::E_Shot_Type_1, 
+        //                             3);
+        // Enemy* enemy_2 = new Enemy( bn::sprite_items::spaceship_1,
+        //                             bn::fixed_point(16*(7+2), (16*2)+8),
+        //                             bn::sprite_items::shoot, 
+        //                             E_Shot_Type::E_Shot_Type_1, 
+        //                             3);
+        // Enemy* enemy_3 = new Enemy( bn::sprite_items::spaceship_1,
+        //                             bn::fixed_point(16*(7+3), (16*2)+8),
+        //                             bn::sprite_items::shoot, 
+        //                             E_Shot_Type::E_Shot_Type_1, 
+        //                             3);
         //identificar o grupo de inimigos
         //enemy_1.identify_snakeGroup();
 
-        Enemy* enemy_4 = new Enemy( bn::sprite_items::spaceship_2,
-                                    bn::fixed_point(0, 0),
-                                    bn::sprite_items::shoot, 
-                                    E_Shot_Type::E_Shot_Type_2, 
-                                    15, 7, 3); 
-        Enemy* enemy_5 = new Enemy( bn::sprite_items::spaceship_1,
-                                    bn::fixed_point(0, 32),
-                                    bn::sprite_items::shoot, 
-                                    E_Shot_Type::E_Shot_Type_1, 
-                                    3);
-        enemy_5->sprite().set_z_order(-5);
+        // Enemy* enemy_4 = new Enemy( bn::sprite_items::spaceship_2,
+        //                             bn::fixed_point(0, 0),
+        //                             bn::sprite_items::shoot, 
+        //                             E_Shot_Type::E_Shot_Type_2, 
+        //                             15, 7, 3); 
+        // Enemy* enemy_5 = new Enemy( bn::sprite_items::spaceship_1,
+        //                             bn::fixed_point(0, 32),
+        //                             bn::sprite_items::shoot, 
+        //                             E_Shot_Type::E_Shot_Type_1, 
+        //                             3);
+                                    
         // bn::sprite_ptr gizmos = bn::sprite_items::gizmos_16x16.create_sprite(0,0,1);
         
         bn::music_items::nova_theme.play();
@@ -113,11 +115,13 @@ namespace adonai
         // //======================
         int count_frames_update = 0;
         //conecte os scripts aos objetos que vão fazer algo no start() do script
-        enemy_1->add_script(move_script);
-        enemy_2->add_script(move_script);
-        enemy_3->add_script(move_script);
-        enemy_4->add_script(shoot_script);
-
+        // enemy_1->add_script(move_script);
+        // enemy_2->add_script(move_script);
+        // enemy_3->add_script(move_script);
+        // enemy_4->add_script(shoot_script);
+        
+        // sizeof(ntt_enemies);
+        // sizeof(ntt_shots);
         while(true)
         {
             ///////
@@ -127,32 +131,25 @@ namespace adonai
             // r_bg_1 side scroll
             r_bg_1.set_position( bn::fixed_point(r_bg_1.position().x()-((bn::fixed) 0.033f), 0));
             ///////
-            
+            //BN_LOG("inimigos na lista: ", ntt_enemies.size());
+            stage_1_script.update(this);
+            update_all_enemies();
+            update_all_shoots();
 
             controller.update();
             
             // gizmos.set_position(_player->pos());
 
-            if(enemy_1->hp() > 0 || enemy_1->wait_to_destroy) { enemy_1->update(); }
-            if(enemy_2->hp() > 0 || enemy_2->wait_to_destroy) { enemy_2->update(); }
-            if(enemy_3->hp() > 0 || enemy_3->wait_to_destroy) { enemy_3->update(); }
-            if(enemy_4->hp() > 0 || enemy_4->wait_to_destroy) { enemy_4->update(); }
-            if(enemy_5->hp() > 0 || enemy_5->wait_to_destroy) { enemy_5->update(); }
+            // if(enemy_1->hp() > 0 || enemy_1->wait_to_destroy) { enemy_1->update(); }
+            // if(enemy_2->hp() > 0 || enemy_2->wait_to_destroy) { enemy_2->update(); }
+            // if(enemy_3->hp() > 0 || enemy_3->wait_to_destroy) { enemy_3->update(); }
+            // if(enemy_4->hp() > 0 || enemy_4->wait_to_destroy) { enemy_4->update(); }
+            // if(enemy_5->hp() > 0 || enemy_5->wait_to_destroy) { enemy_5->update(); }
             //_player->update();
             if(_player->hp() > 0 || _player->wait_to_destroy) { _player->update(); }
             hud_energy_bar.update();
             hud_hp_bar.update();
             
-            // update todos os tiros na cena
-            if(ntt_shots.size() > 0){
-                for (int i = 0; i < ntt_shots.size(); i++)
-                {
-                    // ntt_shots.at(i)->move_forward(bn::fixed_point(
-                    //                                     ntt_shots.at(i)->pos().x()-16,
-                    //                                     ntt_shots.at(i)->pos().y()-16));
-                    ntt_shots.at(i)->update();
-                }
-            }
 
             //BN_LOG("player x:",_player->pos().x(), " y:",_player->pos().y());
             if(_player->hp() <= 0){ game_over.update(); }
@@ -174,6 +171,23 @@ namespace adonai
             // //=================
 
             bn::core::update();
+        }
+    }
+
+    void Stage_1::update_all_enemies(){
+        if(ntt_enemies.size() > 0){
+            for (int i = 0; i < ntt_enemies.size(); i++)
+            {
+                ntt_enemies.at(i)->update();
+            }
+        }
+    }
+    void Stage_1::update_all_shoots(){
+        if(ntt_shots.size() > 0){
+            for (int i = 0; i < ntt_shots.size(); i++)
+            {
+                ntt_shots.at(i)->update();
+            }
         }
     }
 }

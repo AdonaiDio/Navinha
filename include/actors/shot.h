@@ -16,7 +16,7 @@
 namespace adonai
 {
     class Enemy;
-    extern bn::vector<Enemy*, 20> ntt_enemies;
+    extern bn::vector<Enemy*, 28> ntt_enemies;
 
 
     enum Shot_State{

@@ -20,7 +20,7 @@ namespace adonai
     {
         extern Player* global_player;
     }
-    extern bn::vector<Enemy*, 20> ntt_enemies; 
+    extern bn::vector<Enemy*, 28> ntt_enemies; 
 
     enum E_Shot_Type{
         //E_Shot_type_1: tiro comum para frente.
@@ -66,6 +66,7 @@ namespace adonai
 
             E_Enemy_State _enemy_state = E_Enemy_State::E_Enemy_State_NONE;
             void add_script(I_Script<Enemy>& script);
+            void remove_script(I_Script<Enemy>& script);
 
             Shot_Enemy _shot;
             E_Shot_Type _shot_type;
@@ -99,11 +100,13 @@ namespace adonai
             //                                 bn::fixed_point(-16*7,(16*2)+8) };
 
             void receive_hit(const int index);
+            void just_delete_this();
             void shoot();
 
             void update_collider();
             void update_scripts();
             void update();
-            
+
+            bool can_update();
     };
 }

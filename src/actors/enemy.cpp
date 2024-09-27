@@ -51,6 +51,7 @@ namespace adonai
     Enemy::~Enemy(){
         // BN_LOG("Enemy destruido");
         // BN_LOG("enemies: ", ntt_enemies.size());
+        
     }
 
     
@@ -310,8 +311,21 @@ namespace adonai
     //add and start script
     void Enemy::add_script(I_Script<Enemy>& script)
     {
-        _scripts.push_back(dynamic_cast<I_Script<Enemy>*>(&script));
+        _scripts.push_back(&script);
         _scripts[_scripts.size()-1]->start(this);
+    }
+
+    void Enemy::remove_script(I_Script<Enemy> &script)
+    {
+        // get index of recieved script
+        for (int i = 0; i < _scripts.size(); i++)
+        {
+            if(_scripts.at(i) == &script){
+                _scripts.erase(_scripts.begin()+i);
+                return;
+            }
+            
+        }
     }
 
     void Enemy::receive_hit(const int index)
@@ -323,10 +337,22 @@ namespace adonai
             hit_feedback_duration = 15; //frames de duração do hit_feedback
             return;
         }
-        wait_to_destroy = true;
-        //se foi o suficiente para destruir então apagar do vector
-        ntt_enemies.erase(ntt_enemies.begin()+index);
+        this->wait_to_destroy = true;
         explode();
+    }
+
+    void Enemy::just_delete_this()
+    {
+        _scripts.empty();
+        for (int i = 0; i < ntt_enemies.size(); i++)
+        {
+            if(ntt_enemies[i] == this){
+                ntt_enemies.erase(ntt_enemies.begin()+i);
+                break;
+            }
+        }
+        this->~Enemy();
+        BN_LOG("DELETED");
     }
 
     //shoot() :  Spawna a(s) instância(s) de tiro/shot 1 vez.
@@ -428,11 +454,10 @@ namespace adonai
 
     void Enemy::update()
     {
+        if(!can_update()){ return; }
+
         // scripts
         update_scripts();
-        // o update deve ocorrer enqunato a entidade existir em cena.
-        // can_update = hp() > 0 || wait_to_destroy;
-        // if(!can_update){ return; }
 
         enemy_anim.update();
         enemy_clone_anim.update();
@@ -449,7 +474,18 @@ namespace adonai
         }
         if(explosion->_explosion_anim.done() && wait_to_destroy){
             wait_to_destroy = false;
-            this->~Enemy();
+            _scripts.empty();
+            just_delete_this();
         }
+
+    }
+
+// (Só por segurança, talvez não precise, mas caso entre no 
+// loop fora após destruído, isso ira impedir continuar o update)
+    bool Enemy::can_update(){
+        if(this->hp() > 0 || this->wait_to_destroy){
+            return true;
+        }
+        return false;
     }
 }

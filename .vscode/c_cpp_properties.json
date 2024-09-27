@@ -8,7 +8,9 @@
                 "${workspaceFolder}/include/actors",
                 "${workspaceFolder}/include/scenes",
                 "${workspaceFolder}/include/hud",
-                "${workspaceFolder}/scripts"
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/scripts",
+                "${workspaceFolder}/build"
             ],
             "cStandard": "gnu17",
             "cppStandard": "gnu++20",

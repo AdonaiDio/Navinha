@@ -16,7 +16,6 @@ namespace adonai {
         public:
             void start(Enemy* e) override
             {
-                BN_LOG("START SCRIPT WITH HP: ", e->hp());
             };
             
             void update(Enemy* e) override

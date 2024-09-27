@@ -90,21 +90,21 @@ namespace adonai
             moved_to_left > 0)
         { 
             if(!is_collapsing_shadow){
-                BN_LOG("moved_to_left: ", moved_to_left,", shadow_delay: ", shadow_delay);
+                // BN_LOG("moved_to_left: ", moved_to_left,", shadow_delay: ", shadow_delay);
             //starta o shadow blue e contagem regresiva do delay
                 if(moved_to_left == 0 || (moved_to_left <= _velocity && shadow_delay == 0)) {
-                    BN_LOG("shadow blue");
+                    // BN_LOG("shadow blue");
                     shadow_sprites.at(2).set_visible(true);
                     shadow_sprites.at(2).set_position(bn::fixed_point(_pos.x()+1, _pos.y()));
                     shadow_delay = 21;
                 }
                 if(shadow_delay <= 14 && !shadow_sprites.at(1).visible()) {
-                    BN_LOG("shadow green");
+                    // BN_LOG("shadow green");
                     shadow_sprites.at(1).set_visible(true);
                     shadow_sprites.at(1).set_position(bn::fixed_point(_pos.x()+1, _pos.y()));
                 }
                 if(shadow_delay <= 7 && !shadow_sprites.at(0).visible()){
-                    BN_LOG("shadow red");
+                    // BN_LOG("shadow red");
                     shadow_sprites.at(0).set_visible(true);
                     shadow_sprites.at(0).set_position(bn::fixed_point(_pos.x()+1, _pos.y()));
                 }
@@ -155,7 +155,7 @@ namespace adonai
             //BN_LOG("enemies: ", ntt_enemies.size());
             if ( _col.intersects(ntt_enemies.at(i)->col()))
             {
-                BN_LOG("Colidiu!");
+                // BN_LOG("Colidiu!");
                 receive_hit();
             }            
         }
@@ -181,7 +181,7 @@ namespace adonai
             shadow_sprites.at(1).set_visible(false);
             shadow_sprites.at(2).set_visible(false);
             wait_to_destroy = false;
-            BN_LOG("EXPRODIU");
+            // BN_LOG("EXPRODIU");
             //faça algo
         }
 

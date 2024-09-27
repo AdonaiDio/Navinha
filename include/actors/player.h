@@ -16,7 +16,7 @@
 
 namespace adonai
 {
-    extern bn::vector<Enemy*, 20> ntt_enemies;
+    extern bn::vector<Enemy*, 28> ntt_enemies;
 
     enum Player_States{
         Player_NONE = 0,
