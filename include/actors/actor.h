@@ -62,6 +62,8 @@ namespace adonai
 
             bn::fixed_point pos()                   { return _pos; }
             void pos(bn::fixed_point position)  { _pos = position; }
+            void pos_x(bn::fixed x)  { _pos = bn::fixed_point(x, _pos.y()); }
+            void pos_y(bn::fixed y)  { _pos = bn::fixed_point(_pos.x(), y); }
             bn::rect col()                          { return _col; }
             bn::sprite_ptr sprite()              { return _sprite; }
             int hp()                                 { return _hp; }
