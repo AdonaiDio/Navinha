@@ -13,15 +13,15 @@ namespace adonai
     class Shot_Enemy : public Shot
     {
     private:
-        bn::fixed_point _pos = {0,0};
+        bn::fixed_point _pos;
         bn::sprite_ptr _sprite;
         bn::rect _col;
         const int velocity = 1;
         bn::sprite_item _sprite_item;
     public:
-        Shot_Enemy( const bn::sprite_item& sprite_item);
+        Shot_Enemy( const bn::sprite_item& sprite_item, 
+                    const bn::fixed_point& initial_position);
         ~Shot_Enemy();
-        Shot_Enemy( const bn::sprite_item& sprite_item, bn::fixed_point initial_position);
         
         Shot_State _state;
         //Direção pré-definida para casos de tiros com movimento especial.

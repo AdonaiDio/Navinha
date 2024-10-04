@@ -6,7 +6,6 @@
 #include "bn_sprite_animate_actions.h"
 
 #include "shot_enemy.h"
-#include "enemies.cpp"
 
 #include "i_script.hpp"
 
@@ -23,13 +22,6 @@ namespace adonai
     }
     extern bn::vector<Enemy*, 28> ntt_enemies; 
 
-    
-    enum E_Enemy_State{
-        E_Enemy_State_NONE = 0,
-        E_Enemy_State_MOVING = 2,
-        E_Enemy_State_SHOOTING = 4
-    };
-    
     enum E_Shot_Type{
         //E_Shot_type_1: tiro comum para frente.
         E_Shot_Type_1 = 0,
@@ -38,7 +30,13 @@ namespace adonai
         //E_Shot_type_3: tiro vai para a ultima posição do player ao ser instanciado.
         E_Shot_Type_3 = 4
     };
-
+    
+    enum E_Enemy_State{
+        E_Enemy_State_NONE = 0,
+        E_Enemy_State_MOVING = 2,
+        E_Enemy_State_SHOOTING = 4
+    };
+    
     
     class Enemy : public Actor<Enemy>
     {
@@ -71,7 +69,7 @@ namespace adonai
             void remove_script(I_Script<Enemy>& script);
 
             Shot_Enemy _shot;
-            E_Shot_Type _shot_type = E_Shot_Type::E_Shot_Type_1;
+            E_Shot_Type _shot_type;
 
 
             //_cols é uma lista de colliders 1 para cada frame do spritesheet

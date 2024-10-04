@@ -10,8 +10,7 @@
                 "${workspaceFolder}/include/hud",
                 "${workspaceFolder}/include",
                 "${workspaceFolder}/scripts",
-                "${workspaceFolder}/build",
-                "${workspaceFolder}/database"
+                "${workspaceFolder}/build"
             ],
             "cStandard": "gnu17",
             "cppStandard": "gnu++20",

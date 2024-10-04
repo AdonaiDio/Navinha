@@ -35,10 +35,9 @@ TODO:
 namespace adonai {
     class Stage_1_Script : public I_Script<Stage_1>{
         private:
-        // Sem uso até o momento
-        // int8_t qty_enemy_type_1 = 0;
-        // int8_t qty_enemy_type_2 = 0;
-        // int8_t qty_enemy_type_3 = 0;
+        int8_t qty_enemy_type_1 = 0;
+        int8_t qty_enemy_type_2 = 0;
+        int8_t qty_enemy_type_3 = 0;
 
         const int grid_width = bn::sprite_items::spaceship_1.shape_size().width();
         const int grid_height = bn::sprite_items::spaceship_1.shape_size().height();
@@ -199,7 +198,7 @@ namespace adonai {
         void instantiate_default_enemy(bn::fixed_point position){
             Enemy* default_enemy = new Enemy( bn::sprite_items::spaceship_1, 
                                         position,
-                                        bn::sprite_items::shoot,
+                                        bn::sprite_items::shoot, 
                                         E_Shot_Type::E_Shot_Type_1, 
                                         3);
         }

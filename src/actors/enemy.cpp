@@ -22,7 +22,7 @@ namespace adonai
         : Actor(    sprite_item,
                     position,
                     max_hp),
-        _shot(adonai::Shot_Enemy(shot_sprite_item)),
+        _shot(adonai::Shot_Enemy(shot_sprite_item, bn::fixed_point(0,0))),
         _shot_type(shot_type)
     {
         ntt_enemies.push_back(this);
@@ -64,7 +64,7 @@ namespace adonai
         : Actor(    sprite_item,
                     position,
                     max_hp),
-        _shot(adonai::Shot_Enemy(shot_sprite_item)),
+        _shot(adonai::Shot_Enemy(shot_sprite_item, bn::fixed_point(0,0))),
         _shot_type(shot_type)
     {
         ntt_enemies.push_back(this);
@@ -307,12 +307,6 @@ namespace adonai
 
         //BN_LOG("Enemy with Animation and Collider Dinamic constructor: FINISHED");
     }
-
-
-    // Enemy::Enemy(){
-
-    // }
-
 
     //add and start script
     void Enemy::add_script(I_Script<Enemy>& script)
