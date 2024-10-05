@@ -20,7 +20,7 @@ namespace adonai
         bn::sprite_item _sprite_item;
     public:
         Shot_Enemy( const bn::sprite_item& sprite_item, 
-                    const bn::fixed_point& initial_position);
+                    const bn::fixed_point& initial_position = {0,0});
         ~Shot_Enemy();
         
         Shot_State _state;

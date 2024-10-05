@@ -66,6 +66,7 @@ namespace adonai
             void pos_y(bn::fixed y)  { _pos = bn::fixed_point(_pos.x(), y); }
             bn::rect col()                          { return _col; }
             bn::sprite_ptr sprite()              { return _sprite; }
+            bn::sprite_ptr sprite_clone()              { return _sprite_clone; } //para hitfeedback
             int hp()                                 { return _hp; }
             void hp(int new_value)              { _hp = new_value; }
             bn::fixed velocity()               { return _velocity; }

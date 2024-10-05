@@ -9,6 +9,7 @@
 
 #include "i_script.hpp"
 
+#include "bn_sprite_items_shoot.h"
 #include "bn_sprite_items_spaceship_1.h"
 #include "bn_sprite_items_spaceship_2.h"
 
@@ -46,30 +47,29 @@ namespace adonai
         protected:
         
         public:
-            Enemy(
-                bn::sprite_item sprite_item, 
-                bn::fixed_point position,  
-                bn::sprite_item shoot_sprite_item, 
-                E_Shot_Type shot_type, 
-                int max_hp = 3);
+            Enemy(  bn::fixed_point position = bn::fixed_point(0,0),  
+                    bn::sprite_item sprite_item = bn::sprite_items::spaceship_1, 
+                    bn::sprite_item shot_sprite_item = bn::sprite_items::shoot, 
+                    E_Shot_Type shot_type = E_Shot_Type::E_Shot_Type_1, 
+                    int max_hp = 1);
             ~Enemy();
             //com animação e collider dinâmico
-            Enemy(
-                bn::sprite_item sprite_item, 
-                bn::fixed_point position,  
-                bn::sprite_item shoot_sprite_item, 
-                E_Shot_Type shot_type,
-                const int anim_frames_duration,
-                //anim_frames_qty: 1 < value < 11
-                const int anim_frames_qty, 
-                int max_hp = 3);
+            // Enemy(
+            //     bn::fixed_point position,  
+            //     bn::sprite_item sprite_item, 
+            //     bn::sprite_item shoot_sprite_item, 
+            //     E_Shot_Type shot_type,
+            //     const int anim_frames_duration,
+            //     //anim_frames_qty: 1 < value < 11
+            //     const int anim_frames_qty, 
+            //     int max_hp = 3);
 
             E_Enemy_State _enemy_state = E_Enemy_State::E_Enemy_State_NONE;
             void add_script(I_Script<Enemy>& script);
             void remove_script(I_Script<Enemy>& script);
 
             Shot_Enemy _shot;
-            E_Shot_Type _shot_type;
+            E_Shot_Type _shot_type = E_Shot_Type::E_Shot_Type_1;
 
 
             //_cols é uma lista de colliders 1 para cada frame do spritesheet

@@ -8,6 +8,7 @@
 #include <../include/utility.h>
 #include <../include/scenes/scene_stage_1.h>
 #include "enemy.h"
+#include "enemies.cpp"
 //other script embbeded
 #include "move_and_destroy_script.cpp"
 #include "move_enemy_dvd_script.cpp"
@@ -53,6 +54,8 @@ namespace adonai {
         };
         Stage_State _state = Stage_State_NONE;
         public:
+        
+        DataBase_Enemies db_e;
         // esse scripts estão na heap!!!
         Move_And_Destroy_Script wave1_move_n_destroy_script;
         // devem ser deletados depois de usado;
@@ -66,10 +69,10 @@ namespace adonai {
         void start(Stage_1* a) override {
             _state = Stage_State::Stage_State_START;
             //iniciar a primeira horda e contadores
-            //start_Wave_1();
-            //_state = Stage_State::Stage_State_WAVE_1;
-            start_Wave_3();
-            _state = Stage_State::Stage_State_WAVE_3;
+            start_Wave_1();
+            _state = Stage_State::Stage_State_WAVE_1;
+            // start_Wave_3();
+            // _state = Stage_State::Stage_State_WAVE_3;
 
         };
         
@@ -125,9 +128,8 @@ namespace adonai {
         void start_Wave_1(){
             
             //instancias de inimigos
-            instantiate_default_enemy(  bn::fixed_point( grid_width*(0+8), 
-                                                        (grid_height*(0))),
-                                        wave1_move_n_destroy_script);
+            Enemy* enemy1 = db_e.DefaultEnemy(  bn::fixed_point( grid_width*(0+8), (grid_height*(0)) ) );
+            enemy1->add_script(wave1_move_n_destroy_script);
             // inimigos na diagonal
             // ------//;
             // -----//;
@@ -136,12 +138,10 @@ namespace adonai {
             // ------\\;
             for (int i = 1; i <= 4; i++) 
             {
-                instantiate_default_enemy(  bn::fixed_point( grid_width*(i+8), 
-                                                            (grid_height*(i))),
-                                            wave1_move_n_destroy_script);
-                instantiate_default_enemy(  bn::fixed_point( grid_width*(i+8), 
-                                                            (grid_height*(-1*i))),
-                                            wave1_move_n_destroy_script);
+                Enemy* enemy2 = db_e.DefaultEnemy(  bn::fixed_point( grid_width*(i+8), (grid_height*(i)) ) );
+                enemy2->add_script(wave1_move_n_destroy_script);
+                Enemy* enemy3 = db_e.DefaultEnemy(  bn::fixed_point( grid_width*(i+8), (grid_height*(-1*i)) ) );
+                enemy3->add_script(wave1_move_n_destroy_script);
             }
         }
 
@@ -155,25 +155,19 @@ namespace adonai {
         void start_Wave_2() {
             //vai e volta em zig zag em loop
             //instancias de inimigos
-            instantiate_default_enemy(  bn::fixed_point(grid_width*(8),
-                                                        grid_height*(-6)),
-                                        *wave2_medvd_script_1);
-            instantiate_default_enemy(  bn::fixed_point(grid_width*(8+1),
-                                                        grid_height*(-6-1)),
-                                        *wave2_medvd_script_2);
-            instantiate_default_enemy(  bn::fixed_point(grid_width*(8+2),
-                                                        grid_height*(-6-2)),
-                                        *wave2_medvd_script_3);
+            Enemy* enemy1 = db_e.DefaultEnemy(  bn::fixed_point( grid_width*(8), (grid_height*(-6)) ) );
+            enemy1->add_script(*wave2_medvd_script_1);
+            Enemy* enemy2 = db_e.DefaultEnemy(  bn::fixed_point( grid_width*(8+1), (grid_height*(-6-1)) ) );
+            enemy2->add_script(*wave2_medvd_script_2);
+            Enemy* enemy3 = db_e.DefaultEnemy(  bn::fixed_point( grid_width*(8+2), (grid_height*(-6-2)) ) );
+            enemy3->add_script(*wave2_medvd_script_3);
 
-            instantiate_default_enemy(  bn::fixed_point(grid_width*(8),
-                                                        grid_height*(6)),
-                                        *wave2_medvd_script_4);
-            instantiate_default_enemy(  bn::fixed_point(grid_width*(8+1),
-                                                        grid_height*(6+1)),
-                                        *wave2_medvd_script_5);
-            instantiate_default_enemy(  bn::fixed_point(grid_width*(8+2),
-                                                        grid_height*(6+2)),
-                                        *wave2_medvd_script_6);
+            Enemy* enemy4 = db_e.DefaultEnemy(  bn::fixed_point( grid_width*(8), (grid_height*(6)) ) );
+            enemy4->add_script(*wave2_medvd_script_4);
+            Enemy* enemy5 = db_e.DefaultEnemy(  bn::fixed_point( grid_width*(8+1), (grid_height*(6+1)) ) );
+            enemy5->add_script(*wave2_medvd_script_5);
+            Enemy* enemy6 = db_e.DefaultEnemy(  bn::fixed_point( grid_width*(8+2), (grid_height*(6+2)) ) );
+            enemy6->add_script(*wave2_medvd_script_6);
 
         }
 
@@ -182,7 +176,7 @@ namespace adonai {
             return false;
         }
         void start_Wave_3() {
-            instantiate_red_enemy(bn::fixed_point(0,0));
+            Enemy* red = db_e.RedEnemy({0,0});
         }
         bool finished_Wave_3(){
             if (ntt_enemies.size()<=0) {   return true; }
@@ -192,32 +186,6 @@ namespace adonai {
 
             return false;
         }
-
-
-        #pragma region prefab_actors
-        void instantiate_default_enemy(bn::fixed_point position){
-            Enemy* default_enemy = new Enemy( bn::sprite_items::spaceship_1, 
-                                        position,
-                                        bn::sprite_items::shoot, 
-                                        E_Shot_Type::E_Shot_Type_1, 
-                                        3);
-        }
-        void instantiate_default_enemy(bn::fixed_point position, I_Script<Enemy>& script){
-            Enemy* default_enemy = new Enemy( bn::sprite_items::spaceship_1,
-                                        position,
-                                        bn::sprite_items::shoot, 
-                                        E_Shot_Type::E_Shot_Type_1, 
-                                        3);
-            default_enemy->add_script(script);
-        }
-        void instantiate_red_enemy(bn::fixed_point position){
-            Enemy* default_enemy = new Enemy( bn::sprite_items::spaceship_2, 
-                                        position,
-                                        bn::sprite_items::shoot, 
-                                        E_Shot_Type::E_Shot_Type_1, 
-                                        15,7,3);
-        }
-        #pragma endregion
 
     };
 }
