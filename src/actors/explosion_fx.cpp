@@ -16,11 +16,9 @@ namespace adonai
             0,1,2,3,4
         );
         bn::sound_items::explode.play();
-        BN_LOG("NOVA EXPLO");
     }
     Explosion_FX::~Explosion_FX()
     {
-        BN_LOG("Terminou");
     }
     
     bn::sprite_ptr Explosion_FX::sprite()
@@ -30,7 +28,6 @@ namespace adonai
 
     void Explosion_FX::update()
     {
-        BN_LOG("update xplo");
         _explosion_anim.update();
         _sprite.set_position(bn::fixed_point(_sprite.position().x()-1.5, _sprite.position().y()));
 

@@ -12,6 +12,7 @@
 //other script embbeded
 #include "move_and_destroy_script.cpp"
 #include "move_enemy_dvd_script.cpp"
+#include "shot_n_run_loop_script.cpp"
 
 //this interface
 #include <D:/Adonai/My_ROMs/Navinha/scripts/i_script.hpp>
@@ -36,9 +37,9 @@ TODO:
 namespace adonai {
     class Stage_1_Script : public I_Script<Stage_1>{
         private:
-        int8_t qty_enemy_type_1 = 0;
-        int8_t qty_enemy_type_2 = 0;
-        int8_t qty_enemy_type_3 = 0;
+        // int8_t qty_enemy_type_1 = 0;
+        // int8_t qty_enemy_type_2 = 0;
+        // int8_t qty_enemy_type_3 = 0;
 
         const int grid_width = bn::sprite_items::spaceship_1.shape_size().width();
         const int grid_height = bn::sprite_items::spaceship_1.shape_size().height();
@@ -65,15 +66,17 @@ namespace adonai {
         Move_Enemy_DVD_Script* wave2_medvd_script_4 = new Move_Enemy_DVD_Script;
         Move_Enemy_DVD_Script* wave2_medvd_script_5 = new Move_Enemy_DVD_Script;
         Move_Enemy_DVD_Script* wave2_medvd_script_6 = new Move_Enemy_DVD_Script;
+        Shot_N_Run_Loop_Script* wave3_shot_n_run_loop_script_1 = new Shot_N_Run_Loop_Script;
+        Shot_N_Run_Loop_Script* wave3_shot_n_run_loop_script_2 = new Shot_N_Run_Loop_Script;
+        Shot_N_Run_Loop_Script* wave3_shot_n_run_loop_script_3 = new Shot_N_Run_Loop_Script;
 
         void start(Stage_1* a) override {
             _state = Stage_State::Stage_State_START;
             //iniciar a primeira horda e contadores
-            start_Wave_1();
-            _state = Stage_State::Stage_State_WAVE_1;
-            // start_Wave_3();
-            // _state = Stage_State::Stage_State_WAVE_3;
-
+            // start_Wave_1();
+            // _state = Stage_State::Stage_State_WAVE_1;
+            start_Wave_3();
+            _state = Stage_State::Stage_State_WAVE_3;
         };
         
         void update(Stage_1* a) override {
@@ -95,7 +98,7 @@ namespace adonai {
                     delete wave2_medvd_script_4;
                     delete wave2_medvd_script_5;
                     delete wave2_medvd_script_6;
-                    //start_Wave_3();
+                    start_Wave_3();
                 };
                 //update_Wave_2();
                 break;
@@ -176,7 +179,13 @@ namespace adonai {
             return false;
         }
         void start_Wave_3() {
-            Enemy* red = db_e.RedEnemy({0,0});
+            BN_LOG("WAVE 3");
+            Enemy* red = db_e.RedEnemy({6*16, -6*16});
+            red->add_script(*wave3_shot_n_run_loop_script_1);
+            Enemy* red2 = db_e.RedEnemy({7*16, -8*16});
+            red2->add_script(*wave3_shot_n_run_loop_script_2);
+            Enemy* red3 = db_e.RedEnemy({8*16, -10*16});
+            red3->add_script(*wave3_shot_n_run_loop_script_3);
         }
         bool finished_Wave_3(){
             if (ntt_enemies.size()<=0) {   return true; }

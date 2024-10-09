@@ -34,20 +34,17 @@ namespace adonai
                                     E_Shot_Type::E_Shot_Type_1,  
                                     3);
                                     
-            red_enemy->_cols.push_back( { (int)position.x()-1, (int)position.y()-1,
-                            10, 14} );
-            red_enemy->_cols.push_back( { (int)position.x()-1, (int)position.y()-1,
-                            10, 14} );
-            red_enemy->_cols.push_back( { (int)position.x()-1, (int)position.y()-1,
-                            10, 12} );
-            red_enemy->_cols.push_back( { (int)position.x()-1, (int)position.y(),
-                            10, 12} );
-            red_enemy->_cols.push_back( { (int)position.x()-1, (int)position.y(),
-                            10, 10} );
-            red_enemy->_cols.push_back( { (int)position.x()-1, (int)position.y(),
-                            10, 12} );
-            red_enemy->_cols.push_back( { (int)position.x()-1, (int)position.y()-1,
-                            10, 12} );
+            red_enemy->col(bn::rect(    (int)red_enemy->pos().x()-1, 
+                                        (int)red_enemy->pos().y()-1, 
+                                        10, 14));
+            red_enemy->_cols.clear();
+            red_enemy->_cols.push_back( { (int)position.x()-1, (int)position.y()-1, 10, 14});
+            red_enemy->_cols.push_back( { (int)position.x()-1, (int)position.y()-1, 10, 14});
+            red_enemy->_cols.push_back( { (int)position.x()-1, (int)position.y()-1, 10, 12});
+            red_enemy->_cols.push_back( { (int)position.x()-1, (int)position.y(),   10, 12});
+            red_enemy->_cols.push_back( { (int)position.x()-1, (int)position.y(),   10, 10});
+            red_enemy->_cols.push_back( { (int)position.x()-1, (int)position.y(),   10, 12});
+            red_enemy->_cols.push_back( { (int)position.x()-1, (int)position.y()-1, 10, 12});
 
             red_enemy->enemy_anim = bn::create_sprite_animate_action_forever (
                     red_enemy->sprite(),

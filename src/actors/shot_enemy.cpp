@@ -31,7 +31,7 @@ namespace adonai
         {
             if(ntt_shots.at(i) == this){
                 ntt_shots.erase(ntt_shots.begin()+i);
-                BN_LOG("Destroy Shot! ntt_shots size: ", ntt_shots.size());
+                // BN_LOG("Destroy Shot! ntt_shots size: ", ntt_shots.size());
                 break;
             }
         }

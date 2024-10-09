@@ -50,7 +50,7 @@ namespace adonai
         BN_LOG("enemies: ", ntt_enemies.size());
     }
     Enemy::~Enemy(){
-        // BN_LOG("Enemy destruido");
+        BN_LOG("Enemy destruido");
         // BN_LOG("enemies: ", ntt_enemies.size());
         
     }
@@ -377,20 +377,20 @@ namespace adonai
             instance_shot_1->sprite().set_visible(true);
             ntt_shots.push_back(instance_shot_1);
             instance_shot_1->pre_direction = bn::fixed_point(-16,-8);
-            BN_LOG("spawn shot_1");
+            // BN_LOG("spawn shot_1");
 
             instance_shot_2->pos(bn::fixed_point(_pos.x()-4, _pos.y()));
             instance_shot_2->sprite().set_visible(true);
             ntt_shots.push_back(instance_shot_2);
-            BN_LOG("spawn shot_2");
+            // BN_LOG("spawn shot_2");
 
             instance_shot_3->pos(bn::fixed_point(_pos.x()-4, _pos.y()));
             instance_shot_3->sprite().set_visible(true);
             ntt_shots.push_back(instance_shot_3);
             instance_shot_3->pre_direction = bn::fixed_point(-16,+8);
-            BN_LOG("spawn shot_3");
+            // BN_LOG("spawn shot_3");
 
-            BN_LOG("ntt_shots Size: ", ntt_shots.size());
+            // BN_LOG("ntt_shots Size: ", ntt_shots.size());
             break;
 
         case E_Shot_Type::E_Shot_Type_3:
@@ -402,7 +402,7 @@ namespace adonai
             ntt_shots.push_back(instance_shot_1);
             //direção do player
             instance_shot_1->pre_direction = GLOBALS::global_player->pos();
-            BN_LOG("Spawn Shot! ntt_shots index: ", ntt_shots.size()-1);
+            // BN_LOG("Spawn Shot! ntt_shots index: ", ntt_shots.size()-1);
             break;
         
         default: //E_Shot_Type::E_Shot_Type_1
@@ -411,12 +411,12 @@ namespace adonai
             //Shot_Enemy* instance_shot = new Shot_Enemy(_shot.sprite_item(),_pos);
 
             instance_shot_1->pos(bn::fixed_point(_pos.x()-4, _pos.y()));
-            BN_LOG("Position: x:", instance_shot_1->pos().x(), ", y:", instance_shot_1->pos().y());
+            // BN_LOG("Position: x:", instance_shot_1->pos().x(), ", y:", instance_shot_1->pos().y());
             instance_shot_1->sprite().set_visible(true);
 
             ntt_shots.push_back(instance_shot_1);
 
-            BN_LOG("Spawn Shot! ntt_shots index: ", ntt_shots.size()-1);
+            // BN_LOG("Spawn Shot! ntt_shots index: ", ntt_shots.size()-1);
             break;
         }
         _enemy_state = E_Enemy_State::E_Enemy_State_NONE;
@@ -424,9 +424,8 @@ namespace adonai
 
     void Enemy::update_collider()
     {
-        if(!wait_to_destroy){
-            if (_cols.size()>0)
-            {
+        if(!wait_to_destroy) {
+            if (_cols.at(0) != bn::rect{0,0,0,0}) {
                 //se esperou por x frames, então trocar par o proximo index do _cols 
                 //se for depois do ultimo voltar ao primeiro 
 
@@ -437,8 +436,7 @@ namespace adonai
                 // BN_LOG("anim_index: ", cols_index);
                 // BN_LOG("col width: ", _col.dimensions().width(), " height: ", _col.dimensions().height());
             }
-            else
-            {
+            else {
                 _col.set_position((int)_pos.x(), (int)_pos.y());
             }
         }else{
