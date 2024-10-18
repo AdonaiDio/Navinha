@@ -11,10 +11,11 @@
 #include "bn_sprite_items_shoot.h"
 
 //my code
+#include "globals.h"
 #include "player.h"
 #include "scene.h"
-#include "scene_stage_1.h"
-#include "scene_test.h"
+#include "scenes/scene_stage_1.cpp"
+#include "scenes/scene_test.cpp"
 #include "scene_logo_studio.h"
 
 
@@ -25,7 +26,7 @@ int main()
     bn::core::init();
 
     //Inicar o player no main para o player sempre ser o mesmo durante o jogo.
-    adonai::Player player = adonai::Player( bn::sprite_items::nova,
+    static adonai::Player player = adonai::Player( bn::sprite_items::nova,
                                             bn::fixed_point(0, 0), 
                                             bn::sprite_items::shoot );
                                             
@@ -33,18 +34,18 @@ int main()
     //guardar referencia global
     adonai::GLOBALS::global_player = &player;
     // inciar a primeira cena
-    adonai::Scene scene = adonai::Scene::STAGE_1;
+    adonai::Scene scene = adonai::Scene::TEST_SCENE;
 
     while(true)
     {
         // se o enum for stage_1 então criamos uma instancia da cena stage_1.
         // passamos para a cena atual(scene) a instancia de cena criada.
         if(scene == adonai::Scene::TEST_SCENE){
-            adonai::Test test_scene = adonai::Test(player);
+            adonai::Test test_scene = adonai::Test();
             scene = test_scene.execute(bn::fixed_point(-104,0));
         }
         else if(scene == adonai::Scene::STAGE_1){
-            adonai::Stage_1 stage_1 = adonai::Stage_1(player);
+            adonai::Stage_1 stage_1 = adonai::Stage_1();
             scene = stage_1.execute(bn::fixed_point(-48,-11));
         }
         else if(scene == adonai::Scene::LOGO_STUDIO){
