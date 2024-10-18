@@ -76,13 +76,13 @@ namespace adonai
         //ATUALIZAR COLLISION POSITION
         _col.set_position( (int)_pos.x(), (int)_pos.y() );
         BN_LOG("CHECK COLLISION");
-        for (int i = 0; i < ntt_enemies.size(); i++)
+        for (int i = 0; i < (*ntt_enemies).size(); i++)
         {
-            BN_LOG("enemies: ", ntt_enemies.size());
-            if ( _col.intersects(ntt_enemies.at(i)->col()))
+            BN_LOG("enemies: ", (*ntt_enemies).size());
+            if ( _col.intersects((*ntt_enemies).at(i)->col()))
             {
                 // BN_LOG("Colidiu com o inimigo!");
-                ntt_enemies.at(i)->receive_hit(i);
+                (*ntt_enemies).at(i)->receive_hit(i);
                 return true;
                 break;
             }            

@@ -13,7 +13,7 @@
 namespace adonai
 {
 
-    extern bn::vector<Shot*, 30> ntt_shots;
+    extern bn::array<Shot_Enemy*, 40> ntt_shots;
 
     Shot_Enemy::Shot_Enemy(   
             const bn::sprite_item& sprite_item, 
@@ -23,18 +23,19 @@ namespace adonai
         _sprite(sprite_item.create_sprite(bn::fixed_point(bn::display::width()+8,0))),
         _sprite_item(sprite_item)
     {
-        _state = Shot_State::NONE;
+        // _state = Shot_State::NONE; //caiu em desuso se o available funcionar
+        _available = true;
         _sprite.set_visible(false);
     }
     Shot_Enemy::~Shot_Enemy() {
-        for (int i = 0; i < ntt_shots.size(); i++)
-        {
-            if(ntt_shots.at(i) == this){
-                ntt_shots.erase(ntt_shots.begin()+i);
-                // BN_LOG("Destroy Shot! ntt_shots size: ", ntt_shots.size());
-                break;
-            }
-        }
+        // for (int i = 0; i < ntt_shots.size(); i++)
+        // {
+        //     if(ntt_shots.at(i) == this){
+        //         ntt_shots.erase(ntt_shots.begin()+i);
+        //         BN_LOG("Destroy Shot! ntt_shots size: ", ntt_shots.size());
+        //         break;
+        //     }
+        // }
     }
 
     bn::sprite_item Shot_Enemy::sprite_item()
@@ -48,9 +49,11 @@ namespace adonai
         //não mover se colidir
         if(check_collision()){
             //se colidir resetar estado do tiro
-            _pos = bn::fixed_point(((-1 * bn::display::width()/2)-8),0);
+            _pos = bn::fixed_point(((-bn::display::width()/2)-8),0);
             _sprite.set_position(_pos);
-            _state = Shot_State::NONE;
+            // _state = Shot_State::NONE;
+            _available = true;
+            // this->~Shot_Enemy();
             return;
         }
 
@@ -60,7 +63,7 @@ namespace adonai
         // então mudar _pos com base na direção pre-definida
         if(pre_direction == bn::fixed_point{0,0}){
             //incrementa a posição em X do shoot
-            _pos = _pos + bn::fixed_point( bn::fixed(-1 * velocity), 0);
+            _pos = _pos + bn::fixed_point( bn::fixed(-velocity), 0);
         }
         else{
             //Mudar a posição em X e Y do shoot basiado na direção
@@ -70,12 +73,14 @@ namespace adonai
 
         //corrigir a posição do sprite em relação a posição 'pos' dele
         _sprite.set_position(_pos);
+        // BN_LOG("shot pos: ",_pos.x(),",",_pos.y());
 
         // ao chegar no fim da tela a esquerda, volta a ser NONE
-        if(_sprite.position().x() < (-1 * bn::display::width()/2)-4)
+        if(_sprite.position().x() < (-bn::display::width()/2)-4)
         {
-            _state = Shot_State::NONE;
-            this->~Shot_Enemy();
+            // _state = Shot_State::NONE;
+            _available = true;
+            // this->~Shot_Enemy();
         }
     }
 
@@ -85,9 +90,10 @@ namespace adonai
         //não mover se colidir
         if(check_collision()){
             //se colidir resetar estado do tiro
-            _pos = bn::fixed_point(((-1 * bn::display::width()/2)-8),0);
+            _pos = bn::fixed_point(((-bn::display::width()/2)-8),0);
             _sprite.set_position(_pos);
-            _state = Shot_State::NONE;
+            // _state = Shot_State::NONE;
+            _available = true;
             return;
         }
         
@@ -99,8 +105,9 @@ namespace adonai
         // ao chegar no fim da tela a esquerda, volta a ser NONE
         if(_sprite.position().x() < (-1 * bn::display::width()/2)-4)
         {
-            _state = Shot_State::NONE;
-            this->~Shot_Enemy();
+            // _state = Shot_State::NONE;
+            _available = true;
+            // this->~Shot_Enemy();
         }
     }
 #pragma endregion
@@ -115,6 +122,9 @@ namespace adonai
         if ( _col.intersects(GLOBALS::global_player->col()))
         {
             //BN_LOG("Colidiu com o player!");
+            // _state = Shot_State::NONE;
+            _available = true;
+            // _sprite.set_visible(false);
             GLOBALS::global_player->receive_hit();
             return true;
         }            
@@ -122,6 +132,7 @@ namespace adonai
     }
     void Shot_Enemy::update()
     {
+        if(_available == true){return;}
         move_forward();
         //se tiver que piscar imagem ou algo que aconteça com o passar do tempo deve ser executado aqui.
     }

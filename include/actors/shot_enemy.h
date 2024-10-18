@@ -23,7 +23,8 @@ namespace adonai
                     const bn::fixed_point& initial_position = {0,0});
         ~Shot_Enemy();
         
-        Shot_State _state;
+        // Shot_State _state;
+        bool _available = true;//um substituto ao state NONE e SHOOTING
         //Direção pré-definida para casos de tiros com movimento especial.
         bn::fixed_point pre_direction = {0,0};
 

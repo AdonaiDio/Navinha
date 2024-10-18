@@ -16,7 +16,8 @@
 
 namespace adonai
 {
-    extern bn::vector<Enemy*, 28> ntt_enemies;
+    // extern bn::vector<Enemy*, 20> ntt_enemies;
+    
 
     enum Player_States{
         Player_NONE = 0,
@@ -45,6 +46,7 @@ namespace adonai
             bool is_collapsing_shadow = false;
 
         public:
+        bn::vector<Enemy*, 20>* ntt_enemies;//referencia da lista de ntts
             // TODO: futuramente com mais tiros, pode ser que passar sprite não seja a melhor solução. 
             // Organizar uma lista de tiros em forma de Enum pode ser o melhor caminho.
             Player( bn::sprite_item sprite_item,
@@ -77,7 +79,9 @@ namespace adonai
             void handle_shadows_rgb();
 
             void update();
-            void update_scripts() {
+            void pass_ntt_enemies_to_shots();
+            void update_scripts()
+            {
                 for (u_int8_t i = 0; i < _scripts.size(); i++)
                 {
                     if(_scripts[i] == nullptr){continue;}

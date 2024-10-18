@@ -16,6 +16,7 @@ namespace adonai
         Shot_Player(    const bn::sprite_item& sprite_item, 
                         const bn::fixed_point& initial_position);
         ~Shot_Player();
+        bn::vector<Enemy*, 20>* ntt_enemies;
         
         Shot_State _state;
 

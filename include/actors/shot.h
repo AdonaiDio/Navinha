@@ -16,7 +16,7 @@
 namespace adonai
 {
     class Enemy;
-    extern bn::vector<Enemy*, 28> ntt_enemies;
+    // extern bn::vector<Enemy*, 20> ntt_enemies;
 
 
     enum Shot_State{
@@ -28,8 +28,8 @@ namespace adonai
     {
         protected:
             bn::fixed_point _pos;
-            bn::sprite_ptr _sprite;
             bn::rect _col;
+            bn::sprite_ptr _sprite;
 
             const int velocity = 3;
 
@@ -41,7 +41,7 @@ namespace adonai
                 _pos(initial_position){};
             ~Shot(){};
 
-            Shot_State _state;
+            // Shot_State _state;
 
             virtual bn::fixed_point pos() = 0;
             virtual void pos(bn::fixed_point position) = 0;

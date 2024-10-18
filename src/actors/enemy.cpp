@@ -14,7 +14,7 @@
 namespace adonai
 {
 
-    extern bn::vector<Shot*, 30> ntt_shots;
+    extern bn::array<Shot_Enemy*, 40> _shots;
 
     Enemy::Enemy(   bn::fixed_point position, bn::sprite_item sprite_item, 
                     bn::sprite_item shot_sprite_item, E_Shot_Type shot_type, 
@@ -23,9 +23,25 @@ namespace adonai
                     position,
                     max_hp),
         _shot(adonai::Shot_Enemy(shot_sprite_item)),
+        _shots({Shot_Enemy(adonai::Shot_Enemy(shot_sprite_item)),
+                Shot_Enemy(adonai::Shot_Enemy(shot_sprite_item)),
+                Shot_Enemy(adonai::Shot_Enemy(shot_sprite_item)),
+                Shot_Enemy(adonai::Shot_Enemy(shot_sprite_item)),
+                Shot_Enemy(adonai::Shot_Enemy(shot_sprite_item)),
+                Shot_Enemy(adonai::Shot_Enemy(shot_sprite_item)),
+                Shot_Enemy(adonai::Shot_Enemy(shot_sprite_item)),
+                Shot_Enemy(adonai::Shot_Enemy(shot_sprite_item)),
+                Shot_Enemy(adonai::Shot_Enemy(shot_sprite_item)),
+                Shot_Enemy(adonai::Shot_Enemy(shot_sprite_item)),
+                Shot_Enemy(adonai::Shot_Enemy(shot_sprite_item)),
+                Shot_Enemy(adonai::Shot_Enemy(shot_sprite_item))}),
         _shot_type(shot_type)
     {
-        ntt_enemies.push_back(this);
+        // (*ntt_enemies).push_back(this);
+        _shots_is_available = { &_shots[0]._available, &_shots[1]._available, &_shots[2]._available,
+                                &_shots[3]._available, &_shots[4]._available, &_shots[5]._available,
+                                &_shots[6]._available, &_shots[7]._available, &_shots[8]._available,
+                                &_shots[9]._available, &_shots[10]._available, &_shots[11]._available};
 
         _col = bn::rect(  (int)_pos.x(), (int)_pos.y() + 1, 
                         15, 9);
@@ -46,269 +62,15 @@ namespace adonai
                 sprite_item.tiles_item(),
                 0,0
         );
+
         BN_LOG("Enemy constructor: FINISHED");
-        BN_LOG("enemies: ", ntt_enemies.size());
+        // BN_LOG("enemies: ", (*ntt_enemies).size());
     }
     Enemy::~Enemy(){
         BN_LOG("Enemy destruido");
         // BN_LOG("enemies: ", ntt_enemies.size());
         
     }
-
-    /////
-    // Enemy::Enemy(   bn::fixed_point position, bn::sprite_item sprite_item,
-    //                 bn::sprite_item shot_sprite_item, E_Shot_Type shot_type, 
-    //                 const int anim_frames_duration, 
-    //                 //anim_frames_qty: 1 < value < 11
-    //                 const int anim_frames_qty, 
-    //                 int max_hp)
-    //     : Actor(    sprite_item,
-    //                 position,
-    //                 max_hp),
-    //     _shot(adonai::Shot_Enemy(shot_sprite_item)),
-    //     _shot_type(shot_type)
-    // {
-    //     ntt_enemies.push_back(this);
-    //
-    //     _col = bn::rect(  (int)_pos.x()-1, (int)_pos.y()-1, 
-    //                     10, 14);
-    //     //CODIGO ERRADO!!!
-    //     //definir os colliders de cada frame
-    //     //TODO: Esses colliders deveriam ser definidos de forma automática baseado na sprite recebida
-    //     _cols.push_back( { (int)_pos.x()-1, (int)_pos.y()-1,
-    //                     10, 14} );
-    //     _cols.push_back( { (int)_pos.x()-1, (int)_pos.y()-1,
-    //                     10, 14} );
-    //     _cols.push_back( { (int)_pos.x()-1, (int)_pos.y()-1,
-    //                     10, 12} );
-    //     _cols.push_back( { (int)_pos.x()-1, (int)_pos.y(),
-    //                     10, 12} );
-    //     _cols.push_back( { (int)_pos.x()-1, (int)_pos.y(),
-    //                     10, 10} );
-    //     _cols.push_back( { (int)_pos.x()-1, (int)_pos.y(),
-    //                     10, 12} );
-    //     _cols.push_back( { (int)_pos.x()-1, (int)_pos.y()-1,
-    //                     10, 12} );
-    //
-    //     #pragma region Setup Anim
-    //     // =============================================
-    //     // ALETAR DE CODIGO FEIO!!
-    //     // ALERTA DE CODIGO FEIO!!
-    //     // Configurando animação conforme a quantidade de frames
-    //     switch (anim_frames_qty)
-    //     {
-    //     case 2:
-    //         enemy_anim = 
-    //             bn::create_sprite_animate_action_forever
-    //             (
-    //                 _sprite,
-    //                 anim_frames_duration,
-    //                 sprite_item.tiles_item(),
-    //                 0,1
-    //
-    //         );
-    //         enemy_clone_anim = 
-    //             bn::create_sprite_animate_action_forever
-    //             (
-    //                 _sprite_clone,
-    //                 anim_frames_duration,
-    //                 sprite_item.tiles_item(),
-    //                 0,1
-    //
-    //         );
-    //         break;
-    //     case 3:
-    //         enemy_anim = 
-    //             bn::create_sprite_animate_action_forever
-    //             (
-    //                 _sprite,
-    //                 anim_frames_duration,
-    //                 sprite_item.tiles_item(),
-    //                 0,1,2
-    //
-    //         );
-    //         enemy_clone_anim = 
-    //             bn::create_sprite_animate_action_forever
-    //             (
-    //                 _sprite_clone,
-    //                 anim_frames_duration,
-    //                 sprite_item.tiles_item(),
-    //                 0,1,2
-    //
-    //         );
-    //         break;
-    //     case 4:
-    //         enemy_anim = 
-    //             bn::create_sprite_animate_action_forever
-    //             (
-    //                 _sprite,
-    //                 anim_frames_duration,
-    //                 sprite_item.tiles_item(),
-    //                 0,1,2,3
-    //
-    //         );
-    //         enemy_clone_anim = 
-    //             bn::create_sprite_animate_action_forever
-    //             (
-    //                 _sprite_clone,
-    //                 anim_frames_duration,
-    //                 sprite_item.tiles_item(),
-    //                 0,1,2,3
-    //
-    //         );
-    //         break;
-    //     case 5:
-    //         enemy_anim = 
-    //             bn::create_sprite_animate_action_forever
-    //             (
-    //                 _sprite,
-    //                 anim_frames_duration,
-    //                 sprite_item.tiles_item(),
-    //                 0,1,2,3,4
-    //
-    //         );
-    //         enemy_clone_anim = 
-    //             bn::create_sprite_animate_action_forever
-    //             (
-    //                 _sprite_clone,
-    //                 anim_frames_duration,
-    //                 sprite_item.tiles_item(),
-    //                 0,1,2,3,4
-    //
-    //         );
-    //         break;
-    //     case 6:
-    //         enemy_anim = 
-    //             bn::create_sprite_animate_action_forever
-    //             (
-    //                 _sprite,
-    //                 anim_frames_duration,
-    //                 sprite_item.tiles_item(),
-    //                 0,1,2,3,4,5
-    //
-    //         );
-    //         enemy_clone_anim = 
-    //             bn::create_sprite_animate_action_forever
-    //             (
-    //                 _sprite_clone,
-    //                 anim_frames_duration,
-    //                 sprite_item.tiles_item(),
-    //                 0,1,2,3,4,5
-    //
-    //         );
-    //         break;
-    //     case 7:
-    //         enemy_anim = 
-    //             bn::create_sprite_animate_action_forever
-    //             (
-    //                 _sprite,
-    //                 anim_frames_duration,
-    //                 sprite_item.tiles_item(),
-    //                 0,1,2,3,4,5,6
-    //
-    //         );
-    //         enemy_clone_anim = 
-    //             bn::create_sprite_animate_action_forever
-    //             (
-    //                 _sprite_clone,
-    //                 anim_frames_duration,
-    //                 sprite_item.tiles_item(),
-    //                 0,1,2,3,4,5,6
-    //
-    //         );
-    //         break;
-    //     case 8:
-    //         enemy_anim = 
-    //             bn::create_sprite_animate_action_forever
-    //             (
-    //                 _sprite,
-    //                 anim_frames_duration,
-    //                 sprite_item.tiles_item(),
-    //                 0,1,2,3,4,5,6,7
-    //
-    //         );
-    //         enemy_clone_anim = 
-    //             bn::create_sprite_animate_action_forever
-    //             (
-    //                 _sprite_clone,
-    //                 anim_frames_duration,
-    //                 sprite_item.tiles_item(),
-    //                 0,1,2,3,4,5,6,7
-    //
-    //         );
-    //         break;
-    //     case 9:
-    //         enemy_anim = 
-    //             bn::create_sprite_animate_action_forever
-    //             (
-    //                 _sprite,
-    //                 anim_frames_duration,
-    //                 sprite_item.tiles_item(),
-    //                 0,1,2,3,4,5,6,7,8
-    //
-    //         );
-    //         enemy_clone_anim = 
-    //             bn::create_sprite_animate_action_forever
-    //             (
-    //                 _sprite_clone,
-    //                 anim_frames_duration,
-    //                 sprite_item.tiles_item(),
-    //                 0,1,2,3,4,5,6,7,8
-    //
-    //         );
-    //         break;
-    //     case 10:
-    //         enemy_anim = 
-    //             bn::create_sprite_animate_action_forever
-    //             (
-    //                 _sprite,
-    //                 anim_frames_duration,
-    //                 sprite_item.tiles_item(),
-    //                 0,1,2,3,4,5,6,7,8,9
-    //
-    //         );
-    //         enemy_clone_anim = 
-    //             bn::create_sprite_animate_action_forever
-    //             (
-    //                 _sprite_clone,
-    //                 anim_frames_duration,
-    //                 sprite_item.tiles_item(),
-    //                 0,1,2,3,4,5,6,7,8,9
-    //
-    //         );
-    //         break;
-    //      
-    //     default:
-    //         BN_ERROR("ERRO! anim_frames_qty tem que ser no minimo 2 e no maximo 10");
-    //         enemy_anim = 
-    //             bn::create_sprite_animate_action_forever
-    //             (
-    //                 _sprite,
-    //                 anim_frames_duration,
-    //                 sprite_item.tiles_item(),
-    //                 0,0
-    //
-    //         );
-    //         enemy_clone_anim = 
-    //             bn::create_sprite_animate_action_forever
-    //             (
-    //                 _sprite_clone,
-    //                 anim_frames_duration,
-    //                 sprite_item.tiles_item(),
-    //                 0,0
-    //
-    //         );
-    //         break;
-    //     }
-    //    
-    //     // ALETAR DE CODIGO FEIO!!
-    //     // ALERTA DE CODIGO FEIO!!
-    //     // =============================================
-    //     #pragma endregion
-    //
-    //     //BN_LOG("Enemy with Animation and Collider Dinamic constructor: FINISHED");
-    // }
-    /////
 
     //add and start script
     void Enemy::add_script(I_Script<Enemy>& script)
@@ -346,10 +108,10 @@ namespace adonai
     void Enemy::just_delete_this()
     {
         _scripts.empty();
-        for (int i = 0; i < ntt_enemies.size(); i++)
+        for (int i = 0; i < (*ntt_enemies).size(); i++)
         {
-            if(ntt_enemies[i] == this){
-                ntt_enemies.erase(ntt_enemies.begin()+i);
+            if((*ntt_enemies)[i] == this){
+                (*ntt_enemies).erase((*ntt_enemies).begin()+i);
                 break;
             }
         }
@@ -357,70 +119,149 @@ namespace adonai
         BN_LOG("DELETED");
     }
 
-    //shoot() :  Spawna a(s) instância(s) de tiro/shot 1 vez.
-    // ///////// Também distingue o tipo do tiro. 
     void Enemy::shoot()
     {
-        //Primeiro impedir que atire enquanto ainda estiver concluindo o SHOOTING
-        if(_enemy_state == E_Enemy_State::E_Enemy_State_SHOOTING){return;}
+        if(!can_shoot()){return;}
         _enemy_state = E_Enemy_State::E_Enemy_State_SHOOTING;
-
-        Shot_Enemy* instance_shot_1 = new Shot_Enemy(_shot.sprite_item(),_pos);
-        Shot_Enemy* instance_shot_2 = new Shot_Enemy(_shot.sprite_item(),_pos);
-        Shot_Enemy* instance_shot_3 = new Shot_Enemy(_shot.sprite_item(),_pos);
-
-        switch (_shot_type)
-        {
-        case E_Shot_Type::E_Shot_Type_2:
-
-            instance_shot_1->pos(bn::fixed_point(_pos.x()-4, _pos.y()));
-            instance_shot_1->sprite().set_visible(true);
-            ntt_shots.push_back(instance_shot_1);
-            instance_shot_1->pre_direction = bn::fixed_point(-16,-8);
-            // BN_LOG("spawn shot_1");
-
-            instance_shot_2->pos(bn::fixed_point(_pos.x()-4, _pos.y()));
-            instance_shot_2->sprite().set_visible(true);
-            ntt_shots.push_back(instance_shot_2);
-            // BN_LOG("spawn shot_2");
-
-            instance_shot_3->pos(bn::fixed_point(_pos.x()-4, _pos.y()));
-            instance_shot_3->sprite().set_visible(true);
-            ntt_shots.push_back(instance_shot_3);
-            instance_shot_3->pre_direction = bn::fixed_point(-16,+8);
-            // BN_LOG("spawn shot_3");
-
-            // BN_LOG("ntt_shots Size: ", ntt_shots.size());
-            break;
-
-        case E_Shot_Type::E_Shot_Type_3:
-            instance_shot_2->~Shot_Enemy();
-            instance_shot_3->~Shot_Enemy();
-
-            instance_shot_1->pos(bn::fixed_point(_pos.x()-4, _pos.y()));
-            instance_shot_1->sprite().set_visible(true);
-            ntt_shots.push_back(instance_shot_1);
-            //direção do player
-            instance_shot_1->pre_direction = GLOBALS::global_player->pos();
-            // BN_LOG("Spawn Shot! ntt_shots index: ", ntt_shots.size()-1);
-            break;
         
-        default: //E_Shot_Type::E_Shot_Type_1
-            instance_shot_2->~Shot_Enemy();
-            instance_shot_3->~Shot_Enemy();
-            //Shot_Enemy* instance_shot = new Shot_Enemy(_shot.sprite_item(),_pos);
-
-            instance_shot_1->pos(bn::fixed_point(_pos.x()-4, _pos.y()));
-            // BN_LOG("Position: x:", instance_shot_1->pos().x(), ", y:", instance_shot_1->pos().y());
-            instance_shot_1->sprite().set_visible(true);
-
-            ntt_shots.push_back(instance_shot_1);
-
-            // BN_LOG("Spawn Shot! ntt_shots index: ", ntt_shots.size()-1);
-            break;
+        if (_shot_type ==  E_Shot_Type::E_Shot_Type_1){
+            shot_type_1();
         }
+        else if (_shot_type ==  E_Shot_Type::E_Shot_Type_2){
+            shot_type_2();
+        }
+        else if (_shot_type ==  E_Shot_Type::E_Shot_Type_3){
+            shot_type_3();
+        }
+
         _enemy_state = E_Enemy_State::E_Enemy_State_NONE;
     }
+
+    bool Enemy::can_shoot()
+    {
+        if(_enemy_state == E_Enemy_State::E_Enemy_State_SHOOTING ){
+            BN_LOG("NÃO ATIRE");
+            return false;
+        } // evitar que cause multiplos tiros simultâneos por vez.
+
+        int aux_cnt = 0;
+        //buscar disponibilidade de todos os 3 tiros
+        for (int i = 0; i < _shots_is_available.size(); i++)
+        {
+            if( *_shots_is_available[i] == true){
+                aux_cnt++;
+                if(_shot_type != E_Shot_Type::E_Shot_Type_2){ //se precisar apenas de 1 é true.
+                    return true;
+                }
+            }
+        }
+        if(aux_cnt < 3){ //tiro triplo porem não tem 3 disponíveis
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+#pragma region Shot_Types
+    void Enemy::shot_type_1()
+    {
+        //Tiro unico para frente.
+        //Shot_Enemy* instance_shot = new Shot_Enemy(_shot.sprite_item(),_pos);
+
+        int shot_index = -9;
+        for (int i = 0; i < _shots_is_available.size(); i++)
+        {
+            if( *_shots_is_available[i] == true){
+                shot_index = i;
+                break;
+            }
+        }
+
+        _shots[shot_index].pos(bn::fixed_point(_pos.x()-4, _pos.y()));
+        _shots[shot_index].sprite().set_visible(true);
+        // _shots[shot_index]._state = Shot_State::SHOOTING;
+        _shots[shot_index]._available = false;
+        
+        // BN_LOG("Position: x:", _shot.pos().x(), ", y:", _shot.pos().y());
+        // BN_LOG("shot visible: ",_shot.sprite().visible());
+        BN_LOG("spawn shot[",shot_index,"]");
+        
+        // BN_LOG("Spawn Shot! _shots index: ", _shots.size()-1);
+        _enemy_state = E_Enemy_State::E_Enemy_State_NONE;
+    }
+
+    void Enemy::shot_type_2()
+    {
+        //Tiro triplo diagonais e para frente.
+
+        int i_1 = -9; //-9 um numero arbitrário para indicar que nunca foi alterado
+        int i_2 = -9;
+        int i_3 = -9;
+        //buscar disponibilidade de todos os 3 tiros
+        for (int i = 0; i < _shots_is_available.size(); i++)
+        {
+            if( *_shots_is_available[i] == true){
+                if(i_1 == -9){
+                    i_1 = i;
+                    continue;
+                }
+                else if(i_2 == -9){
+                    i_2 = i;
+                    continue;
+                }
+                else if(i_3 == -9){
+                    i_3 = i;
+                    break;
+                }
+            }
+        }
+        _shots[i_1].pos(bn::fixed_point(_pos.x()-4, _pos.y()));
+        _shots[i_1].sprite().set_visible(true);
+        // _shots[i_1]._state = Shot_State::SHOOTING;
+        _shots[i_1]._available = false;
+        _shots[i_1].pre_direction = bn::fixed_point(-16,-8);
+        BN_LOG("spawn shot_1");
+        
+        _shots[i_2].pos(bn::fixed_point(_pos.x()-4, _pos.y()));
+        _shots[i_2].sprite().set_visible(true);
+        // _shots[i_2]._state = Shot_State::SHOOTING;
+        _shots[i_2]._available = false;
+        BN_LOG("spawn shot_2");
+        
+        _shots[i_3].pos(bn::fixed_point(_pos.x()-4, _pos.y()));
+        _shots[i_3].sprite().set_visible(true);
+        // _shots[i_3]._state = Shot_State::SHOOTING;
+        _shots[i_3]._available = false;
+        _shots[i_3].pre_direction = bn::fixed_point(-16,+8);
+        BN_LOG("spawn shot_3");
+            
+        // BN_LOG("_shots Size: ", _shots.size());
+    }
+
+    void Enemy::shot_type_3()
+    {
+        // Tiro unico para ultima posição do jogador.
+
+        int shot_index = -9;
+        for (int i = 0; i < _shots_is_available.size(); i++)
+        {
+            if( *_shots_is_available[i] == true){
+                shot_index = i;
+                break;
+            }
+        }
+        _shots[shot_index].pos(bn::fixed_point(_pos.x()-4, _pos.y()));
+        _shots[shot_index].sprite().set_visible(true);
+        // _shots[shot_index]._state = Shot_State::SHOOTING;
+        _shots[shot_index]._available = false;
+        
+        //direção do player
+        _shots[shot_index].pre_direction = normalize(GLOBALS::global_player->pos() - pos());
+        // BN_LOG("Spawn Shot! _shots index: ", _shots.size()-1);
+        _enemy_state = E_Enemy_State::E_Enemy_State_NONE;
+    }
+#pragma endregion
+
 
     void Enemy::update_collider()
     {
@@ -431,14 +272,10 @@ namespace adonai
 
                 //OBS: Estou adiantando o index da animação pois por algum motivo 
                 /////// o index vem atrasado por 1 index em relação a sprite apresentada
-                const int cols_index = enemy_anim.current_index()-1<0?_cols.size()-1:enemy_anim.current_index()-1;
-                _col = _cols.at(cols_index);
-                // BN_LOG("anim_index: ", cols_index);
-                // BN_LOG("col width: ", _col.dimensions().width(), " height: ", _col.dimensions().height());
-            }
-            else {
-                _col.set_position((int)_pos.x(), (int)_pos.y());
-            }
+                int cols_index = enemy_anim.current_index()-1<0?_cols.size()-1:enemy_anim.current_index()-1;
+                _col = _cols[cols_index];
+                }
+            _col.set_position((int)_pos.x(), (int)_pos.y());
         }else{
             _col = bn::rect(128,88,0,0);
         }
@@ -449,6 +286,15 @@ namespace adonai
         {
             if(_scripts[i] == nullptr){continue;}
             _scripts[i]->update(this);
+        }
+    };
+
+    
+    void Enemy::update_all_shots_occupied(){
+        for (int i = 0; i < _shots_is_available.size(); i++) {
+            if( *_shots_is_available.at(i) == false){
+                _shots.at(i).update();
+            }
         }
     };
 
@@ -469,15 +315,28 @@ namespace adonai
 
         hit_feedback();
 
+        update_all_shots_occupied();
+
         if(explosion && !explosion->_explosion_anim.done()){
             explosion->update();
         }
-        if(explosion->_explosion_anim.done() && wait_to_destroy){
+        if(explosion->_explosion_anim.done() && wait_to_destroy && all_shots_available()){
             wait_to_destroy = false;
             _scripts.empty();
             just_delete_this();
         }
 
+    }
+
+    bool Enemy::all_shots_available()
+    {
+        for (int i = 0; i < _shots_is_available.size(); i++)
+        {
+            if(*_shots_is_available[i] == false){
+                return false;
+            }
+        }
+        return true;
     }
 
 // (Só por segurança, talvez não precise, mas caso entre no 

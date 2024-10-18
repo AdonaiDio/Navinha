@@ -1,6 +1,7 @@
 #pragma once
 //butano
 #include "bn_log.h"
+#include "bn_random.h"
 //assets
 //#include <bn_sprite_items_.h>
 //my code
@@ -19,23 +20,29 @@ namespace adonai {
         private:
         int count_frames_update = 0;
         int count_shots = 0;
+        int next_shoot_timer = 0;
+        bool tri_shooting=false;
+        bn::random rand = bn::random();
         
+        const bn::array<int,3> rand_frame_num = {-15,0,15};
+
         public:
         void start(Enemy* e) override {
             count_frames_update = 0;
         };
         
         void update(Enemy* e) override {
-            if(IsOutOfSight(e->pos().y())){
+            if(IsOutOfSight(e->pos().y()) && e->pos().y() > 0){
                 e->pos(StartPosition());
                 return;
             }
             Move_N_Shoot(e);
+            if(tri_shooting){ // uso uma bool para triggar o tiro para que ele seja processado todo frame
+                Triple_Shoot(e);
+            }
         };
 
         bn::fixed_point StartPosition(){
-            count_frames_update = 0;
-            count_shots = 0;
             return bn::fixed_point(6*16, -6*16);
         }
 
@@ -45,7 +52,7 @@ namespace adonai {
         }
 
         bool IsOutOfSight(bn::fixed y){
-            if(y >= 6*16){
+            if(y >= 6*16 || y < -5*16){
                 return true;
             }
             return false;
@@ -53,18 +60,25 @@ namespace adonai {
 
         void Shoot(Enemy* e){
             if(GLOBALS::global_player->hp() > 0 && e->hp()>0){
-                count_frames_update++;
-                if(count_shots > 0){
-                    if(count_frames_update >= 30*1){
-                        count_shots = 0;
+                if(e->pos().y() >= -80 && !IsOutOfSight(e->pos().y())){
+                    count_frames_update++;
+                    if (count_frames_update >= 55 ){
+                        count_frames_update = 0;
+                        tri_shooting = true;
                     }
-                    return;
                 }
-                if (count_frames_update >= 30){
-                    count_frames_update = 0;
-                    e->shoot();
-                    count_shots++;
-                }
+            }
+        }
+        void Triple_Shoot(Enemy* e){
+            next_shoot_timer--;
+            if(count_shots < 3 && next_shoot_timer <= 0){
+                next_shoot_timer = 15;
+                e->shoot();
+                count_shots++;
+            }else if(count_shots >= 3){
+                count_shots = 0;
+
+                tri_shooting = false;
             }
         }
     };

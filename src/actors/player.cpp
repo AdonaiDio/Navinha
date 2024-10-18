@@ -150,10 +150,10 @@ namespace adonai
         }
         //check_collision
         if(hit_feedback_duration > 0){return;}
-        for (int i = 0; i < ntt_enemies.size(); i++)
+        for (int i = 0; i < (*ntt_enemies).size(); i++)
         {
             //BN_LOG("enemies: ", ntt_enemies.size());
-            if ( _col.intersects(ntt_enemies.at(i)->col()))
+            if ( _col.intersects((*ntt_enemies).at(i)->col()))
             {
                 // BN_LOG("Colidiu!");
                 receive_hit();
@@ -186,5 +186,13 @@ namespace adonai
         }
 
         handle_shadows_rgb();
+    }
+
+    void Player::pass_ntt_enemies_to_shots(){
+        for (int i = 0; i < _shots.size(); i++)
+        {
+            _shots[i].ntt_enemies = ntt_enemies;
+        }
+        
     }
 }
