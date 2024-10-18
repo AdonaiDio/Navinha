@@ -24,17 +24,32 @@
 int main()
 {
     bn::core::init();
+            BN_LOG("NONE-> Usados: ", bn::sprites::used_items_count());
+            BN_LOG("Disponíveis: ", bn::sprites::available_items_count());
+            BN_LOG("reservados: ", bn::sprites::reserved_handles_count());
 
     //Inicar o player no main para o player sempre ser o mesmo durante o jogo.
     static adonai::Player player = adonai::Player( bn::sprite_items::nova,
                                             bn::fixed_point(0, 0), 
                                             bn::sprite_items::shoot );
                                             
+            BN_LOG("Player-> Usados: ", bn::sprites::used_items_count());
+            BN_LOG("Disponíveis: ", bn::sprites::available_items_count());
+            BN_LOG("reservados: ", bn::sprites::reserved_handles_count());
     player.sprite().set_visible(false);
+            BN_LOG("Player invisible-> Usados: ", bn::sprites::used_items_count());
+            BN_LOG("Disponíveis: ", bn::sprites::available_items_count());
+            BN_LOG("reservados: ", bn::sprites::reserved_handles_count());
     //guardar referencia global
     adonai::GLOBALS::global_player = &player;
+            BN_LOG("Global-> Usados: ", bn::sprites::used_items_count());
+            BN_LOG("Disponíveis: ", bn::sprites::available_items_count());
+            BN_LOG("reservados: ", bn::sprites::reserved_handles_count());
     // inciar a primeira cena
     adonai::Scene scene = adonai::Scene::TEST_SCENE;
+            BN_LOG("scene enum-> Usados: ", bn::sprites::used_items_count());
+            BN_LOG("Disponíveis: ", bn::sprites::available_items_count());
+            BN_LOG("reservados: ", bn::sprites::reserved_handles_count());
 
     while(true)
     {

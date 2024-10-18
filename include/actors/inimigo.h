@@ -44,7 +44,7 @@ namespace adonai
     class Inimigo {
         private:
             bn::sprite_ptr _sprite;
-            bn::sprite_ptr _sprite_clone;
+            bn::sprite_ptr _sprite_clone; // ELIMINAR e fazer o feedback sem um sprite extra.
             bn::fixed_point _pos;
             bn::rect _col = bn::rect( 0, 0, 0, 0 );
 
@@ -88,7 +88,7 @@ namespace adonai
 
             E_Enemy_State _enemy_state = E_Enemy_State::E_Enemy_State_NONE;
 
-            Shot_Enemy _shot;
+            bn::sprite_item _shot_sprite_item;
             bn::array<Shot_Enemy, MAX_ENEMY_SHOTS> _shots;
             //true se shot tiver disponível
             bn::array<bool*, MAX_ENEMY_SHOTS> _shots_is_available;
@@ -147,7 +147,7 @@ namespace adonai
                 }        
             };
 
-            // experimental
+            // experimental -- para autodestruição de todos os inimigos
             void damaged(){
                 if (bn::keypad::r_pressed())
                 {

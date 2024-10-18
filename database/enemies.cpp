@@ -11,6 +11,7 @@
 //my code
 #include "enemy.h"
 #include "inimigo.h"
+#include "obj.h"
 //other script embbeded
 
 namespace adonai
@@ -26,6 +27,10 @@ namespace adonai
         public:
 
         // teste de um novo inimigo com optional e etc. Se der certo vira o padrão.
+        Obj* NovoObj(){
+            Obj* novo_obj = new Obj();
+            return novo_obj;
+        }
         Inimigo* NovoInimigo(bn::fixed_point position){
             Inimigo* novo_inimigo = new Inimigo(position);
             // não vou inserir na lista de ntt pois ele não é enemy, 

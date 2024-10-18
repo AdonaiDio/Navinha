@@ -23,7 +23,7 @@ namespace adonai
         _sprite_clone(sprite_item.create_sprite(position)),
         _pos(position),
         _hp(max_hp),
-        _shot(adonai::Shot_Enemy(shot_sprite_item)),
+        _shot_sprite_item(shot_sprite_item),
         _shots({Shot_Enemy(adonai::Shot_Enemy(shot_sprite_item)),
                 Shot_Enemy(adonai::Shot_Enemy(shot_sprite_item)),
                 Shot_Enemy(adonai::Shot_Enemy(shot_sprite_item)),
