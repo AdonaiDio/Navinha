@@ -8,6 +8,7 @@
                 "${workspaceFolder}/include/actors",
                 "${workspaceFolder}/include/scenes",
                 "${workspaceFolder}/include/hud",
+                "${workspaceFolder}/include/effects",
                 "${workspaceFolder}/include",
                 "${workspaceFolder}/scripts",
                 "${workspaceFolder}/build",

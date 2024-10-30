@@ -13,7 +13,7 @@
 //my code
 #include "scene.h"
 #include "player.h"
-// #include "enemy.h"
+#include "enemy.h"
 #include "controller.h"
 #include "shot.h"
 #include "../../include/hud/hud_energy_bar.h"
@@ -40,12 +40,12 @@ namespace adonai
 
     class Test {       
         private:
-        // const int grid_width = bn::sprite_items::spaceship_1.shape_size().width();
-        // const int grid_height = bn::sprite_items::spaceship_1.shape_size().height();
+        const int grid_width = bn::sprite_items::spaceship_1.shape_size().width();
+        const int grid_height = bn::sprite_items::spaceship_1.shape_size().height();
 
         public:
-        // bn::vector<Enemy*, 20> ntt_enemies = bn::vector<Enemy*,20>();
-        // bn::array<Shot_Enemy*, 40> ntt_shots;
+        bn::vector<Enemy*, 20> ntt_enemies = bn::vector<Enemy*,20>();
+        bn::array<Shot_Enemy*, 40> ntt_shots;
 
         DataBase_Enemies db_e;
         Test(){
@@ -53,8 +53,8 @@ namespace adonai
 
         Scene execute(bn::fixed_point spawn_location)
         {
-            // adonai::GLOBALS::global_player->ntt_enemies = &ntt_enemies;
-            // adonai::GLOBALS::global_player->pass_ntt_enemies_to_shots();
+            adonai::GLOBALS::global_player->ntt_enemies = &ntt_enemies;
+            adonai::GLOBALS::global_player->pass_ntt_enemies_to_shots();
 
             bn::regular_bg_ptr r_bg_1 = bn::regular_bg_items::tela.create_bg(0, 0);
             
@@ -66,7 +66,7 @@ namespace adonai
             for (int i = 0; i < hud_hp_bar.hp_bar_sprites.size(); i++)
             {   hud_hp_bar.hp_bar_sprites.at(i).set_z_order(-2); }
             
-            // adonai::hud_game_over game_over = adonai::hud_game_over(0, -80-16);
+            adonai::hud_game_over game_over = adonai::hud_game_over(0, -80-16);
             
             BN_LOG("CENA DE TESTE");
 
@@ -89,17 +89,20 @@ namespace adonai
             // Enemy* e_3 = db_e.DefaultEnemy(  bn::fixed_point(grid_width*(4),(grid_height*(0))), &ntt_enemies );
             // Enemy* e_4 = db_e.DefaultEnemy(  bn::fixed_point(grid_width*(4),(grid_height*(0))), &ntt_enemies );
             
-            // Inimigo* i_1 = db_e.NovoInimigo(  bn::fixed_point(grid_width*(4),(grid_height*(0))) );
+            ///
+            BN_LOG("CENA Usados: ", bn::sprites::used_items_count());
+            BN_LOG("Disponíveis: ", bn::sprites::available_items_count());
+            BN_LOG("reservados: ", bn::sprites::reserved_handles_count());
+            BN_LOG("novo sprite de nave por obj");
+            Inimigo* i_1 = db_e.NovoInimigo(  bn::fixed_point(grid_width*(4),(grid_height*(0))) );
             // Inimigo* i_2 = db_e.NovoInimigo(  bn::fixed_point(grid_width*(4),(grid_height*(1))) );
             // Inimigo* i_3 = db_e.NovoInimigo(  bn::fixed_point(grid_width*(4),(grid_height*(-1))) );
             // Inimigo* i_4 = db_e.NovoInimigo(  bn::fixed_point(grid_width*(3),(grid_height*(0))) );
 
-            ///
-            BN_LOG("novo sprite de nave por obj");
             //bn::sprite_ptr sp = bn::sprite_items::spaceship_3.create_sprite({0,0});
-            Obj* o = db_e.NovoObj();
+            // Obj* o = db_e.NovoObj();
             // Obj* o2 = db_e.NovoObj();
-            BN_LOG("Usados: ", bn::sprites::used_items_count());
+            BN_LOG("inimigo Usados: ", bn::sprites::used_items_count());
             BN_LOG("Disponíveis: ", bn::sprites::available_items_count());
             BN_LOG("reservados: ", bn::sprites::reserved_handles_count());
             
@@ -112,31 +115,39 @@ namespace adonai
                 // gizmos.set_position(_player->pos());
 
                 // if(enemy_1->hp() > 0 || enemy_1->wait_to_destroy) { enemy_1->update(); }
-                //_player->update();
+                
                 if(adonai::GLOBALS::global_player->hp() > 0 || adonai::GLOBALS::global_player->wait_to_destroy) { adonai::GLOBALS::global_player->update(); }
                 hud_energy_bar.update();
                 hud_hp_bar.update();
 
-                // update_all_enemies();
+                update_all_enemies();
 
-                // i_1->update();
+                i_1->update();
                 // i_2->update();
                 // i_3->update();
                 // i_4->update();
                 
-                // if(adonai::GLOBALS::global_player->hp() <= 0){ game_over.update(); }
+                if(adonai::GLOBALS::global_player->hp() <= 0){ game_over.update(); }
+
+                
+                if (bn::keypad::l_pressed())
+                {
+                    BN_LOG("Usados: ", bn::sprites::used_items_count());
+                    BN_LOG("Disponíveis: ", bn::sprites::available_items_count());
+                    BN_LOG("reservados: ", bn::sprites::reserved_handles_count());
+                }
 
                 bn::core::update();
             }
         }
         // update todos os inimigos na cena
-        // void update_all_enemies(){
-        //     if(ntt_enemies.size() > 0){
-        //         for (int i = 0; i < ntt_enemies.size(); i++) {
-        //             ntt_enemies.at(i)->update();
-        //         }
-        //     }
-        // }
+        void update_all_enemies(){
+            if(ntt_enemies.size() > 0){
+                for (int i = 0; i < ntt_enemies.size(); i++) {
+                    ntt_enemies.at(i)->update();
+                }
+            }
+        }
 
     };
     

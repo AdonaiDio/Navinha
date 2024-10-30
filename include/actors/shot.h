@@ -29,7 +29,7 @@ namespace adonai
         protected:
             bn::fixed_point _pos;
             bn::rect _col;
-            bn::sprite_ptr _sprite;
+            bn::sprite_ptr _sprite; // parar de usar sprites com os shots
 
             const int velocity = 3;
 

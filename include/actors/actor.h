@@ -47,6 +47,11 @@ namespace adonai
                     _pos(position),
                     _hp(max_hp)
                 {
+                    
+    
+            BN_LOG("Actor-> Usados: ", bn::sprites::used_items_count());
+            BN_LOG("Disponíveis: ", bn::sprites::available_items_count());
+            BN_LOG("reservados: ", bn::sprites::reserved_handles_count());
                     _sprite_clone.set_z_order(-1);
                     _sprite_clone.set_visible(false);
                     _sprite_clone.set_palette(bn::sprite_palette_items::feedback_palette);

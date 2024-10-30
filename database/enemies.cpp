@@ -35,6 +35,21 @@ namespace adonai
             Inimigo* novo_inimigo = new Inimigo(position);
             // não vou inserir na lista de ntt pois ele não é enemy, 
             // ele vai fazer update na cena teste.
+                                        
+            novo_inimigo->_cols[0] = bn::rect((int)position.x()-1, (int)position.y()-1, 10, 14);
+            novo_inimigo->_cols[1] = bn::rect((int)position.x()-1, (int)position.y()-1, 10, 14);
+            novo_inimigo->_cols[2] = bn::rect((int)position.x()-1, (int)position.y()-1, 10, 12);
+            novo_inimigo->_cols[3] = bn::rect((int)position.x()-1, (int)position.y(),   10, 12);
+            novo_inimigo->_cols[4] = bn::rect((int)position.x()-1, (int)position.y(),   10, 10);
+            novo_inimigo->_cols[5] = bn::rect((int)position.x()-1, (int)position.y(),   10, 12);
+            novo_inimigo->_cols[6] = bn::rect((int)position.x()-1, (int)position.y()-1, 10, 12);
+
+            novo_inimigo->enemy_anim = bn::create_sprite_animate_action_forever (
+                    novo_inimigo->sprite(),
+                    15,
+                    bn::sprite_items::spaceship_2.tiles_item(),
+                    0,1,2,3,4,5,6
+            );
             return novo_inimigo;
         }
         //

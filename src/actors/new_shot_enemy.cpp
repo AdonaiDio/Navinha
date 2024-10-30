@@ -7,27 +7,21 @@
 
 #include "player.h"
 
-#include "shot_enemy.h"
+#include "new_shot_enemy.h"
 
 
 namespace adonai
 {
 
-    extern bn::array<Shot_Enemy*, 40> ntt_shots;
+    // extern bn::array<New_Shot_Enemy*, 40> ntt_shots;
 
-    Shot_Enemy::Shot_Enemy(   
-            const bn::sprite_item& sprite_item, 
-            const bn::fixed_point& initial_position)
-        :Shot(sprite_item,
-            initial_position),
-        _sprite(sprite_item.create_sprite(bn::fixed_point(bn::display::width()+8,0))),
-        _sprite_item(sprite_item)
+    New_Shot_Enemy::New_Shot_Enemy()//const bn::fixed_point& initial_position)
     {
         // _state = Shot_State::NONE; //caiu em desuso se o available funcionar
         _available = true;
         //_sprite.set_visible(false);
     }
-    Shot_Enemy::~Shot_Enemy() {
+    New_Shot_Enemy::~New_Shot_Enemy() {
         // for (int i = 0; i < ntt_shots.size(); i++)
         // {
         //     if(ntt_shots.at(i) == this){
@@ -38,22 +32,17 @@ namespace adonai
         // }
     }
 
-    bn::sprite_item Shot_Enemy::sprite_item()
-    {
-        return _sprite_item;
-    }
-
     // o valor do owner_pos_y deve ser criado ao disparar o tiro
-    void Shot_Enemy::move_forward()
+    void New_Shot_Enemy::move_forward()
     {
         //não mover se colidir
         if(check_collision()){
             //se colidir resetar estado do tiro
             _pos = bn::fixed_point(((-bn::display::width()/2)-8),0);
-            _sprite.set_position(_pos);
+            // _sprite.set_position(_pos);
             // _state = Shot_State::NONE;
             _available = true;
-            // this->~Shot_Enemy();
+            // this->~New_Shot_Enemy();
             return;
         }
 
@@ -72,26 +61,26 @@ namespace adonai
         }
 
         //corrigir a posição do sprite em relação a posição 'pos' dele
-        _sprite.set_position(_pos);
+        // _sprite.set_position(_pos);
         // BN_LOG("shot pos: ",_pos.x(),",",_pos.y());
 
         // ao chegar no fim da tela a esquerda, volta a ser NONE
-        if(_sprite.position().x() < (-bn::display::width()/2)-4)
+        if(_pos.x() < (-bn::display::width()/2)-4)
         {
             // _state = Shot_State::NONE;
             _available = true;
-            // this->~Shot_Enemy();
+            // this->~New_Shot_Enemy();
         }
     }
 
 #pragma region Codigo depreciado!!
-    void Shot_Enemy::move_forward(bn::fixed_point point_direction)
+    void New_Shot_Enemy::move_forward(bn::fixed_point point_direction)
     {
         //não mover se colidir
         if(check_collision()){
             //se colidir resetar estado do tiro
             _pos = bn::fixed_point(((-bn::display::width()/2)-8),0);
-            _sprite.set_position(_pos);
+            // _sprite.set_position(_pos);
             // _state = Shot_State::NONE;
             _available = true;
             return;
@@ -100,20 +89,20 @@ namespace adonai
         //Mudar a posição em X e Y do shoot basiado na direção
         _pos = move_towards_direction(_pos, point_direction, velocity);
         //corrigir a posição do sprite em relação a posição 'pos' dele
-        _sprite.set_position(_pos);
+        // _sprite.set_position(_pos);
 
         // ao chegar no fim da tela a esquerda, volta a ser NONE
-        if(_sprite.position().x() < (-1 * bn::display::width()/2)-4)
+        if(_pos.x() < (-1 * bn::display::width()/2)-4)
         {
             // _state = Shot_State::NONE;
             _available = true;
-            // this->~Shot_Enemy();
+            // this->~New_Shot_Enemy();
         }
     }
 #pragma endregion
 
 
-    bool Shot_Enemy::check_collision()
+    bool New_Shot_Enemy::check_collision()
     {
         //ATUALIZAR COLLISION
         _col = bn::rect( (int)_pos.x(), (int)_pos.y(),
@@ -130,7 +119,7 @@ namespace adonai
         }            
         return false;
     }
-    void Shot_Enemy::update()
+    void New_Shot_Enemy::update()
     {
         if(_available == true){return;}
         move_forward();

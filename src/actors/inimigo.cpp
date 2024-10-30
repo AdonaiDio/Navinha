@@ -7,6 +7,7 @@
 #include "utility.h"
 
 #include "player.h"
+// #include "hit_fx.h"
 
 #include "inimigo.h"
 
@@ -20,22 +21,15 @@ namespace adonai
                     bn::sprite_item shot_sprite_item, E_Shot_Type shot_type, 
                     int max_hp) :
         _sprite(sprite_item.create_sprite(position)),
-        _sprite_clone(sprite_item.create_sprite(position)),
+        _sprite_item(sprite_item),
+        _sprite_shot(shot_sprite_item.create_sprite({136,96})),
         _pos(position),
         _hp(max_hp),
-        _shot_sprite_item(shot_sprite_item),
-        _shots({Shot_Enemy(adonai::Shot_Enemy(shot_sprite_item)),
-                Shot_Enemy(adonai::Shot_Enemy(shot_sprite_item)),
-                Shot_Enemy(adonai::Shot_Enemy(shot_sprite_item)),
-                Shot_Enemy(adonai::Shot_Enemy(shot_sprite_item)),
-                Shot_Enemy(adonai::Shot_Enemy(shot_sprite_item)),
-                Shot_Enemy(adonai::Shot_Enemy(shot_sprite_item)),
-                Shot_Enemy(adonai::Shot_Enemy(shot_sprite_item)),
-                Shot_Enemy(adonai::Shot_Enemy(shot_sprite_item)),
-                Shot_Enemy(adonai::Shot_Enemy(shot_sprite_item)),
-                Shot_Enemy(adonai::Shot_Enemy(shot_sprite_item)),
-                Shot_Enemy(adonai::Shot_Enemy(shot_sprite_item)),
-                Shot_Enemy(adonai::Shot_Enemy(shot_sprite_item))}),
+        // _shot_sprite_item(shot_sprite_item),
+        _shots({New_Shot_Enemy(), New_Shot_Enemy(), New_Shot_Enemy(),
+                New_Shot_Enemy(), New_Shot_Enemy(), New_Shot_Enemy(),
+                New_Shot_Enemy(), New_Shot_Enemy(), New_Shot_Enemy(),
+                New_Shot_Enemy(), New_Shot_Enemy(), New_Shot_Enemy()}),
         _shot_type(shot_type)
     {
         // (*ntt_enemies).push_back(this);
@@ -55,14 +49,14 @@ namespace adonai
                 sprite_item.tiles_item(),
                 0,0
         );
-        enemy_clone_anim = 
-            bn::create_sprite_animate_action_forever
-            (
-                _sprite_clone,
-                0,
-                sprite_item.tiles_item(),
-                0,0
-        );
+        // enemy_clone_anim = 
+        //     bn::create_sprite_animate_action_forever
+        //     (
+        //         _sprite_clone,
+        //         0,
+        //         sprite_item.tiles_item(),
+        //         0,0
+        // );
 
         BN_LOG("Enemy constructor: FINISHED");
         // BN_LOG("enemies: ", (*ntt_enemies).size());
@@ -99,7 +93,9 @@ namespace adonai
         _hp -= 1;
         if (_hp > 0) {
             bn::sound_items::hit.play();
-            hit_feedback_duration = 15; //frames de duração do hit_feedback
+            if(!is_hitting){
+                hit_feedback();
+            }
             return;
         }
         this->wait_to_destroy = true;
@@ -116,6 +112,9 @@ namespace adonai
         //         break;
         //     }
         // }
+        if(hit_fx != nullptr){
+            hit_fx->~Hit_FX();
+        }
         this->~Inimigo();
         BN_LOG("DELETED");
     }
@@ -179,7 +178,7 @@ namespace adonai
         }
 
         _shots[shot_index].pos(bn::fixed_point(_pos.x()-4, _pos.y()));
-        _shots[shot_index].sprite().set_visible(true);
+        // _shots[shot_index].sprite().set_visible(true);
         // _shots[shot_index]._state = Shot_State::SHOOTING;
         _shots[shot_index]._available = false;
         
@@ -217,20 +216,20 @@ namespace adonai
             }
         }
         _shots[i_1].pos(bn::fixed_point(_pos.x()-4, _pos.y()));
-        _shots[i_1].sprite().set_visible(true);
+        // _shots[i_1].sprite().set_visible(true);
         // _shots[i_1]._state = Shot_State::SHOOTING;
         _shots[i_1]._available = false;
         _shots[i_1].pre_direction = bn::fixed_point(-16,-8);
         BN_LOG("spawn shot_1");
         
         _shots[i_2].pos(bn::fixed_point(_pos.x()-4, _pos.y()));
-        _shots[i_2].sprite().set_visible(true);
+        // _shots[i_2].sprite().set_visible(true);
         // _shots[i_2]._state = Shot_State::SHOOTING;
         _shots[i_2]._available = false;
         BN_LOG("spawn shot_2");
         
         _shots[i_3].pos(bn::fixed_point(_pos.x()-4, _pos.y()));
-        _shots[i_3].sprite().set_visible(true);
+        // _shots[i_3].sprite().set_visible(true);
         // _shots[i_3]._state = Shot_State::SHOOTING;
         _shots[i_3]._available = false;
         _shots[i_3].pre_direction = bn::fixed_point(-16,+8);
@@ -252,7 +251,7 @@ namespace adonai
             }
         }
         _shots[shot_index].pos(bn::fixed_point(_pos.x()-4, _pos.y()));
-        _shots[shot_index].sprite().set_visible(true);
+        // _shots[shot_index].sprite().set_visible(true);
         // _shots[shot_index]._state = Shot_State::SHOOTING;
         _shots[shot_index]._available = false;
         
@@ -303,35 +302,38 @@ namespace adonai
     {
         if(!can_update()){ return; }
 
+
         // scripts
         // update_scripts();
 
         enemy_anim.update();
-        enemy_clone_anim.update();
+        // enemy_clone_anim.update();
         
         update_collider();
         
         _sprite.set_position(_pos);
-        _sprite_clone.set_position(_pos);
-
-        hit_feedback();
 
         update_all_shots_occupied();
+        update_shared_sprite_shot_position();
 
+        if(hit_fx){
+            hit_fx->update();
+        }
         if(explosion && !explosion->_explosion_anim.done()){
             explosion->update();
         }
-        if(explosion->_explosion_anim.done() && wait_to_destroy && all_shots_available()){
+        if(explosion->_explosion_anim.done() && wait_to_destroy  ){// && all_shots_available()){
             wait_to_destroy = false;
             // _scripts.empty();
             just_delete_this();
         }
 
+        shooting();
         damaged();
 
     }
 
-    bool Inimigo::all_shots_available()
+    bool Inimigo::all_shots_available() // uso pra que?
     {
         for (int i = 0; i < _shots_is_available.size(); i++)
         {
@@ -340,6 +342,21 @@ namespace adonai
             }
         }
         return true;
+    }
+
+    void Inimigo::update_shared_sprite_shot_position()
+    {
+        if(_sprite_shot_index >= _shots_is_available.size() - 1){
+            _sprite_shot_index = -1;
+        }
+        _sprite_shot_index++;
+        for (int i = _sprite_shot_index; i < _shots_is_available.size(); i++) {
+            if( *_shots_is_available.at(_sprite_shot_index) == false){
+                _sprite_shot.set_position(_shots.at(_sprite_shot_index).pos());
+                _sprite_shot_index = i;
+                break;
+            }
+        }
     }
 
 // (Só por segurança, talvez não precise, mas caso entre no 
