@@ -47,6 +47,17 @@ namespace adonai
             bn::sprite_item _sprite_item; //para usar o frame correto no hit_feedback
             // sprite compartilhado entre todos os shots deste enemy
             bn::sprite_ptr _sprite_shot;
+            bn::sprite_ptr _sprite_shot_2;
+            // bn::sprite_ptr _sprite_shot_3;
+            // bn::sprite_ptr _sprite_shot_4;
+            // bn::sprite_ptr _sprite_shot_5;
+            // bn::sprite_ptr _sprite_shot_6;
+            // bn::sprite_ptr _sprite_shot_7;
+            // bn::sprite_ptr _sprite_shot_8;
+            // bn::sprite_ptr _sprite_shot_9;
+            // bn::sprite_ptr _sprite_shot_10;
+            // bn::sprite_ptr _sprite_shot_11;
+            // bn::sprite_ptr _sprite_shot_12;
             bn::fixed_point _pos;
             bn::rect _col = bn::rect( 0, 0, 0, 0 );
 
@@ -57,7 +68,9 @@ namespace adonai
             Explosion_FX* explosion;
             Hit_FX* hit_fx;
             bool is_hitting = false;
-            int _sprite_shot_index = -1; //usado para mudar a posição do sprite compartilhado dos shots
+            // < Index do Ultimo Sprite Atualizado >
+            // usado para mudar a posição do sprite compartilhado dos shots
+            int _last_spr_shot_updated_index = 0; 
             
         protected:
         
@@ -163,7 +176,9 @@ namespace adonai
             void shot_type_3();
             void update_all_shots_occupied();
             bool all_shots_available();
-            void update_shared_sprite_shot_position();
+            int shots_occupied_qty();
+            void update_shared_sprite_shot_position(bn::sprite_ptr& sprite_shot);
+            void update_shots();
 
             void update_collider();
             // void update_scripts();

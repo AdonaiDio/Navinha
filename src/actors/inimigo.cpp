@@ -23,6 +23,17 @@ namespace adonai
         _sprite(sprite_item.create_sprite(position)),
         _sprite_item(sprite_item),
         _sprite_shot(shot_sprite_item.create_sprite({136,96})),
+        _sprite_shot_2(shot_sprite_item.create_sprite({136,96})),
+        // _sprite_shot_3(shot_sprite_item.create_sprite({136,96})),
+        // _sprite_shot_4(shot_sprite_item.create_sprite({136,96})),
+        // _sprite_shot_5(shot_sprite_item.create_sprite({136,96})),
+        // _sprite_shot_6(shot_sprite_item.create_sprite({136,96})),
+        // _sprite_shot_7(shot_sprite_item.create_sprite({136,96})),
+        // _sprite_shot_8(shot_sprite_item.create_sprite({136,96})),
+        // _sprite_shot_9(shot_sprite_item.create_sprite({136,96})),
+        // _sprite_shot_10(shot_sprite_item.create_sprite({136,96})),
+        // _sprite_shot_11(shot_sprite_item.create_sprite({136,96})),
+        // _sprite_shot_12(shot_sprite_item.create_sprite({136,96})),
         _pos(position),
         _hp(max_hp),
         // _shot_sprite_item(shot_sprite_item),
@@ -312,10 +323,9 @@ namespace adonai
         update_collider();
         
         _sprite.set_position(_pos);
-
-        update_all_shots_occupied();
-        update_shared_sprite_shot_position();
-
+        
+        update_shots();
+        
         if(hit_fx){
             hit_fx->update();
         }
@@ -333,7 +343,7 @@ namespace adonai
 
     }
 
-    bool Inimigo::all_shots_available() // uso pra que?
+    bool Inimigo::all_shots_available()
     {
         for (int i = 0; i < _shots_is_available.size(); i++)
         {
@@ -343,18 +353,76 @@ namespace adonai
         }
         return true;
     }
-
-    void Inimigo::update_shared_sprite_shot_position()
+    int Inimigo::shots_occupied_qty()
     {
-        if(_sprite_shot_index >= _shots_is_available.size() - 1){
-            _sprite_shot_index = -1;
+        int counter = 0;
+        for (int i = 0; i < _shots_is_available.size(); i++)
+        {
+            if(*_shots_is_available[i] == false){
+                counter++;
+            }
         }
-        _sprite_shot_index++;
-        for (int i = _sprite_shot_index; i < _shots_is_available.size(); i++) {
-            if( *_shots_is_available.at(_sprite_shot_index) == false){
-                _sprite_shot.set_position(_shots.at(_sprite_shot_index).pos());
-                _sprite_shot_index = i;
-                break;
+        return counter;
+    }
+
+    void Inimigo::update_shared_sprite_shot_position(bn::sprite_ptr& sprite_shot)
+    {
+        bool return_count_i_to_zero = true;
+        
+        if(shots_occupied_qty() > 1){
+            for (int i = _last_spr_shot_updated_index; i < _shots_is_available.size(); i++) {
+                if( _last_spr_shot_updated_index != i &&
+                    *_shots_is_available.at(i) == false )
+                {
+                    sprite_shot.set_position(_shots.at(i).pos());
+                    _last_spr_shot_updated_index = i;
+                    return_count_i_to_zero = false;
+                    break;
+                }
+            }
+        }
+        //apenas em caso de ter percorrido a lista até o fim que vai buscar desde o 0
+        if( return_count_i_to_zero == false){return;}
+
+        for (int i = 0; i < _shots_is_available.size(); i++) {
+            if(_last_spr_shot_updated_index == i){
+                if( shots_occupied_qty() == 1 &&
+                    *_shots_is_available.at(i) == false)
+                {
+                    sprite_shot.set_position(_shots.at(i).pos());
+                    _last_spr_shot_updated_index = i;
+                    break;
+                }
+            }else{
+                if( *_shots_is_available.at(i) == false){
+                    sprite_shot.set_position(_shots.at(i).pos());
+                    _last_spr_shot_updated_index = i;
+                    break;
+                }
+            }
+        }
+    }
+
+    void Inimigo::update_shots()
+    {
+        update_all_shots_occupied();
+        if(!all_shots_available()){
+            update_shared_sprite_shot_position(_sprite_shot);
+            if(shots_occupied_qty() > 1){
+                update_shared_sprite_shot_position(_sprite_shot_2);
+                // update_shared_sprite_shot_position(_sprite_shot_3 );
+                // update_shared_sprite_shot_position(_sprite_shot_4 );
+                // update_shared_sprite_shot_position(_sprite_shot_5 );
+                // update_shared_sprite_shot_position(_sprite_shot_6 );
+                // update_shared_sprite_shot_position(_sprite_shot_7 );
+                // update_shared_sprite_shot_position(_sprite_shot_8 );
+                // update_shared_sprite_shot_position(_sprite_shot_9 );
+                // update_shared_sprite_shot_position(_sprite_shot_10 );
+                // update_shared_sprite_shot_position(_sprite_shot_11 );
+                // update_shared_sprite_shot_position(_sprite_shot_12 );
+            }
+            else{
+                _sprite_shot_2.set_position({136,96});
             }
         }
     }
