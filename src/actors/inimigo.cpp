@@ -4,6 +4,12 @@
 #include "bn_sound_items.h"
 #include "bn_span.h"
 
+#include "bn_sprite_first_attributes_hbe_ptr.h"
+#include "bn_sprite_first_attributes.h"
+#include "bn_sprites_mosaic.h"
+#include "bn_blending.h"
+#include "bn_sprite_position_hbe_ptr.h"
+
 #include "utility.h"
 
 #include "player.h"
@@ -23,7 +29,7 @@ namespace adonai
         _sprite(sprite_item.create_sprite(position)),
         _sprite_item(sprite_item),
         _sprite_shot(shot_sprite_item.create_sprite({136,96})),
-        _sprite_shot_2(shot_sprite_item.create_sprite({136,96})),
+        // _sprite_shot_2(shot_sprite_item.create_sprite({136,96})),
         // _sprite_shot_3(shot_sprite_item.create_sprite({136,96})),
         // _sprite_shot_4(shot_sprite_item.create_sprite({136,96})),
         // _sprite_shot_5(shot_sprite_item.create_sprite({136,96})),
@@ -60,14 +66,11 @@ namespace adonai
                 sprite_item.tiles_item(),
                 0,0
         );
-        // enemy_clone_anim = 
-        //     bn::create_sprite_animate_action_forever
-        //     (
-        //         _sprite_clone,
-        //         0,
-        //         sprite_item.tiles_item(),
-        //         0,0
-        // );
+        
+
+
+        hbe_test();
+
 
         BN_LOG("Enemy constructor: FINISHED");
         // BN_LOG("enemies: ", (*ntt_enemies).size());
@@ -340,6 +343,41 @@ namespace adonai
 
         shooting();
         damaged();
+        //hbe_test_update();
+        if(bn::keypad::left_held()){
+            pos(pos().x(), pos().y()+1);
+        }
+        if(bn::keypad::right_held()){
+            pos(pos().x(), pos().y()-1);
+        }
+
+    }
+
+    void Inimigo::hbe_test()
+    {
+
+        
+
+    }
+    void Inimigo::hbe_test_update(bn::fixed new_y)
+    {
+
+        base_num += 1;
+
+        for(int index = 0, limit = bn::display::height(); index < limit; ++index)
+        {
+            // degrees_angle += 32;
+
+            // if(degrees_angle >= 360)
+            // {
+            //     degrees_angle -= 360;
+            // }
+
+            // bn::fixed desp = bn::degrees_lut_sin(degrees_angle) * 2;
+            buffer_rows[index] = new_y;
+        }
+
+        vertical_position_hbe.reload_deltas_ref();
 
     }
 
@@ -365,65 +403,91 @@ namespace adonai
         return counter;
     }
 
-    void Inimigo::update_shared_sprite_shot_position(bn::sprite_ptr& sprite_shot)
+    void Inimigo::update_shared_sprite_shot_position()
     {
-        bool return_count_i_to_zero = true;
-        
-        if(shots_occupied_qty() > 1){
-            for (int i = _last_spr_shot_updated_index; i < _shots_is_available.size(); i++) {
-                if( _last_spr_shot_updated_index != i &&
-                    *_shots_is_available.at(i) == false )
-                {
-                    sprite_shot.set_position(_shots.at(i).pos());
-                    _last_spr_shot_updated_index = i;
-                    return_count_i_to_zero = false;
-                    break;
-                }
-            }
-        }
-        //apenas em caso de ter percorrido a lista até o fim que vai buscar desde o 0
-        if( return_count_i_to_zero == false){return;}
-
+        //todos os tiros ocupados, vão mudar a posição do sprite ou o efeito HBlank
         for (int i = 0; i < _shots_is_available.size(); i++) {
-            if(_last_spr_shot_updated_index == i){
-                if( shots_occupied_qty() == 1 &&
-                    *_shots_is_available.at(i) == false)
-                {
-                    sprite_shot.set_position(_shots.at(i).pos());
-                    _last_spr_shot_updated_index = i;
-                    break;
-                }
-            }else{
-                if( *_shots_is_available.at(i) == false){
-                    sprite_shot.set_position(_shots.at(i).pos());
-                    _last_spr_shot_updated_index = i;
-                    break;
+            if(*_shots_is_available[i] = false){
+                if( _shots.at(_cur_shot_index).pos().y() + 8 <= _shots.at(i).pos().y()){
+                    //h-blank
+                    hbe_test_update(_shots.at(i).pos().y());
+                }else{
+                    _sprite_shot.set_position(_shots.at(i).pos());
+                    hbe_test_update(_shots.at(i).pos().y());
                 }
             }
         }
     }
 
+
+    // void Inimigo::update_shared_sprite_shot_position()
+    // {
+    //     bool return_count_i_to_zero = true;
+     //   
+    //     if(shots_occupied_qty() > 1){
+    //         for (int i = _last_spr_shot_updated_index; i < _shots_is_available.size(); i++) {
+    //             if( _last_spr_shot_updated_index != i &&
+    //                 *_shots_is_available.at(i) == false )
+    //             {
+    //                 sprite_shot.set_position(_shots.at(i).pos());
+    //                 _last_spr_shot_updated_index = i;
+    //                 return_count_i_to_zero = false;
+    //                 break;
+    //             }
+    //         }
+    //     }
+    //     //apenas em caso de ter percorrido a lista até o fim que vai buscar desde o 0
+    //     if( return_count_i_to_zero == false){return;}
+//
+    //     for (int i = 0; i < _shots_is_available.size(); i++) {
+    //         if(_last_spr_shot_updated_index == i){
+    //             if( shots_occupied_qty() == 1 &&
+    //                 *_shots_is_available.at(i) == false)
+    //             {
+    //                 sprite_shot.set_position(_shots.at(i).pos());
+    //                 _last_spr_shot_updated_index = i;
+    //                 break;
+    //             }
+    //         }else{
+    //             if( *_shots_is_available.at(i) == false){
+    //                 sprite_shot.set_position(_shots.at(i).pos());
+    //                 _last_spr_shot_updated_index = i;
+    //                 break;
+    //             }
+    //         }
+    //     }
+    // }
+
     void Inimigo::update_shots()
     {
         update_all_shots_occupied();
         if(!all_shots_available()){
-            update_shared_sprite_shot_position(_sprite_shot);
-            if(shots_occupied_qty() > 1){
-                update_shared_sprite_shot_position(_sprite_shot_2);
-                // update_shared_sprite_shot_position(_sprite_shot_3 );
-                // update_shared_sprite_shot_position(_sprite_shot_4 );
-                // update_shared_sprite_shot_position(_sprite_shot_5 );
-                // update_shared_sprite_shot_position(_sprite_shot_6 );
-                // update_shared_sprite_shot_position(_sprite_shot_7 );
-                // update_shared_sprite_shot_position(_sprite_shot_8 );
-                // update_shared_sprite_shot_position(_sprite_shot_9 );
-                // update_shared_sprite_shot_position(_sprite_shot_10 );
-                // update_shared_sprite_shot_position(_sprite_shot_11 );
-                // update_shared_sprite_shot_position(_sprite_shot_12 );
-            }
-            else{
-                _sprite_shot_2.set_position({136,96});
-            }
+            update_shared_sprite_shot_position();
+
+            // _sprite_shot_2.set_position({136,96});
+            // _sprite_shot_3.set_position({136,96});
+            // _sprite_shot_4.set_position({136,96});
+            // _sprite_shot_5.set_position({136,96});
+            // _sprite_shot_6.set_position({136,96});
+            // _sprite_shot_7.set_position({136,96});
+            // _sprite_shot_8.set_position({136,96});
+            // _sprite_shot_9.set_position({136,96});
+            // _sprite_shot_10.set_position({136,96});
+            // _sprite_shot_11.set_position({136,96});
+            // _sprite_shot_12.set_position({136,96});
+            
+            // if(shots_occupied_qty() >= 2){ update_shared_sprite_shot_position(_sprite_shot_2);}
+            // if(shots_occupied_qty() >= 3 ){ update_shared_sprite_shot_position(_sprite_shot_3 );}
+            // if(shots_occupied_qty() >= 4 ){ update_shared_sprite_shot_position(_sprite_shot_4 );}
+            // if(shots_occupied_qty() >= 5 ){ update_shared_sprite_shot_position(_sprite_shot_5 );}
+            // if(shots_occupied_qty() >= 6 ){ update_shared_sprite_shot_position(_sprite_shot_6 );}
+            // if(shots_occupied_qty() >= 7 ){ update_shared_sprite_shot_position(_sprite_shot_7 );}
+            // if(shots_occupied_qty() >= 8 ){ update_shared_sprite_shot_position(_sprite_shot_8 );}
+            // if(shots_occupied_qty() >= 9 ){ update_shared_sprite_shot_position(_sprite_shot_9 );}
+            // if(shots_occupied_qty() >= 10 ){ update_shared_sprite_shot_position(_sprite_shot_10 );}
+            // if(shots_occupied_qty() >= 11 ){ update_shared_sprite_shot_position(_sprite_shot_11 );}
+            // if(shots_occupied_qty() >= 12 ){ update_shared_sprite_shot_position(_sprite_shot_12 );}
+            
         }
     }
 

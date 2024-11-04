@@ -10,6 +10,9 @@
 #include "bn_colors.h"
 #include "bn_sound_items.h"
 #include <bn_optional.h>
+//H-blank
+#include "bn_sprite_position_hbe_ptr.h"
+
 
 #include "bn_sprite_palette_items_feedback_palette.h"
 
@@ -47,7 +50,8 @@ namespace adonai
             bn::sprite_item _sprite_item; //para usar o frame correto no hit_feedback
             // sprite compartilhado entre todos os shots deste enemy
             bn::sprite_ptr _sprite_shot;
-            bn::sprite_ptr _sprite_shot_2;
+            int _cur_shot_index = 0;
+            // bn::sprite_ptr _sprite_shot_2;
             // bn::sprite_ptr _sprite_shot_3;
             // bn::sprite_ptr _sprite_shot_4;
             // bn::sprite_ptr _sprite_shot_5;
@@ -86,8 +90,9 @@ namespace adonai
 
             bn::fixed_point pos()                   { return _pos; }
             void pos(bn::fixed_point position)  { _pos = position; }
-            void pos_x(bn::fixed x)  { _pos = bn::fixed_point(x, _pos.y()); }
-            void pos_y(bn::fixed y)  { _pos = bn::fixed_point(_pos.x(), y); }
+            void pos(bn::fixed x, bn::fixed y)  { _pos = bn::fixed_point(x,y); }
+            // void pos_x(bn::fixed x)  { _pos = bn::fixed_point(x, _pos.y()); }
+            // void pos_y(bn::fixed y)  { _pos = bn::fixed_point(_pos.x(), y); }
             bn::rect col()                          { return _col; }
             void col(bn::rect new_value)                { _col = new_value; }
 
@@ -177,13 +182,19 @@ namespace adonai
             void update_all_shots_occupied();
             bool all_shots_available();
             int shots_occupied_qty();
-            void update_shared_sprite_shot_position(bn::sprite_ptr& sprite_shot);
+            void update_shared_sprite_shot_position();
             void update_shots();
 
             void update_collider();
             // void update_scripts();
             void update();
 
+            bn::array<bn::fixed, bn::display::height()> buffer_rows;
+            bn::sprite_position_hbe_ptr vertical_position_hbe =
+                    bn::sprite_position_hbe_ptr::create_vertical(_sprite_shot, buffer_rows);
+            bn::fixed base_num;
+            void hbe_test();
+            void hbe_test_update(bn::fixed new_y);
 
             bool can_update();
     };
