@@ -13,10 +13,11 @@
 namespace adonai {
     class Move_Enemy_DVD_Script : public I_Script<Enemy>{
         private:
-        int8_t _x = -1; 
-        int8_t _y = 1; 
+        bn::fixed _x = -1; 
+        bn::fixed _y = 1; 
         public:
         void start(Enemy* e) override {
+            // BN_LOG("START e_pos: ",e->pos().x(),", ",e->pos().y());
         };
         void update(Enemy* e) override {
             _y = (e->pos().y() >= bn::display::height()/2) ? -1 :  
@@ -25,7 +26,8 @@ namespace adonai {
                     (e->pos().x() <= -bn::display::width()/2) ? 1 : _x;
 
             // e->pos(move_towards(e->pos(), e->pos()+bn::fixed_point(_x*16,_y*16), e->velocity()));
-            e->pos(e->pos()+bn::fixed_point(_x*e->velocity(),_y*e->velocity()));
+            e->pos( e->pos() + bn::fixed_point(_x*e->velocity(), _y*e->velocity()) );
+            // BN_LOG("e_pos: ",e->pos().x(),", ",e->pos().y());
 
         };
     };

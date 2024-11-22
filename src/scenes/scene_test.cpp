@@ -27,6 +27,7 @@
 #include "bn_sprite_items_gizmos_16x16.h"
 #include "bn_regular_bg_items_tela.h"
 #include "bn_sprite_items_shoot.h"
+#include "bn_sprite_items_spaceship_1.h"
 #include "bn_music_items.h"
 
 #include "obj.h"
@@ -45,7 +46,8 @@ namespace adonai
 
         public:
         bn::vector<Enemy*, 20> ntt_enemies = bn::vector<Enemy*,20>();
-        bn::array<Shot_Enemy*, 40> ntt_shots;
+        // bn::array<New_Shot_Enemy*, 40> ntt_shots;
+        bn::vector<Shot_Enemy*, 40> ntt_shots;
 
         DataBase_Enemies db_e;
         Test(){
@@ -77,32 +79,36 @@ namespace adonai
             // instancia o controller
             adonai::Controller controller = adonai::Controller(*adonai::GLOBALS::global_player);
 
+            BN_LOG("CENA Usados: ", bn::sprites::used_items_count());
+            BN_LOG("Disponíveis: ", bn::sprites::available_items_count());
+            BN_LOG("reservados: ", bn::sprites::reserved_handles_count());
             //inimigos
-            // Enemy* enemy_1 = new Enemy( bn::fixed_point(0, 0),
-            //                             bn::sprite_items::spaceship_1,
-            //                             bn::sprite_items::shoot, 
-            //                             E_Shot_Type::E_Shot_Type_1, 
-            //                             3);
-            
+            Enemy* enemy_1 = new Enemy( &ntt_enemies, 
+                                        bn::fixed_point(grid_width*(4),(grid_height*(0))),
+                                        bn::sprite_items::spaceship_1,
+                                        3,
+                                        bn::sprite_items::shoot,
+                                        E_Shot_Type::E_Shot_Type_1);
+            enemy_1->assign_ntt_shots(&ntt_shots);
+            enemy_1->col(bn::rect((int)enemy_1->pos().x()+0, (int)enemy_1->pos().y()+1, 16, 10));
             // Enemy* e_1 = db_e.DefaultEnemy(  bn::fixed_point(grid_width*(4),(grid_height*(0))), &ntt_enemies );
             // Enemy* e_2 = db_e.DefaultEnemy(  bn::fixed_point(grid_width*(4),(grid_height*(0))), &ntt_enemies );
             // Enemy* e_3 = db_e.DefaultEnemy(  bn::fixed_point(grid_width*(4),(grid_height*(0))), &ntt_enemies );
             // Enemy* e_4 = db_e.DefaultEnemy(  bn::fixed_point(grid_width*(4),(grid_height*(0))), &ntt_enemies );
             
             ///
-            BN_LOG("CENA Usados: ", bn::sprites::used_items_count());
-            BN_LOG("Disponíveis: ", bn::sprites::available_items_count());
-            BN_LOG("reservados: ", bn::sprites::reserved_handles_count());
-            BN_LOG("novo sprite de nave por obj");
-            Inimigo* i_1 = db_e.NovoInimigo(  bn::fixed_point(grid_width*(4),(grid_height*(0))) );
-            // Inimigo* i_2 = db_e.NovoInimigo(  bn::fixed_point(grid_width*(4),(grid_height*(1))) );
+            // BN_LOG("novo sprite de nave por obj");
+            // Inimigo* i_1 = db_e.NovoInimigo(  bn::fixed_point(grid_width*(4),(grid_height*(0))), &ntt_enemies  );
+            // i_1->assign_ntt_shots(&ntt_shots);
+            // Inimigo* i_2 = db_e.NovoInimigo(  bn::fixed_point(grid_width*(4),(grid_height*(1))), &ntt_enemies  );
+            // i_2->assign_ntt_shots(&ntt_shots);
             // Inimigo* i_3 = db_e.NovoInimigo(  bn::fixed_point(grid_width*(4),(grid_height*(-1))) );
             // Inimigo* i_4 = db_e.NovoInimigo(  bn::fixed_point(grid_width*(3),(grid_height*(0))) );
 
             //bn::sprite_ptr sp = bn::sprite_items::spaceship_3.create_sprite({0,0});
             // Obj* o = db_e.NovoObj();
             // Obj* o2 = db_e.NovoObj();
-            BN_LOG("inimigo Usados: ", bn::sprites::used_items_count());
+            BN_LOG("inimigos Usados: ", bn::sprites::used_items_count());
             BN_LOG("Disponíveis: ", bn::sprites::available_items_count());
             BN_LOG("reservados: ", bn::sprites::reserved_handles_count());
             
@@ -121,11 +127,8 @@ namespace adonai
                 hud_hp_bar.update();
 
                 update_all_enemies();
+                update_all_shots();
 
-                i_1->update();
-                // i_2->update();
-                // i_3->update();
-                // i_4->update();
                 
                 if(adonai::GLOBALS::global_player->hp() <= 0){ game_over.update(); }
 
@@ -145,6 +148,13 @@ namespace adonai
             if(ntt_enemies.size() > 0){
                 for (int i = 0; i < ntt_enemies.size(); i++) {
                     ntt_enemies.at(i)->update();
+                }
+            }
+        }
+        void update_all_shots(){
+            if(ntt_shots.size() > 0){
+                for (int i = 0; i < ntt_shots.size(); i++) {
+                    ntt_shots.at(i)->update();
                 }
             }
         }

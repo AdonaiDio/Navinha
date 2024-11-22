@@ -40,13 +40,16 @@ namespace adonai
     {
         using Actor::Actor;
         private:
+            // bn::sprite_ptr _sprite_clone;
             bn::sprite_ptr _propulsion_sprite;
+
+            int hit_feedback_duration = 0;
 
             int shadow_delay = 0;
             bool is_collapsing_shadow = false;
 
         public:
-        bn::vector<Enemy*, 20>* ntt_enemies;//referencia da lista de ntts
+            bn::vector<Enemy*, 20>* ntt_enemies;//referencia da lista de ntts
             // TODO: futuramente com mais tiros, pode ser que passar sprite não seja a melhor solução. 
             // Organizar uma lista de tiros em forma de Enum pode ser o melhor caminho.
             Player( bn::sprite_item sprite_item,
@@ -73,6 +76,7 @@ namespace adonai
                 );
         
             
+            void hit_feedback();
             void receive_hit();
             void explode();
 

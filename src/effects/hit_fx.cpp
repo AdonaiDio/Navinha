@@ -14,7 +14,18 @@ namespace adonai
     _palette(bn::sprite_palette_ptr::create_new(sprite_item.palette_item())), 
     _is_hitting(is_hitting)
     {
-        _sprite.set_z_order(-1);
+        _sprite.set_z_order(-2);
+        _sprite.set_palette(_palette);
+    }
+    Hit_FX::Hit_FX( bn::fixed_point& pos, 
+                    bn::sprite_item sprite_item, 
+                    bool& is_hitting) :
+    _pos(pos),
+    _sprite(sprite_item.create_sprite(pos)),
+    _palette(bn::sprite_palette_ptr::create_new(sprite_item.palette_item())), 
+    _is_hitting(is_hitting)
+    {
+        _sprite.set_z_order(-2);
         _sprite.set_palette(_palette);
     }
     Hit_FX::~Hit_FX()

@@ -47,42 +47,41 @@ namespace adonai
         }
     }
 
-    void Shot_Player::move_forward(bn::fixed_point point_direction)
-    {
-        //não mover se colidir
-        if(check_collision()){
-            //se colidir resetar estado do tiro
-            _pos = bn::fixed_point(((-1 * bn::display::width()/2)-8),0);
-            _sprite.set_position(_pos);
-            _state = Shot_State::NONE;
-            return;
-        }
+    // void Shot_Player::move_forward(bn::fixed_point point_direction)
+    // {
+    //     //não mover se colidir
+    //     if(check_collision()){
+    //         //se colidir resetar estado do tiro
+    //         _pos = bn::fixed_point(((-1 * bn::display::width()/2)-8),0);
+    //         _sprite.set_position(_pos);
+    //         _state = Shot_State::NONE;
+    //         return;
+    //     }
         
-        //Mudar a posição em X e Y do shoot basiado na direção
-        _pos = move_towards_direction(_pos, point_direction, velocity);
-        //corrigir a posição do sprite em relação a posição 'pos' dele
-        _sprite.set_position(_pos);
+    //     //Mudar a posição em X e Y do shoot basiado na direção
+    //     _pos = move_towards_direction(_pos, point_direction, velocity);
+    //     //corrigir a posição do sprite em relação a posição 'pos' dele
+    //     _sprite.set_position(_pos);
 
-        // ao chegar no fim da tela a esquerda, volta a ser NONE
-        if(_sprite.position().x() < (-1 * bn::display::width()/2)-4)
-        {
-            _state = Shot_State::NONE;
-            this->~Shot_Player();
-        }
-    };
+    //     // ao chegar no fim da tela a esquerda, volta a ser NONE
+    //     if(_sprite.position().x() < (-1 * bn::display::width()/2)-4)
+    //     {
+    //         _state = Shot_State::NONE;
+    //         this->~Shot_Player();
+    //     }
+    // };
     
     bool Shot_Player::check_collision()
     {
         //ATUALIZAR COLLISION POSITION
         _col.set_position( (int)_pos.x(), (int)_pos.y() );
-        BN_LOG("CHECK COLLISION");
-        for (int i = 0; i < (*ntt_enemies).size(); i++)
+        for (int i = 0; i < ntt_enemies->size(); i++)
         {
-            BN_LOG("enemies: ", (*ntt_enemies).size());
-            if ( _col.intersects((*ntt_enemies).at(i)->col()))
+            // BN_LOG("enemies: ", ntt_enemies->size());
+            if ( _col.intersects(ntt_enemies->at(i)->col()))
             {
-                // BN_LOG("Colidiu com o inimigo!");
-                (*ntt_enemies).at(i)->receive_hit(i);
+                BN_LOG("Colidiu com o inimigo!");
+                ntt_enemies->at(i)->receive_hit();
                 return true;
                 break;
             }            

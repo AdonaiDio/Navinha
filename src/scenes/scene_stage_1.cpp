@@ -12,6 +12,8 @@
 #include "bn_bg_palette_color_hbe_ptr.h"
 #include "bn_unique_ptr.h"
 
+#include "bn_keypad.h"
+
 //assets
 // #include "bn_sprite_items_gizmos_16x16.h"
 #include "bn_regular_bg_items_sky_solid_color.h"
@@ -76,7 +78,7 @@ namespace adonai
         public:
         bn::vector<Enemy*, 20> ntt_enemies = bn::vector<Enemy*,20>();
         
-        bn::array<Shot_Enemy*, 40> ntt_shots;// vai ser obsoleto se cada inimigo tiver uma array com shots disponíveis.
+        bn::vector<Shot_Enemy*, 40> ntt_shots;
     
         DataBase_Enemies db_e;
         // esse scripts estão na heap!!!
@@ -121,8 +123,8 @@ namespace adonai
             _state = Stage_State::Stage_State_START;
             ////
             //iniciar a primeira horda e contadores
-            start_Wave_1();
-            _state = Stage_State::Stage_State_WAVE_1;
+            start_Wave_3();
+            _state = Stage_State::Stage_State_WAVE_3;
             // start_Wave_4();
             // _state = Stage_State::Stage_State_WAVE_4;
             ////
@@ -190,7 +192,6 @@ namespace adonai
                     _state = Stage_State::Stage_State_WAVE_2;
                 };
 
-                //stage_1_script.update(this);
                 /////
 
                 update_all_enemies();
@@ -203,6 +204,15 @@ namespace adonai
                 hud_hp_bar.update();
                 
                 if(adonai::GLOBALS::global_player->hp() <= 0){ game_over.update(); }
+
+
+                if (bn::keypad::l_pressed())
+                {
+                    BN_LOG("Usados: ", bn::sprites::used_items_count());
+                    BN_LOG("Disponíveis: ", bn::sprites::available_items_count());
+                    BN_LOG("reservados: ", bn::sprites::reserved_handles_count());
+                    BN_LOG("inimigos: ", ntt_enemies.size());
+                }
 
                 
                 // //DEBUG CPU USAGE=================
@@ -220,6 +230,12 @@ namespace adonai
                 bn::core::update();
             }
         };
+
+        // Adiciona enemy a ntt_enemies. 
+        // ... na verdade não adiciona, altera um enemy dispoível da lista de ntt_enemies.
+        void add_enemy_ntt(Enemy enemy){
+            ;
+        }
 
         // update todos os inimigos na cena
         void update_all_enemies(){
@@ -267,18 +283,18 @@ namespace adonai
         void start_Wave_2() {
             //vai e volta em zig zag em loop
             //instancias de inimigos
-            Enemy* enemy1 = db_e.DefaultEnemy(  bn::fixed_point( grid_width*(8), (grid_height*(-6)) ), &ntt_enemies );
+            Enemy* enemy1 = db_e.DefaultEnemy(  bn::fixed_point( 16*(8), (grid_height*(-6)) ), &ntt_enemies );
             enemy1->add_script(wave2_medvd_script_1);
-            Enemy* enemy2 = db_e.DefaultEnemy(  bn::fixed_point( grid_width*(8+1), (grid_height*(-6-1)) ), &ntt_enemies );
+            Enemy* enemy2 = db_e.DefaultEnemy(  bn::fixed_point( 16*(8+1), (grid_height*(-6-1)) ), &ntt_enemies );
             enemy2->add_script(wave2_medvd_script_2);
-            Enemy* enemy3 = db_e.DefaultEnemy(  bn::fixed_point( grid_width*(8+2), (grid_height*(-6-2)) ), &ntt_enemies );
+            Enemy* enemy3 = db_e.DefaultEnemy(  bn::fixed_point( 16*(8+2), (grid_height*(-6-2)) ), &ntt_enemies );
             enemy3->add_script(wave2_medvd_script_3);
 
-            Enemy* enemy4 = db_e.DefaultEnemy(  bn::fixed_point( grid_width*(8), (grid_height*(6)) ), &ntt_enemies );
+            Enemy* enemy4 = db_e.DefaultEnemy(  bn::fixed_point( 16*(8), (grid_height*(6)) ), &ntt_enemies );
             enemy4->add_script(wave2_medvd_script_4);
-            Enemy* enemy5 = db_e.DefaultEnemy(  bn::fixed_point( grid_width*(8+1), (grid_height*(6+1)) ), &ntt_enemies );
+            Enemy* enemy5 = db_e.DefaultEnemy(  bn::fixed_point( 16*(8+1), (grid_height*(6+1)) ), &ntt_enemies );
             enemy5->add_script(wave2_medvd_script_5);
-            Enemy* enemy6 = db_e.DefaultEnemy(  bn::fixed_point( grid_width*(8+2), (grid_height*(6+2)) ), &ntt_enemies );
+            Enemy* enemy6 = db_e.DefaultEnemy(  bn::fixed_point( 16*(8+2), (grid_height*(6+2)) ), &ntt_enemies );
             enemy6->add_script(wave2_medvd_script_6);
 
         }
@@ -289,11 +305,11 @@ namespace adonai
         }
         void start_Wave_3() {
             BN_LOG("WAVE 3");
-            Enemy* red = db_e.RedEnemy({6*16, (-6*16)}, &ntt_enemies);
+            Enemy* red = db_e.RedEnemy({6*16, (-6*16)}, &ntt_enemies, &ntt_shots);
             red->add_script(wave3_shot_n_run_loop_script_1);
-            Enemy* red2 = db_e.RedEnemy({7*16, (-8*16)}, &ntt_enemies);
+            Enemy* red2 = db_e.RedEnemy({7*16, (-8*16)}, &ntt_enemies, &ntt_shots);
             red2->add_script(wave3_shot_n_run_loop_script_2);
-            Enemy* red3 = db_e.RedEnemy({8*16, (-10*16)}, &ntt_enemies);
+            Enemy* red3 = db_e.RedEnemy({8*16, (-10*16)}, &ntt_enemies, &ntt_shots);
             red3->add_script(wave3_shot_n_run_loop_script_3);
         }
         bool finished_Wave_3(){

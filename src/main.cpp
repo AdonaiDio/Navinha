@@ -40,7 +40,7 @@ int main()
     //guardar referencia global
     adonai::GLOBALS::global_player = &player;
     // inciar a primeira cena
-    adonai::Scene scene = adonai::Scene::TEST_SCENE;
+    adonai::Scene scene = adonai::Scene::STAGE_1;
 
     while(true)
     {
@@ -58,7 +58,6 @@ int main()
             adonai::Logo_Studio logo_studio = adonai::Logo_Studio();
             scene = logo_studio.execute();
         }
-        
         bn::core::update();
     }
 

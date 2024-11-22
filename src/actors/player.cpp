@@ -44,20 +44,30 @@ namespace adonai
         shadow_sprites.at(1).set_visible(false);
         shadow_sprites.at(2).set_visible(false);
 
-        _sprite_clone.set_z_order(-2);
-        // _sprite_clone.set_visible(false);
-        // _sprite_clone.set_palette(bn::sprite_palette_items::feedback_palette);
         _velocity = 1;
     }
+
+    void Player::hit_feedback()
+    {
+        is_hitting = true;
+        hit_fx = new Hit_FX(_pos, _sprite_item, is_hitting);
+        hit_fx->hit_feedback_duration = 120;
+        BN_LOG("is hitting: ", is_hitting);
+        BN_LOG("hitFX Usados: ", bn::sprites::used_items_count());
+        BN_LOG("Disponíveis: ", bn::sprites::available_items_count());
+        BN_LOG("reservados: ", bn::sprites::reserved_handles_count());
+    };
 
     void Player::receive_hit()
     {
         if (_hp <= 0 || hit_feedback_duration > 0) {return;}//assegurar que não vai receber hit se já estiver morto
         _hp -= 1;
-        //BN_LOG("HP: ",_hp);
         if (_hp > 0) {
             bn::sound_items::hit.play();
             hit_feedback_duration = 120; //frames de duração do hit_feedback
+            if(!is_hitting){
+                hit_feedback();
+            }
             return;
         }
         wait_to_destroy = true;
@@ -147,13 +157,14 @@ namespace adonai
             _col = bn::rect((int)_pos.x()-1, (int)_pos.y()+2, 7, 7);
         }else{
             _col = bn::rect(-128,-88,0,0);
+            return;
         }
         //check_collision
-        if(hit_feedback_duration > 0){return;}
-        for (int i = 0; i < (*ntt_enemies).size(); i++)
+        // if(hit_feedback_duration < 0){return;}
+        for (int i = 0; i < ntt_enemies->size(); i++)
         {
-            //BN_LOG("enemies: ", ntt_enemies.size());
-            if ( _col.intersects((*ntt_enemies).at(i)->col()))
+            // BN_LOG("enemies: ", ntt_enemies->size());
+            if ( _col.intersects(ntt_enemies->at(i)->col()))
             {
                 // BN_LOG("Colidiu!");
                 receive_hit();
@@ -166,13 +177,16 @@ namespace adonai
     {
         //sprite correction
         _sprite.set_position(_pos);
-        _sprite_clone.set_position(_pos);
+        // _sprite_clone.set_position(_pos);
         
         _propulsion_sprite.set_position(_pos + bn::fixed_point(-16,0));
 
         update_collider();
-        hit_feedback();
+        hit_feedback_duration = hit_feedback_duration-1<0?0:hit_feedback_duration-1; //clamp em 0
 
+        if(hit_fx){
+            hit_fx->update();
+        }
         if(explosion && !explosion->_explosion_anim.done()){
             explosion->update();
         }
