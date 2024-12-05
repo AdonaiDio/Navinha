@@ -13,13 +13,11 @@
 
 namespace adonai
 {
-    Enemy::Enemy(bn::vector<Enemy *, 20> *ntt_e, 
-                bn::fixed_point position, bn::sprite_item sprite_item, 
+    Enemy::Enemy(bn::fixed_point position, 
+                bn::sprite_item sprite_item, 
                 int max_hp) :
-        Actor(sprite_item, position, max_hp),
-        ntt_enemies(ntt_e)
+        Actor(sprite_item, position, max_hp)
     {
-        ntt_enemies->push_back(this);
         _col = bn::rect(  (int)_pos.x(), (int)_pos.y() + 1, 
                         15, 9);
 
@@ -33,20 +31,16 @@ namespace adonai
         );
         
         BN_LOG("Enemy constructor: FINISHED");
-        // BN_LOG("enemies: ", (*ntt_enemies).size());
     }
 
-    Enemy::Enemy( bn::vector<Enemy*, 20>* ntt_e,
-                    bn::fixed_point position, bn::sprite_item sprite_item,
+    Enemy::Enemy(   bn::fixed_point position, bn::sprite_item sprite_item,
                     int max_hp, bn::sprite_item shot_sprite_item, 
                     E_Shot_Type shot_type) :
         Actor( sprite_item, position, max_hp),
-        ntt_enemies(ntt_e),
         _shot(shot_sprite_item),
-        _shot_type(shot_type)
+        _shot_type(shot_type) 
     {
         has_shot = true;
-        ntt_enemies->push_back(this);
         _col = bn::rect(  (int)_pos.x(), (int)_pos.y() + 1, 
                         15, 9);
 
@@ -60,12 +54,15 @@ namespace adonai
         );
 
         BN_LOG("Enemy constructor: FINISHED");
-        // BN_LOG("enemies: ", (*ntt_enemies).size());
     }
-    Enemy::~Enemy(){
-        BN_LOG("Enemy destruido");
-        // BN_LOG("enemies: ", ntt_enemies.size());
-        
+    void Enemy::copy_Enemy(const Enemy &enemy)
+    {
+        copy_Actor(enemy);
+        _cols = enemy._cols;
+        enemy_anim = enemy.enemy_anim;
+        has_shot = enemy.has_shot;
+        _shot = enemy._shot;
+        _shot_type = enemy._shot_type;
     }
 
     //add and start script
@@ -93,46 +90,14 @@ namespace adonai
         if (_hp <= 0) {return;}//assegurar que não vai receber hit se já estiver morto
         _hp -= 1;
         if (_hp > 0) {
-            bn::sound_items::hit.play();
             if(!is_hitting){
                 hit_feedback();
             }
             return;
         }
-        this->wait_to_destroy = true;
-        explode();
-    }
-    // void Enemy::receive_hit(int index) //não precisa
-    // {
-    //     if(this != ntt_enemies->at(index)){return;}
-    //     if (_hp <= 0) {return;}//assegurar que não vai receber hit se já estiver morto
-    //     _hp -= 1;
-    //     if (_hp > 0) {
-    //         bn::sound_items::hit.play();
-    //         if(!is_hitting){
-    //             hit_feedback();
-    //         }
-    //         return;
-    //     }
-    //     this->wait_to_destroy = true;
-    //     explode();
-    // }
-
-    void Enemy::just_delete_this()
-    {
+        wait_to_destroy = true;
         _scripts.empty();
-        for (int i = 0; i < ntt_enemies->size(); i++)
-        {
-            if(ntt_enemies->at(i) == this){
-                ntt_enemies->erase(ntt_enemies->begin()+i);
-                break;
-            }
-        }
-        if(hit_fx != nullptr){
-            hit_fx->~Hit_FX();
-        }
-        this->~Enemy();
-        BN_LOG("DELETED");
+        explode();
     }
 
     void Enemy::shoot()
@@ -156,53 +121,98 @@ namespace adonai
     bool Enemy::can_shoot()
     {
         if(!has_shot){
-            // BN_LOG("Não possui shot!"); 
             return false;
         }
+        int n = n_shots_availables();
         if(_enemy_state == E_Enemy_State::E_Enemy_State_SHOOTING 
-            || !(ntt_shots->size() < 37)
-            || bn::sprites::available_items_count() < 12 ){
-            // BN_LOG("NÃO ATIRE");
+            || (n < 3) ){ //coloquei 3 no lugar de 40 para ter redundância quanto a disponibilidade de shots quando mais de um enemy tentar execução simultanea
+            BN_LOG("NÃO ATIRE - Falta disponiveis: ", n);
             return false;
         } // evitar que cause multiplos tiros simultâneos por vez.
         return true;
     }
 
+    int Enemy::n_shots_availables(){
+        int counter = 0;
+        for (int i = 0; i < ntt_shots->size(); i++)
+        {
+            if(ntt_shots->at(i)._available){
+                counter++;
+            }
+        }
+        return counter;
+    }
+
 #pragma region Shot_Types
+    //Tiro unico para frente.
     void Enemy::shot_type_1()
     {
-        //Tiro unico para frente.
-        Shot_Enemy* instance_shot = new Shot_Enemy(_shot, (_pos + bn::fixed_point{-7,0}) );
-        // instance_shot->_available = false;
-
-        BN_LOG("ntt_shots size: ",ntt_shots->size());
-        ntt_shots->push_back(instance_shot);
+        //pega o primeiro disponível e substitui por um com novas informações
+        for (int i = 0; i < ntt_shots->size(); i++)
+        {
+            if(ntt_shots->at(i)._available == true){
+                ntt_shots->at(i)._available = false;
+                ntt_shots->at(i).copy_Shot_Enemy( Shot_Enemy(_shot, (_pos + bn::fixed_point{-7,0}) ));
+                break;
+            }
+        }
+        BN_LOG("ntt_shots usados: ", 40 - n_shots_availables());
         BN_LOG("shot instance added to ntt_shots");
     }
 
+    //Tiro triplo diagonais e para frente.
     void Enemy::shot_type_2()
     {
-        //Tiro triplo diagonais e para frente.
-        Shot_Enemy* instance_shot_1 = new Shot_Enemy(_shot, (_pos + bn::fixed_point{-7,0}) );
-        // instance_shot_1->_available = false;
-        instance_shot_1->pre_direction = bn::fixed_point(-16,-8);
-        ntt_shots->push_back(instance_shot_1);
-        Shot_Enemy* instance_shot_2 = new Shot_Enemy(_shot, (_pos + bn::fixed_point{-7,0}) );
-        // instance_shot_2->_available = false;
-        ntt_shots->push_back(instance_shot_2);
-        Shot_Enemy* instance_shot_3 = new Shot_Enemy(_shot, (_pos + bn::fixed_point{-7,0}) );
-        // instance_shot_3->_available = false;
-        instance_shot_3->pre_direction = bn::fixed_point(-16,+8);
-        ntt_shots->push_back(instance_shot_3);
+        int counter = 0;
+        for (int i = 0; i < ntt_shots->size(); i++)
+        {
+            //comporta mais 3 tiros?
+            if(n_shots_availables() >= 3){ 
+                if(ntt_shots->at(i)._available == true){
+                    counter++;
+                    ntt_shots->at(i)._available = false;
+                    ntt_shots->at(i).copy_Shot_Enemy( Shot_Enemy(_shot, (_pos + bn::fixed_point{-7,0}) ));
+                    switch (counter)
+                    {
+                    case 1:
+                        ntt_shots->at(i).pre_direction = bn::fixed_point(-16,-8);
+                    break;
+                    case 2: 
+                        ntt_shots->at(i).pre_direction = bn::fixed_point{0,0};
+                    break;
+                    case 3:
+                        ntt_shots->at(i).pre_direction = bn::fixed_point(-16,+8);
+                    break;
+                    default:
+                        BN_ERROR("Switch com valor inexperado!");
+                    break;
+                    }
+                }
+                if(counter >= 3){
+                    break;
+                }
+            }
+        }
+        
+        BN_LOG("ntt_shots usados: ", 40 - n_shots_availables());
+        BN_LOG("shot instance added to ntt_shots");
     }
 
+    // Tiro unico para ultima posição do jogador.
     void Enemy::shot_type_3()
     {
-        // Tiro unico para ultima posição do jogador.
-        Shot_Enemy* instance_shot = new Shot_Enemy(_shot, (_pos + bn::fixed_point{-7,0}) );
-        // instance_shot->_available = false;
-        instance_shot->pre_direction = normalize(GLOBALS::global_player->pos() - pos());
-        ntt_shots->push_back(instance_shot);
+        for (int i = 0; i < ntt_shots->size(); i++)
+        {
+            if(ntt_shots->at(i)._available == true){
+                ntt_shots->at(i)._available = false;
+                ntt_shots->at(i).copy_Shot_Enemy( Shot_Enemy(_shot, (_pos + bn::fixed_point{-7,0}) ));
+                ntt_shots->at(i).pre_direction = normalize(GLOBALS::global_player->pos() - pos());
+                break;
+            }
+        }
+        
+        BN_LOG("ntt_shots usados: ", 40 - n_shots_availables());
+        BN_LOG("shot instance added to ntt_shots");
     }
 #pragma endregion
 
@@ -211,10 +221,6 @@ namespace adonai
     {
         if(!wait_to_destroy) {
             if (_cols.at(0) != bn::rect{0,0,0,0}) {
-                // Ternario: Se esperou por x frames, então trocar para o proximo index do _cols 
-                // se for depois do ultimo voltar ao primeiro 
-                //OBS: Estou adiantando o index da animação pois por algum motivo 
-                /////// o index vem atrasado por 1 index em relação a sprite apresentada
                 int cols_index = enemy_anim.current_index()-1<0?_cols.size()-1:enemy_anim.current_index()-1;
                 _col = _cols[cols_index];
                 }
@@ -225,6 +231,7 @@ namespace adonai
     }
     
     void Enemy::update_scripts() {
+        if(_scripts.size() == 0) { return; }
         for (u_int8_t i = 0; i < _scripts.size(); i++)
         {
             if(_scripts[i] == nullptr){continue;}
@@ -245,23 +252,21 @@ namespace adonai
         
         _sprite.set_position(_pos);
         
-        if(hit_fx){
-            hit_fx->update();
+        update_hit_fx();
+
+        if(explosion.available == false && !explosion._explosion_anim.done()) {
+            explosion.update();
         }
-        if(explosion && !explosion->_explosion_anim.done()) {
-            explosion->update();
-        }
-        if(explosion->_explosion_anim.done() && wait_to_destroy ) {// && all_shots_available()){
+        if(explosion._explosion_anim.done() && explosion.available && wait_to_destroy ) {// && all_shots_available()){
             wait_to_destroy = false;
-            _scripts.empty();
-            just_delete_this();
+            _available = true;
         }
     }
 
 // (Só por segurança, talvez não precise, mas caso entre no 
 // loop fora após destruído, isso ira impedir continuar o update)
     bool Enemy::can_update(){
-        if(this->hp() > 0 || this->wait_to_destroy){
+        if(hp() > 0 || wait_to_destroy){
             return true;
         }
         return false;

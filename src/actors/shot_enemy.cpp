@@ -13,30 +13,27 @@
 namespace adonai
 {
 
-    extern bn::array<Shot_Enemy*, 40> ntt_shots;
+    extern bn::array<Shot_Enemy, 40> ntt_shots;
 
     Shot_Enemy::Shot_Enemy( const bn::sprite_item& sprite_item ) :
         Shot( sprite_item, {0,0} ),
         _sprite_item(sprite_item)
     {
-        // _available = true;
+        _sprite.set_visible(false);
+        _available = true;
     }
     Shot_Enemy::Shot_Enemy(const Shot_Enemy &shot, const bn::fixed_point &initial_position) :
         Shot( shot._sprite_item, initial_position, shot._col, shot.velocity ),
-        _sprite_item(shot._sprite_item),
-        ntt_shots(shot.ntt_shots)
+        _sprite_item(shot._sprite_item)
     {
-        // _available = true;
+        _available = true;
     }
-    Shot_Enemy::~Shot_Enemy()
+    // muda as infos do shot para as mesmas de outro passado por parametro.
+    void Shot_Enemy::copy_Shot_Enemy(const Shot_Enemy& shot)
     {
-        for (int i = 0; i < ntt_shots->size(); i++) {
-            if(ntt_shots->at(i) == this) {
-                ntt_shots->erase(ntt_shots->begin()+i);
-                // BN_LOG("Destroy Shot! ntt_shots size: ", ntt_shots->size());
-                break;
-            }
-        }
+        copy_Shot(shot);
+        _sprite = shot._sprite_item.create_sprite(_pos);
+        _sprite_item = shot._sprite_item;
     }
 
     // o valor do owner_pos_y deve ser criado ao disparar o tiro
@@ -45,10 +42,9 @@ namespace adonai
         //não mover se colidir
         if(check_collision()){
             //se colidir resetar estado do tiro
-            _pos = bn::fixed_point(((-bn::display::width()/2)-8),0);
-            _sprite.set_position(_pos);
-            // _available = true;
-            this->~Shot_Enemy();
+            BN_LOG("player -> shot enemy");
+            GLOBALS::global_player->receive_hit();
+            reset_shot();
             return;
         }
 
@@ -72,8 +68,7 @@ namespace adonai
 
         // Ao sair da tela, volta a ser NONE / available / é destruído
         if (is_out_of_screen()) {
-            // _available = true;
-            this->~Shot_Enemy();
+            reset_shot();
         }
     }
 
@@ -101,17 +96,22 @@ namespace adonai
         // BN_LOG("player col: x",GLOBALS::global_player->col().x(),",y",GLOBALS::global_player->col().y(),",w",GLOBALS::global_player->col().width(),",h",GLOBALS::global_player->col().height());
         if ( _col.intersects(GLOBALS::global_player->col()))
         {
-            BN_LOG("player -> shot enemy");
-            // _available = true;
-            GLOBALS::global_player->receive_hit();
             return true;
         }            
         return false;
     }
+
+    void Shot_Enemy::reset_shot()
+    {
+        _available = true;
+        _pos = bn::fixed_point(((-bn::display::width()/2)-8),0);
+        sprite().set_position(_pos);
+    }
+
     void Shot_Enemy::update()
     {
-        // if(_available == true){return;}
+        if(_available == true){return;}
         move_forward();
-        //se tiver que piscar imagem ou algo que aconteça com o passar do tempo deve ser executado aqui.
+        //se tiver que piscar imagem ou algo que aconteça com o passar do tempo deve ser executado aqui. vvv
     }
 }

@@ -49,9 +49,9 @@ namespace adonai
 
     void Player::hit_feedback()
     {
+        bn::sound_items::hit.play();
+        hit_feedback_duration = 120;
         is_hitting = true;
-        hit_fx = new Hit_FX(_pos, _sprite_item, is_hitting);
-        hit_fx->hit_feedback_duration = 120;
         BN_LOG("is hitting: ", is_hitting);
         BN_LOG("hitFX Usados: ", bn::sprites::used_items_count());
         BN_LOG("Disponíveis: ", bn::sprites::available_items_count());
@@ -63,8 +63,8 @@ namespace adonai
         if (_hp <= 0 || hit_feedback_duration > 0) {return;}//assegurar que não vai receber hit se já estiver morto
         _hp -= 1;
         if (_hp > 0) {
-            bn::sound_items::hit.play();
-            hit_feedback_duration = 120; //frames de duração do hit_feedback
+            // bn::sound_items::hit.play();
+            // hit_feedback_duration = 120; //frames de duração do hit_feedback
             if(!is_hitting){
                 hit_feedback();
             }
@@ -164,7 +164,7 @@ namespace adonai
         for (int i = 0; i < ntt_enemies->size(); i++)
         {
             // BN_LOG("enemies: ", ntt_enemies->size());
-            if ( _col.intersects(ntt_enemies->at(i)->col()))
+            if ( _col.intersects(ntt_enemies->at(i).col()))
             {
                 // BN_LOG("Colidiu!");
                 receive_hit();
@@ -182,21 +182,19 @@ namespace adonai
         _propulsion_sprite.set_position(_pos + bn::fixed_point(-16,0));
 
         update_collider();
-        hit_feedback_duration = hit_feedback_duration-1<0?0:hit_feedback_duration-1; //clamp em 0
+        // hit_feedback_duration = hit_feedback_duration-1<0?0:hit_feedback_duration-1; //clamp em 0
 
-        if(hit_fx){
-            hit_fx->update();
+        update_hit_fx();
+        BN_LOG("hit_feedback_duration ", hit_feedback_duration);
+
+        if(explosion.available == false && !explosion._explosion_anim.done()){
+            explosion.update();
         }
-        if(explosion && !explosion->_explosion_anim.done()){
-            explosion->update();
-        }
-        if(explosion->_explosion_anim.done() && wait_to_destroy){
+        if(explosion._explosion_anim.done() && wait_to_destroy){
             shadow_sprites.at(0).set_visible(false);
             shadow_sprites.at(1).set_visible(false);
             shadow_sprites.at(2).set_visible(false);
             wait_to_destroy = false;
-            // BN_LOG("EXPRODIU");
-            //faça algo
         }
 
         handle_shadows_rgb();

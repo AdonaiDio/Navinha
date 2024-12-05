@@ -14,10 +14,13 @@ namespace adonai
     struct Explosion_FX
     {
         private:
-            bn::sprite_ptr _sprite;
         public:
-            Explosion_FX(bn::fixed_point& pos);
-            ~Explosion_FX();
+            Explosion_FX();
+
+            bn::sprite_ptr _sprite;
+
+            bool available = true;
+            bool is_exploding = false;
 
             bn::sprite_animate_action<5> _explosion_anim = bn::create_sprite_animate_action_once(
                 _sprite,
@@ -25,7 +28,8 @@ namespace adonai
                 bn::sprite_items::explosion.tiles_item(),
                 0,0,0,0,0
             );
-            bn::sprite_ptr sprite();
+
+            void init_explosion(const bn::fixed_point pos);
 
             void update();
     };

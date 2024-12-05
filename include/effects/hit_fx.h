@@ -24,10 +24,9 @@ namespace adonai
             Hit_FX( bn::fixed_point& pos, bn::sprite_item sprite_item,
                     bool& is_hitting);
             ~Hit_FX();
-            
+
             int hit_feedback_duration = 15;
             bn::sprite_ptr sprite();
-
             void update();
     };
 }

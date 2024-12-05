@@ -30,7 +30,7 @@ namespace adonai
             bn::fixed_point _pos;
             bn::sprite_ptr _sprite;
             bn::rect _col;
-            const int velocity;
+            int velocity; //era const
 
 
         public:
@@ -43,6 +43,11 @@ namespace adonai
                 _pos(initial_position),
                 velocity(velocity){};
             ~Shot(){};
+            void copy_Shot(const Shot &shot){
+                _pos = shot._pos;
+                _col = shot._col;
+                velocity = shot.velocity;
+            };
 
             // Shot_State _state;
 

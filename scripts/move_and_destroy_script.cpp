@@ -22,7 +22,9 @@ namespace adonai {
             
             if(e == nullptr){return;}
             if(OutOfScreen(e)){
-                e->just_delete_this();
+                // e->just_delete_this();
+                // Preciso subistituir por desabilitar
+                e->_available = true;
                 return;
             }
             e->pos(move_towards(e->pos(), e->pos()+bn::fixed_point(-1,0), e->velocity()));

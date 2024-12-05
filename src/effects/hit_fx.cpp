@@ -16,6 +16,7 @@ namespace adonai
     {
         _sprite.set_z_order(-2);
         _sprite.set_palette(_palette);
+        _sprite.set_visible(false);
     }
     Hit_FX::Hit_FX( bn::fixed_point& pos, 
                     bn::sprite_item sprite_item, 
@@ -27,6 +28,7 @@ namespace adonai
     {
         _sprite.set_z_order(-2);
         _sprite.set_palette(_palette);
+        _sprite.set_visible(false);
     }
     Hit_FX::~Hit_FX()
     {
@@ -40,6 +42,7 @@ namespace adonai
 
     void Hit_FX::update()
     {
+        if(!_is_hitting) return;
         if (hit_feedback_duration > 0)
         {
             //bn::sprite_palette_ptr _palette = _sprite.palette();
@@ -61,8 +64,7 @@ namespace adonai
             }
             hit_feedback_duration--;
             if(hit_feedback_duration == 0){
-                //concluiu. pode morrer agora.
-                Hit_FX::~Hit_FX();
+                _is_hitting = false;
             }
         } 
         _sprite.set_position(_pos);

@@ -17,7 +17,7 @@
 #include "scenes/scene_stage_1.cpp"
 #include "scenes/scene_test.cpp"
 #include "scene_logo_studio.h"
-
+#include "bn_display.h"
 
 #include "shot.h"
 
@@ -30,7 +30,7 @@ int main()
             BN_LOG("reservados: ", bn::sprites::reserved_handles_count());
     //Inicar o player no main para o player sempre ser o mesmo durante o jogo.
     static adonai::Player player = adonai::Player( bn::sprite_items::nova,
-                                            bn::fixed_point(0, 0), 
+                                            bn::fixed_point(120+16, 80+16), 
                                             bn::sprite_items::shoot );
                                             
             BN_LOG("Player-> Usados: ", bn::sprites::used_items_count());
@@ -47,8 +47,8 @@ int main()
         // se o enum for stage_1 então criamos uma instancia da cena stage_1.
         // passamos para a cena atual(scene) a instancia de cena criada.
         if(scene == adonai::Scene::TEST_SCENE){
-            adonai::Test test_scene = adonai::Test();
-            scene = test_scene.execute(bn::fixed_point(-104,0));
+            // adonai::Test test_scene = adonai::Test();
+            // scene = test_scene.execute(bn::fixed_point(-104,0));
         }
         else if(scene == adonai::Scene::STAGE_1){
             adonai::Stage_1 stage_1 = adonai::Stage_1();

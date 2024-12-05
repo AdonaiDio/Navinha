@@ -78,10 +78,10 @@ namespace adonai
         for (int i = 0; i < ntt_enemies->size(); i++)
         {
             // BN_LOG("enemies: ", ntt_enemies->size());
-            if ( _col.intersects(ntt_enemies->at(i)->col()))
+            if ( _col.intersects(ntt_enemies->at(i).col()))
             {
                 BN_LOG("Colidiu com o inimigo!");
-                ntt_enemies->at(i)->receive_hit();
+                ntt_enemies->at(i).receive_hit();
                 return true;
                 break;
             }            

@@ -14,6 +14,8 @@
 #include "obj.h"
 //other script embbeded
 
+#define MAX_ENEMIES 20
+
 namespace adonai
 {
     enum E_DataBase_Enemies{
@@ -53,76 +55,84 @@ namespace adonai
         // }
         
         
-        Enemy* DefaultEnemy(bn::fixed_point position, bn::vector<Enemy*, 20> *ntt_e){
-            Enemy* default_enemy = new Enemy(   ntt_e, 
-                                                position, 
-                                                bn::sprite_items::spaceship_1, 
-                                                3);
-            default_enemy->col(bn::rect((int)position.x()-1, (int)position.y()-1, 10, 14));
+        Enemy DefaultEnemy(bn::fixed_point position
+        // ,bn::vector<Enemy, MAX_ENEMIES> *ntt_e
+        ){
+            Enemy default_enemy = Enemy(//ntt_e, 
+                                        position, 
+                                        bn::sprite_items::spaceship_1, 
+                                        3);
+            default_enemy.col(bn::rect((int)position.x()-1, (int)position.y()-1, 10, 14));
+            default_enemy._available = false;
             return default_enemy;
         };
 
-        Enemy* RedEnemy(bn::fixed_point position, bn::vector<Enemy*, 20> *ntt_e, bn::vector<Shot_Enemy*, 40> *ntt_shots){
-            Enemy* red_enemy = new Enemy(   ntt_e, 
+        Enemy RedEnemy(bn::fixed_point position,
+        //  bn::vector<Enemy, MAX_ENEMIES> *ntt_e, 
+        bn::array<Shot_Enemy, 40> *ntt_shots){
+            Enemy red_enemy = Enemy(   //ntt_e, 
                                             position,
                                             bn::sprite_items::spaceship_2,
                                             3,
                                             bn::sprite_items::shot_3, 
                                             E_Shot_Type::E_Shot_Type_2);
-            red_enemy->col(bn::rect(    (int)red_enemy->pos().x()-1, 
-                                        (int)red_enemy->pos().y()-1, 
+            red_enemy.col(bn::rect(    (int)red_enemy.pos().x()-1, 
+                                        (int)red_enemy.pos().y()-1, 
                                         10, 14));
             BN_LOG("shot col: x",
-                    red_enemy->_shot.col().x(),",y",
-                    red_enemy->_shot.col().y(),",w",
-                    red_enemy->_shot.col().width(),",h",
-                    red_enemy->_shot.col().height());
-            red_enemy->_shot.col_dimension({4,4});
+                    red_enemy._shot.col().x(),",y",
+                    red_enemy._shot.col().y(),",w",
+                    red_enemy._shot.col().width(),",h",
+                    red_enemy._shot.col().height());
+            red_enemy._shot.col_dimension({4,4});
             BN_LOG("shot col: x",
-                    red_enemy->_shot.col().x(),",y",
-                    red_enemy->_shot.col().y(),",w",
-                    red_enemy->_shot.col().width(),",h",
-                    red_enemy->_shot.col().height());
+                    red_enemy._shot.col().x(),",y",
+                    red_enemy._shot.col().y(),",w",
+                    red_enemy._shot.col().width(),",h",
+                    red_enemy._shot.col().height());
                                         
-            red_enemy->_cols[0] = bn::rect((int)position.x()-1, (int)position.y()-1, 10, 14);
-            red_enemy->_cols[1] = bn::rect((int)position.x()-1, (int)position.y()-1, 10, 14);
-            red_enemy->_cols[2] = bn::rect((int)position.x()-1, (int)position.y()-1, 10, 12);
-            red_enemy->_cols[3] = bn::rect((int)position.x()-1, (int)position.y(),   10, 12);
-            red_enemy->_cols[4] = bn::rect((int)position.x()-1, (int)position.y(),   10, 10);
-            red_enemy->_cols[5] = bn::rect((int)position.x()-1, (int)position.y(),   10, 12);
-            red_enemy->_cols[6] = bn::rect((int)position.x()-1, (int)position.y()-1, 10, 12);
+            red_enemy._cols[0] = bn::rect((int)position.x()-1, (int)position.y()-1, 10, 14);
+            red_enemy._cols[1] = bn::rect((int)position.x()-1, (int)position.y()-1, 10, 14);
+            red_enemy._cols[2] = bn::rect((int)position.x()-1, (int)position.y()-1, 10, 12);
+            red_enemy._cols[3] = bn::rect((int)position.x()-1, (int)position.y(),   10, 12);
+            red_enemy._cols[4] = bn::rect((int)position.x()-1, (int)position.y(),   10, 10);
+            red_enemy._cols[5] = bn::rect((int)position.x()-1, (int)position.y(),   10, 12);
+            red_enemy._cols[6] = bn::rect((int)position.x()-1, (int)position.y()-1, 10, 12);
 
-            red_enemy->enemy_anim = bn::create_sprite_animate_action_forever (
-                    red_enemy->sprite(),
+            red_enemy.enemy_anim = bn::create_sprite_animate_action_forever (
+                    red_enemy.sprite(),
                     15,
                     bn::sprite_items::spaceship_2.tiles_item(),
                     0,1,2,3,4,5,6
             );
-            red_enemy->assign_ntt_shots(ntt_shots);
-
+            red_enemy.assign_ntt_shots(ntt_shots);
+            red_enemy._available = false;
             return red_enemy;
         };
 
         
-        Enemy* PyramidEnemy(bn::fixed_point position, bn::vector<Enemy*, 20> *ntt_e){
-            Enemy* pyramid_enemy = new Enemy(ntt_e, 
+        Enemy PyramidEnemy(bn::fixed_point position,
+        // , bn::vector<Enemy, MAX_ENEMIES> *ntt_e
+        bn::array<Shot_Enemy, 40> *ntt_shots){
+            Enemy pyramid_enemy = Enemy(//ntt_e, 
                                             position,
                                             bn::sprite_items::spaceship_3,  
                                             10,
                                             bn::sprite_items::shot_3, 
                                             E_Shot_Type::E_Shot_Type_3);
                                             
-            pyramid_enemy->col(bn::rect((int)pyramid_enemy->pos().x()-1, 
-                                        (int)pyramid_enemy->pos().y()+0, 
+            pyramid_enemy.col(bn::rect((int)pyramid_enemy.pos().x()-1, 
+                                        (int)pyramid_enemy.pos().y()+0, 
                                         11, 16));
-
-            pyramid_enemy->enemy_anim = bn::create_sprite_animate_action_forever (
-                    pyramid_enemy->sprite(),
+            pyramid_enemy._shot.col_dimension({4,4});
+            pyramid_enemy.enemy_anim = bn::create_sprite_animate_action_forever (
+                    pyramid_enemy.sprite(),
                     20,
                     bn::sprite_items::spaceship_3.tiles_item(),
                     0,1,2,3,4,0,0,0,0,0
             );
-            
+            pyramid_enemy.assign_ntt_shots(ntt_shots);
+            pyramid_enemy._available = false;
             return pyramid_enemy;
         };
     };

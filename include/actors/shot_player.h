@@ -1,6 +1,7 @@
 #pragma once
 
 #include "shot.h"
+#define MAX_ENEMIES 20
 
 namespace adonai
 {
@@ -16,7 +17,7 @@ namespace adonai
         Shot_Player(    const bn::sprite_item& sprite_item, 
                         const bn::fixed_point& initial_position);
         ~Shot_Player();
-        bn::vector<Enemy*, 20>* ntt_enemies;
+        bn::vector<Enemy, MAX_ENEMIES>* ntt_enemies;
         
         Shot_State _state;
 

@@ -156,7 +156,7 @@ namespace adonai
 
             void explode() {
                 _sprite.set_visible(false);
-                explosion = new Explosion_FX(_pos);
+                // explosion.init_explosion(_pos);
                 BN_LOG("explosion Usados: ", bn::sprites::used_items_count());
                 BN_LOG("Disponíveis: ", bn::sprites::available_items_count());
                 BN_LOG("reservados: ", bn::sprites::reserved_handles_count());

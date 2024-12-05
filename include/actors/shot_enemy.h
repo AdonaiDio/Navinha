@@ -13,18 +13,17 @@ namespace adonai
     class Shot_Enemy : public Shot
     {
     private:
-            bn::rect _col;
+        bn::rect _col;
         bn::sprite_item _sprite_item;
     public:
         Shot_Enemy(const bn::sprite_item& sprite_item);
         //cria uma copia de outro shot_enemy
         Shot_Enemy(const Shot_Enemy& shot, const bn::fixed_point& initial_position = {0,0});
-        ~Shot_Enemy();
+        void copy_Shot_Enemy(const Shot_Enemy& shot);
+        // ~Shot_Enemy();
         
-        bn::vector<Shot_Enemy*, 40>* ntt_shots;
-
-        // bool _available = true;//um substituto ao state NONE e SHOOTING. Seve para tiro predefinidos não instanciados.
-        //Direção pré-definida para casos de tiros com movimento especial.
+        bool _available = true;//um substituto ao state NONE e SHOOTING. Seve para tiro predefinidos não instanciados.
+        // Direção pré-definida para casos de tiros com movimento especial.
         bn::fixed_point pre_direction = {0,0};
 
         bn::fixed_point pos() override{ return _pos; }
@@ -43,6 +42,7 @@ namespace adonai
         // void move_forward(bn::fixed_point point_direction) override;
         bool check_collision() override;
 
+        void reset_shot();
         void update();
     };
 }
