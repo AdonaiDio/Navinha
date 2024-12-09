@@ -34,15 +34,15 @@ namespace adonai
 
         _explosion_anim.update();
         _sprite.set_position(bn::fixed_point(_sprite.position().x()-1.5, _sprite.position().y()));
-        BN_LOG("Explode pos x: ",_sprite.position().x()," y: ",_sprite.position().y());
-
+        
         if(_explosion_anim.done()){
-            available = true;
             _explosion_anim = bn::create_sprite_animate_action_once(
                 _sprite, 5, bn::sprite_items::explosion.tiles_item(),
                 0,1,2,3,4
             );
             _sprite.set_visible(false);
+            is_exploding = false;
+            available = true;
         }
     }
 }

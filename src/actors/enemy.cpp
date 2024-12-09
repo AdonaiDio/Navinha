@@ -96,7 +96,7 @@ namespace adonai
             return;
         }
         wait_to_destroy = true;
-        _scripts.empty();
+        _scripts.clear();
         explode();
     }
 
@@ -231,7 +231,7 @@ namespace adonai
     }
     
     void Enemy::update_scripts() {
-        if(_scripts.size() == 0) { return; }
+        if(_scripts.size() == 0 || hp() <= 0) { return; }
         for (u_int8_t i = 0; i < _scripts.size(); i++)
         {
             if(_scripts[i] == nullptr){continue;}
@@ -254,12 +254,14 @@ namespace adonai
         
         update_hit_fx();
 
-        if(explosion.available == false && !explosion._explosion_anim.done()) {
-            explosion.update();
-        }
-        if(explosion._explosion_anim.done() && explosion.available && wait_to_destroy ) {// && all_shots_available()){
-            wait_to_destroy = false;
-            _available = true;
+        if(wait_to_destroy){
+            if(!explosion._explosion_anim.done() && explosion.available == false) {
+                explosion.update();
+            }
+            else if(explosion.available && explosion.is_exploding == false ) {
+                _available = true;
+                wait_to_destroy = false;
+            }
         }
     }
 

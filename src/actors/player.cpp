@@ -63,8 +63,6 @@ namespace adonai
         if (_hp <= 0 || hit_feedback_duration > 0) {return;}//assegurar que não vai receber hit se já estiver morto
         _hp -= 1;
         if (_hp > 0) {
-            // bn::sound_items::hit.play();
-            // hit_feedback_duration = 120; //frames de duração do hit_feedback
             if(!is_hitting){
                 hit_feedback();
             }
@@ -185,7 +183,6 @@ namespace adonai
         // hit_feedback_duration = hit_feedback_duration-1<0?0:hit_feedback_duration-1; //clamp em 0
 
         update_hit_fx();
-        BN_LOG("hit_feedback_duration ", hit_feedback_duration);
 
         if(explosion.available == false && !explosion._explosion_anim.done()){
             explosion.update();

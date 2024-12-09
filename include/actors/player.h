@@ -66,6 +66,9 @@ namespace adonai
             bn::fixed moved_to_left = 0;
             
             bn::array<adonai::Shot_Player, 12> _shots;
+            // //true se shot tiver disponível
+            // bn::array<bool*, 12> _shots_is_available;
+
             Player_States _movement_states = Player_States::Player_NONE;
 
             bn::sprite_animate_action<3> propulsion_hold_anim = 
@@ -86,6 +89,36 @@ namespace adonai
 
             void update();
             void pass_ntt_enemies_to_shots();
+            
+            // void update_all_shots_occupied(){
+            //     for (int i = 0; i < _shots_is_available.size(); i++) {
+            //         if( *_shots_is_available.at(i) == false){
+            //             _shots.at(i).move_forward();
+            //         }
+            //     }
+            // };
+            // bool all_shots_available()
+            // {
+            //     for (int i = 0; i < _shots_is_available.size(); i++)
+            //     {
+            //         if(*_shots_is_available[i] == false){
+            //             return false;
+            //         }
+            //     }
+            //     return true;
+            // }
+            // int shots_occupied_qty()
+            // {
+            //     int counter = 0;
+            //     for (int i = 0; i < _shots_is_available.size(); i++)
+            //     {
+            //         if(*_shots_is_available[i] == false){
+            //             counter++;
+            //         }
+            //     }
+            //     return counter;
+            // }
+            
             void update_scripts()
             {
                 for (u_int8_t i = 0; i < _scripts.size(); i++)

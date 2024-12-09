@@ -15,6 +15,7 @@ namespace adonai {
         public:
         void start(Enemy* e) override
         {
+            e->_available = false;
         };
         
         void update(Enemy* e) override

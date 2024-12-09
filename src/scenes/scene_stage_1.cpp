@@ -65,8 +65,8 @@ namespace adonai
     {       
         private:
 
-        const int grid_width = bn::sprite_items::spaceship_1.shape_size().width();
-        const int grid_height = bn::sprite_items::spaceship_1.shape_size().height();
+        const int grid_width = 16;
+        const int grid_height = 16;
 
         enum Stage_State : int8_t {
             Stage_State_NONE    = 0b00000000,
@@ -190,7 +190,6 @@ namespace adonai
                         _state = Stage_State::Stage_State_WAVE_3;
                         start_Wave_3();
                     };
-                    //update_Wave_2();
                     break;
                 
                 case Stage_State::Stage_State_WAVE_3:
@@ -211,11 +210,6 @@ namespace adonai
                     BN_LOG("Estado da fase não esperado!");
                     break;
                 }
-                if(_state == Stage_State::Stage_State_WAVE_1 && finished_Wave_1()){
-                    start_Wave_2();
-                    _state = Stage_State::Stage_State_WAVE_2;
-                };
-
                 /////
 
                 update_all_enemies();
@@ -267,23 +261,26 @@ namespace adonai
             }
             return count;
         }
-        // Adiciona enemy a ntt_enemies. 
-        // ... na verdade não adiciona, altera um enemy dispoível da lista de ntt_enemies.
+        
         void add_enemy_ntt(Enemy enemy){
+            if(ntt_enemies.size() == 0){
+                ntt_enemies.push_back(enemy);
+                return;
+            }
+            for (int i = 0; i < ntt_enemies.size(); i++) {
+                if(ntt_enemies.at(i)._available == true){
+                    ntt_enemies.at(i)._available = false;
+                    ntt_enemies.at(i).copy_Enemy( enemy );
+                    BN_LOG("using ",ntt_enemies.size()," enemies in list");
+                    return;
+                }
+            }
+            BN_LOG("Não há ntt_enemies nos slots disponíveis.");
             if(ntt_enemies.size() < MAX_ENEMIES){
                 ntt_enemies.push_back(enemy);
             }
             else{
-                for (int i = 0; i < ntt_enemies.size(); i++) {
-                    if(ntt_enemies.at(i)._available == true){
-                        ntt_enemies.at(i)._available = false;
-                        ntt_enemies.at(i).copy_Enemy( enemy );
-                        break;
-                    }
-                    if(i == ntt_enemies.size()-1){
-                        BN_LOG("Não há ntt_enemies disponíveis.");
-                    }
-                }
+                BN_LOG("Não há slots em ntt_enemies list.");
             }
         }
 
@@ -336,29 +333,46 @@ namespace adonai
                     return false;
                 }
             }
-            ntt_enemies.empty();
+            ntt_enemies.clear();
             BN_LOG("Finish WAVE 1. size: ", ntt_enemies.size());
             return true; 
         }
 
         void start_Wave_2() {
             BN_LOG("WAVE 2: ", ntt_enemies.size());
-            // //vai e volta em zig zag em loop
-            // //instancias de inimigos
-            // Enemy* enemy1 = db_e.DefaultEnemy(  bn::fixed_point( 16*(8), (grid_height*(-6)) ), &ntt_enemies );
-            // enemy1->add_script(wave2_medvd_script_1);
-            // Enemy* enemy2 = db_e.DefaultEnemy(  bn::fixed_point( 16*(8+1), (grid_height*(-6-1)) ), &ntt_enemies );
-            // enemy2->add_script(wave2_medvd_script_2);
-            // Enemy* enemy3 = db_e.DefaultEnemy(  bn::fixed_point( 16*(8+2), (grid_height*(-6-2)) ), &ntt_enemies );
-            // enemy3->add_script(wave2_medvd_script_3);
 
-            // Enemy* enemy4 = db_e.DefaultEnemy(  bn::fixed_point( 16*(8), (grid_height*(6)) ), &ntt_enemies );
-            // enemy4->add_script(wave2_medvd_script_4);
-            // Enemy* enemy5 = db_e.DefaultEnemy(  bn::fixed_point( 16*(8+1), (grid_height*(6+1)) ), &ntt_enemies );
-            // enemy5->add_script(wave2_medvd_script_5);
-            // Enemy* enemy6 = db_e.DefaultEnemy(  bn::fixed_point( 16*(8+2), (grid_height*(6+2)) ), &ntt_enemies );
-            // enemy6->add_script(wave2_medvd_script_6);
+            add_enemy_ntt( db_e.DefaultEnemy(  bn::fixed_point( 16*(8), (grid_height*(-6)) ) ) );
+            add_enemy_ntt( db_e.DefaultEnemy(  bn::fixed_point( 16*(8+1), (grid_height*(-6-1)) ) ) );
+            add_enemy_ntt( db_e.DefaultEnemy(  bn::fixed_point( 16*(8+2), (grid_height*(-6-2)) ) ) );
+            add_enemy_ntt( db_e.DefaultEnemy(  bn::fixed_point( 16*(8), (grid_height*(6)) ) ) );
+            add_enemy_ntt( db_e.DefaultEnemy(  bn::fixed_point( 16*(8+1), (grid_height*(6+1)) ) ) );
+            add_enemy_ntt( db_e.DefaultEnemy(  bn::fixed_point( 16*(8+2), (grid_height*(6+2)) ) ) );
 
+            for (int i = 0; i < ntt_enemies.size(); i++)
+            {
+                switch (i)
+                {
+                case 0:
+                ntt_enemies.at(i).add_script(wave2_medvd_script_1);
+                break;
+                case 1:
+                ntt_enemies.at(i).add_script(wave2_medvd_script_2);
+                break;
+                case 2:
+                ntt_enemies.at(i).add_script(wave2_medvd_script_3);
+                break;
+                case 3:
+                ntt_enemies.at(i).add_script(wave2_medvd_script_4);
+                break;
+                case 4:
+                ntt_enemies.at(i).add_script(wave2_medvd_script_5);
+                break;
+                case 5:
+                ntt_enemies.at(i).add_script(wave2_medvd_script_6);
+                break;
+                default:break;
+                }
+            }
         }
 
         bool finished_Wave_2(){
@@ -417,12 +431,15 @@ namespace adonai
                     return false;
                 }
             }
-            ntt_enemies.empty();
+            ntt_enemies.clear();
             BN_LOG("Finish WAVE 3. size: ", ntt_enemies.size());
             return true; 
         }
         void start_Wave_4() {
             BN_LOG("WAVE 4");
+
+            ntt_enemies.push_back( db_e.PyramidEnemy({6*16, (0*16)},  &ntt_shots) );
+            ntt_enemies.at(0).add_script(wave4_f_n_s_script);
             // Enemy* pyr = db_e.PyramidEnemy({6*16, (0*16)}, &ntt_enemies);
             // pyr->add_script(wave4_f_n_s_script);
         }

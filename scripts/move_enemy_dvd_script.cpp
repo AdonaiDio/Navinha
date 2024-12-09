@@ -17,7 +17,8 @@ namespace adonai {
         bn::fixed _y = 1; 
         public:
         void start(Enemy* e) override {
-            // BN_LOG("START e_pos: ",e->pos().x(),", ",e->pos().y());
+            BN_LOG("START e_pos: ",e->pos().x(),", ",e->pos().y());
+            e->_available = false;
         };
         void update(Enemy* e) override {
             _y = (e->pos().y() >= bn::display::height()/2) ? -1 :  
@@ -27,7 +28,7 @@ namespace adonai {
 
             // e->pos(move_towards(e->pos(), e->pos()+bn::fixed_point(_x*16,_y*16), e->velocity()));
             e->pos( e->pos() + bn::fixed_point(_x*e->velocity(), _y*e->velocity()) );
-            // BN_LOG("e_pos: ",e->pos().x(),", ",e->pos().y());
+            BN_LOG("e_pos: ",e->pos().x(),", ",e->pos().y());
 
         };
     };
