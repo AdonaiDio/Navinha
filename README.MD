@@ -1,4 +1,4 @@
-# Jogo para Game Boy Advance 🎮
+# Navinha - Um Jogo de GBA 🎮
 
 Este é um projeto de jogo desenvolvido para o **Game Boy Advance** utilizando a linguagem **C++** e a engine **Butano**. O principal objetivo deste projeto é **praticar e aprimorar habilidades em C++**, enquanto explora o desenvolvimento de jogos para consoles portáteis clássicos.
 
