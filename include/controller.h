@@ -13,6 +13,7 @@ namespace adonai
             Controller(adonai::Player &player);
             void InputAction_Move();
             void InputAction_Shoot();
+            void start_shoot();
             void update();
     };
 }

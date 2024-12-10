@@ -103,23 +103,12 @@ namespace adonai
 
     void Controller::InputAction_Shoot()
     {
-        if (bn::keypad::b_pressed())
-        {
-            // usar um shoot do player que não está no estado de shooting
-            // se não houver shoot no estado none, então não atira.
-            for(int i=0; i<_player._shots.max_size(); i++)
-            {
-                if(_player._shots[i]._state == adonai::Shot_State::NONE)
-                {
-                    //reseta a posição e muda o estado para shooting
-                    _player._shots[i].pos(bn::fixed_point(_player.pos().x() +3, _player.pos().y() +4));
-                    _player._shots[i].sprite().set_visible(true);
-                    _player._shots[i]._state = adonai::Shot_State::SHOOTING;
-                    //BN_LOG("shoot index: ",i," x:", _player._shoots[i].pos().x(), " y:", _player._shoots[i].pos().y());
-                    
-                    bn::sound_items::laser.play();
-                    return;
-                }
+        if (bn::keypad::b_pressed()) {
+            start_shoot();
+        }else if (bn::keypad::b_held()) {
+            _player.shotButton_held_time++;
+            if(_player.shotButton_held_time >= 10) {
+                start_shoot();
             }
         }
         // percorre todos os shoots e e move_forward apenas os com state SHOOTING
@@ -128,6 +117,27 @@ namespace adonai
             if(_player._shots[i]._state == adonai::Shot_State::SHOOTING)
             {
                 _player._shots[i].move_forward();
+            }
+        }
+    }
+
+    void Controller::start_shoot()
+    {
+        // usar um shoot do player que não está no estado de shooting
+        // se não houver shoot no estado none, então não atira.
+        for (int i = 0; i < _player._shots.max_size(); i++)
+        {
+            if (_player._shots[i]._state == adonai::Shot_State::NONE)
+            {
+                _player.shotButton_held_time = 0;
+                // reseta a posição e muda o estado para shooting
+                _player._shots[i].pos(bn::fixed_point(_player.pos().x() + 3, _player.pos().y() + 4));
+                _player._shots[i].sprite().set_visible(true);
+                _player._shots[i]._state = adonai::Shot_State::SHOOTING;
+                // BN_LOG("shoot index: ",i," x:", _player._shoots[i].pos().x(), " y:", _player._shoots[i].pos().y());
+
+                bn::sound_items::laser.play();
+                break;
             }
         }
     };

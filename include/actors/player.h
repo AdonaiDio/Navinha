@@ -64,6 +64,7 @@ namespace adonai
 
             bool can_act = false;
             bn::fixed moved_to_left = 0;
+            int shotButton_held_time = 0;
             
             bn::array<adonai::Shot_Player, 12> _shots;
             // //true se shot tiver disponível

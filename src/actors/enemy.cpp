@@ -126,7 +126,7 @@ namespace adonai
         int n = n_shots_availables();
         if(_enemy_state == E_Enemy_State::E_Enemy_State_SHOOTING 
             || (n < 3) ){ //coloquei 3 no lugar de 40 para ter redundância quanto a disponibilidade de shots quando mais de um enemy tentar execução simultanea
-            BN_LOG("NÃO ATIRE - Falta disponiveis: ", n);
+            // BN_LOG("NÃO ATIRE - Falta disponiveis: ", n);
             return false;
         } // evitar que cause multiplos tiros simultâneos por vez.
         return true;
@@ -156,8 +156,8 @@ namespace adonai
                 break;
             }
         }
-        BN_LOG("ntt_shots usados: ", 40 - n_shots_availables());
-        BN_LOG("shot instance added to ntt_shots");
+        // BN_LOG("ntt_shots usados: ", 40 - n_shots_availables());
+        // BN_LOG("shot instance added to ntt_shots");
     }
 
     //Tiro triplo diagonais e para frente.
@@ -194,8 +194,8 @@ namespace adonai
             }
         }
         
-        BN_LOG("ntt_shots usados: ", 40 - n_shots_availables());
-        BN_LOG("shot instance added to ntt_shots");
+        // BN_LOG("ntt_shots usados: ", 40 - n_shots_availables());
+        // BN_LOG("shot instance added to ntt_shots");
     }
 
     // Tiro unico para ultima posição do jogador.
@@ -211,8 +211,8 @@ namespace adonai
             }
         }
         
-        BN_LOG("ntt_shots usados: ", 40 - n_shots_availables());
-        BN_LOG("shot instance added to ntt_shots");
+        // BN_LOG("ntt_shots usados: ", 40 - n_shots_availables());
+        // BN_LOG("shot instance added to ntt_shots");
     }
 #pragma endregion
 

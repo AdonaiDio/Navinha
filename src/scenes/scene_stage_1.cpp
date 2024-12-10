@@ -440,8 +440,6 @@ namespace adonai
 
             ntt_enemies.push_back( db_e.PyramidEnemy({6*16, (0*16)},  &ntt_shots) );
             ntt_enemies.at(0).add_script(wave4_f_n_s_script);
-            // Enemy* pyr = db_e.PyramidEnemy({6*16, (0*16)}, &ntt_enemies);
-            // pyr->add_script(wave4_f_n_s_script);
         }
         bool finished_Wave_4(){
             for (int i = 0; i < ntt_enemies.size(); i++)
