@@ -14,6 +14,7 @@ namespace adonai
     {
         for (int i = 0; i < _sprites.size(); i++)
         {   
+            _sprites.at(i).set_bg_priority(1);
             _sprites.at(i).set_z_order(-2); 
         }
         BN_LOG("gameover iniciado");

@@ -7,7 +7,7 @@
 namespace adonai
 {
     Explosion_FX::Explosion_FX() :
-    _sprite(bn::sprite_items::explosion.create_sprite(120+16, 80+16, 0))
+        _sprite(bn::sprite_items::explosion.create_sprite(120+16, 80+16, 0))
     {
         _sprite.set_z_order(-1);
         _explosion_anim = bn::create_sprite_animate_action_once(
@@ -19,13 +19,17 @@ namespace adonai
         _sprite.set_visible(false);
     }
     
-    void Explosion_FX::init_explosion(const bn::fixed_point pos) {
+    void Explosion_FX::init_explosion(const bn::fixed_point pos, bool play_sound) {
         if(is_exploding == false){
             is_exploding = true;
             _sprite.set_position(pos);
             _sprite.set_visible(true);
             available = false;
-            bn::sound_items::explode.play();
+            if (play_sound)
+            {
+                bn::sound_items::explode.play();
+            }
+            
         }
     }
     void Explosion_FX::update() 

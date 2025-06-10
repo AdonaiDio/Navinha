@@ -87,6 +87,7 @@ namespace adonai
 
     void Enemy::receive_hit()
     {
+        BN_LOG("hp: ", hp());
         if (_hp <= 0) {return;}//assegurar que não vai receber hit se já estiver morto
         _hp -= 1;
         if (_hp > 0) {

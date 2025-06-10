@@ -29,7 +29,7 @@ namespace adonai
                 0,0,0,0,0
             );
 
-            void init_explosion(const bn::fixed_point pos);
+            void init_explosion(const bn::fixed_point pos, bool play_sound = true);
 
             void update();
     };

@@ -38,6 +38,10 @@ namespace adonai
             adonai::Shot_Player(shot_sprite_item, bn::fixed_point(0,0))
         }) 
     {
+        sprite().set_bg_priority(2);
+        shadow_sprites.at(0).set_bg_priority(2);
+        shadow_sprites.at(1).set_bg_priority(2);
+        shadow_sprites.at(2).set_bg_priority(2);
         shadow_sprites.at(1).set_z_order(1);
         shadow_sprites.at(2).set_z_order(2);
         shadow_sprites.at(0).set_visible(false);
@@ -58,10 +62,10 @@ namespace adonai
         BN_LOG("reservados: ", bn::sprites::reserved_handles_count());
     };
 
-    void Player::receive_hit()
+    void Player::receive_hit(int damage)
     {
         if (_hp <= 0 || hit_feedback_duration > 0) {return;}//assegurar que não vai receber hit se já estiver morto
-        _hp -= 1;
+        _hp -= damage;
         if (_hp > 0) {
             if(!is_hitting){
                 hit_feedback();

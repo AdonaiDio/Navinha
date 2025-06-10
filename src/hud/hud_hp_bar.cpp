@@ -27,7 +27,11 @@ namespace adonai
                                                 -(bn::display::height()/2) + 9, //set initial y pos
                                                 adonai::Graphics::RIGHT_BAR_INDEX)
     })
-    { }
+    { 
+        hp_bar_sprites.at(0).set_bg_priority(1); 
+        hp_bar_sprites.at(1).set_bg_priority(1); 
+        hp_bar_sprites.at(2).set_bg_priority(1); 
+    }
     hud_hp_bar::~hud_hp_bar(){}
 
     void hud_hp_bar::counter_handler()

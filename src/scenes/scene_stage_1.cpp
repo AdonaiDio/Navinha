@@ -24,6 +24,7 @@
 //my code
 #include <../include/utility.h>
 #include "scene.h"
+#include "i_scene.h"
 #include "player.h"
 #include "enemy.h"
 #include "shot_enemy.h"
@@ -61,7 +62,7 @@ namespace adonai
     Teoricamente era pra funcionar apenas declarando aqui, 
     mas ele causou esse erro, então o inline resolveu o problema.*/
 
-    class Stage_1
+    class Stage_1 : I_Scene
     {       
         private:
 
@@ -116,7 +117,7 @@ namespace adonai
         Shot_N_Run_Loop_Script wave3_shot_n_run_loop_script_2 = Shot_N_Run_Loop_Script();
         Shot_N_Run_Loop_Script wave3_shot_n_run_loop_script_3 = Shot_N_Run_Loop_Script();
         Follow_N_Shot_Script wave4_f_n_s_script = Follow_N_Shot_Script();
-
+        
         Stage_1(){ 
 
         };

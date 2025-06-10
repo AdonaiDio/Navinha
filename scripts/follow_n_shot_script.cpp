@@ -66,7 +66,7 @@ namespace adonai {
                 }
             }
             else{
-                if (e->pos().x() < max_x) {//vai para esquerda
+                if (e->pos().x() < max_x) {//vai para direita
                     e->pos(move_towards(e->pos(), e->pos()+bn::fixed_point(1, y_play_dir(e)), e->velocity()));
                 }
                 else{

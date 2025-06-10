@@ -34,7 +34,13 @@ namespace adonai
                                         - (8*0),//offset em y
                                                     adonai::Graphics::BOTTOM_BAR_INDEX)
     })
-    { }
+    {
+        energy_bar_sprites.at(0).set_bg_priority(1); 
+        energy_bar_sprites.at(1).set_bg_priority(1); 
+        energy_bar_sprites.at(2).set_bg_priority(1); 
+        energy_bar_sprites.at(3).set_bg_priority(1); 
+        energy_bar_sprites.at(4).set_bg_priority(1); 
+    }
     hud_energy_bar::~hud_energy_bar(){}
     
     int hud_energy_bar::available_shoots(){

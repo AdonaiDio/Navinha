@@ -15,6 +15,7 @@
 #include "bn_log.h"
 
 #define MAX_ENEMIES 20
+#define MAX_PLAYER_SHOTS 12
 
 namespace adonai
 {
@@ -66,7 +67,7 @@ namespace adonai
             bn::fixed moved_to_left = 0;
             int shotButton_held_time = 0;
             
-            bn::array<adonai::Shot_Player, 12> _shots;
+            bn::array<adonai::Shot_Player, MAX_PLAYER_SHOTS> _shots;
             // //true se shot tiver disponível
             // bn::array<bool*, 12> _shots_is_available;
 
@@ -83,7 +84,7 @@ namespace adonai
         
             
             void hit_feedback();
-            void receive_hit();
+            void receive_hit(int damage = 1);
             void explode();
 
             void handle_shadows_rgb();

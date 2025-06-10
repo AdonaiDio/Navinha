@@ -40,15 +40,15 @@ int main()
     //guardar referencia global
     adonai::GLOBALS::global_player = &player;
     // inciar a primeira cena
-    adonai::Scene scene = adonai::Scene::STAGE_1;
+    adonai::Scene scene = adonai::Scene::TEST_SCENE;
 
     while(true)
     {
         // se o enum for stage_1 então criamos uma instancia da cena stage_1.
         // passamos para a cena atual(scene) a instancia de cena criada.
         if(scene == adonai::Scene::TEST_SCENE){
-            // adonai::Test test_scene = adonai::Test();
-            // scene = test_scene.execute(bn::fixed_point(-104,0));
+            adonai::Test test_scene = adonai::Test();
+            scene = test_scene.execute(bn::fixed_point(-104,0));
         }
         else if(scene == adonai::Scene::STAGE_1){
             adonai::Stage_1 stage_1 = adonai::Stage_1();
