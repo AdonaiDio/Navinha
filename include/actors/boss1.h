@@ -15,7 +15,7 @@
 // #include "enemy.h"
 // #include "actor.h"
 #include "explosion_big_fx.h"
-#include "../src/scenes/scene_stage_1.cpp"
+#include "scene_test.h"
 
 #include "shot_enemy.h"
 #include "bn_sprite_items_shot_4.h"
@@ -32,7 +32,6 @@
 
 namespace adonai
 {
-
     class Boss1
     {
     #define LASER_OFFSET_X 64
