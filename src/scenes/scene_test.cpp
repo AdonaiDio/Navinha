@@ -12,6 +12,7 @@
 
 //my code
 #include "scene.h"
+#include "i_scene.h"
 #include "player.h"
 #include "enemy.h"
 #include "controller.h"
@@ -41,8 +42,7 @@ namespace adonai
     namespace GLOBALS {
         extern Player* global_player;
     }
-
-
+    
     class Test : I_Scene {       
         private:
         const int grid_width = bn::sprite_items::spaceship_1.shape_size().width();
@@ -129,7 +129,7 @@ namespace adonai
             // Inimigo* i_3 = db_e.NovoInimigo(  bn::fixed_point(grid_width*(4),(grid_height*(-1))) );
             // Inimigo* i_4 = db_e.NovoInimigo(  bn::fixed_point(grid_width*(3),(grid_height*(0))) );
 
-            Boss1 boss = Boss1(bn::fixed_point(0,0), this);
+            Boss1 boss = Boss1(bn::fixed_point(0,0));
             boss.assign_ntt_shots(&ntt_shots);
             boss.assign_ntt_enemies(&ntt_enemies);
             // Add as partes individuais(que se comportam como inimigos)

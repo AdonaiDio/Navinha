@@ -15,7 +15,6 @@
 // #include "enemy.h"
 // #include "actor.h"
 #include "explosion_big_fx.h"
-#include "../src/scenes/scene_stage_1.cpp"
 
 #include "shot_enemy.h"
 #include "bn_sprite_items_shot_4.h"
@@ -39,13 +38,13 @@ namespace adonai
     #define LASER_OFFSET_Y 24
     #define SHOT_OFFSET_X 72
     #define SHOT_OFFSET_Y 3
+
     private:
         /* data */
         bn::regular_bg_ptr boss1_bg;
         const bn::point sprite_pivot = bn::point(72,0);
         bn::fixed_point _pos;
-        //scene
-        Test* _scene;
+        
         //estados da nave
         bool dead = false;
 
@@ -195,8 +194,7 @@ namespace adonai
         // Enemy* _ship_3;
 
         //INSERIR A CENA QUE ESSE BOSS EM PARTICULAR ESTÁ INSERIDO
-        Boss1(bn::fixed_point initial_pos, Test* scene):
-            _scene(scene),
+        Boss1(bn::fixed_point initial_pos):
             boss1_bg (bn::regular_bg_items::boss1.create_bg(initial_pos)),
             laser_bg (bn::regular_bg_items::boss1_laser_anim.create_bg(initial_pos,14)),
             _pos(initial_pos),
@@ -243,10 +241,10 @@ namespace adonai
     
         //SpawnEnemies chamado 1 vez
         void SpawnEnemies(){
+
             /* Somente instanciar uma nave e inserir na ntt_enemies
                 Iniciar comportamento. */
                 
-            _scene->SpawnEnemy();
             // //get the enemy in ntt list
             // _BSE_1A_index = add_enemy_ntt_and_return_index(_spawnned_ship_1);
             // _ship_1 = &ntt_enemies->at(_BSE_1A_index);
