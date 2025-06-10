@@ -1,3 +1,25 @@
+#pragma once
+//butano
+#include <bn_core.h>
+#include "bn_log.h"
+#include "bn_fixed_point.h"
+#include "bn_regular_bg_ptr.h"
+#include "bn_sprite_ptr.h"
+#include "bn_display.h"
+#include "bn_colors.h"
+#include "bn_bg_palette_color_hbe_ptr.h"
+#include "bn_unique_ptr.h"
+
+//my code
+#include "scene.h"
+#include "player.h"
+#include "enemy.h"
+#include "controller.h"
+#include "shot.h"
+#include "../../include/hud/hud_energy_bar.h"
+#include "../../include/hud/hud_hp_bar.h"
+#include "hud_game_over.h"
+#include "enemies.cpp"
 
 #include "boss1.h"
 #include "inimigo.h"
@@ -10,24 +32,50 @@
 #include "bn_music_items.h"
 
 #include "obj.h"
-#include "scene_test.h"
 
 #define MAX_ENEMIES 20
 #define MAX_SHOTS 40
 
 namespace adonai
 {
+    namespace GLOBALS {
+        extern Player* global_player;
+    }
 
 
-    Test::Test() {};
+    class Test : I_Scene {       
+        private:
+        const int grid_width = bn::sprite_items::spaceship_1.shape_size().width();
+        const int grid_height = bn::sprite_items::spaceship_1.shape_size().height();
 
-        void Test::SpawnEnemy() {// bn::fixed_point init_pos
+        public:
+        bn::vector<Enemy, MAX_ENEMIES> ntt_enemies = bn::vector<Enemy, MAX_ENEMIES>();
+        // bn::array<New_Shot_Enemy*, 40> ntt_shots;
+        bn::array<Shot_Enemy, 40> ntt_shots = { 
+            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),
+            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),
+            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),
+            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),
+            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),
+            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),
+            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),
+            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),
+            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),
+            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot)};
+        
+        DataBase_Enemies db_e;
+        Boss_Spawn_Enemy_1A_Script BSE_1a = Boss_Spawn_Enemy_1A_Script();
+
+        void SpawnEnemy() {// bn::fixed_point init_pos
             Enemy e = Enemy(db_e.DefaultEnemy(bn::fixed_point(16,-16)));
             e.add_script(BSE_1a);
             add_enemy_ntt(e);
         }
 
-        Scene Test::execute(bn::fixed_point spawn_location)
+        Test(){
+        };
+
+        Scene execute(bn::fixed_point spawn_location)
         {
             adonai::GLOBALS::global_player->ntt_enemies = &ntt_enemies;
             adonai::GLOBALS::global_player->pass_ntt_enemies_to_shots();
@@ -142,6 +190,46 @@ namespace adonai
                 bn::core::update();
             }
         }
-        
+        // update todos os inimigos na cena
+        void update_all_enemies(){
+            if(ntt_enemies.size() > 0){
+                for (int i = 0; i < ntt_enemies.size(); i++) {
+                    if(ntt_enemies.at(i)._available == false){
+                        ntt_enemies.at(i).update();
+                    }
+                }
+            }
+        }
+        // update todos os tiros na cena
+        void update_all_shoots(){
+            for (int i = 0; i < ntt_shots.size(); i++) {
+                if(ntt_shots.at(i)._available == false){
+                    ntt_shots.at(i).update();
+                }
+            }
+        }
+
+        void add_enemy_ntt(Enemy enemy){
+            if(ntt_enemies.size() == 0){
+                ntt_enemies.push_back(enemy);
+                return;
+            }
+            for (int i = 0; i < ntt_enemies.size(); i++) {
+                if(ntt_enemies.at(i)._available == true){
+                    ntt_enemies.at(i)._available = false;
+                    ntt_enemies.at(i).copy_Enemy( enemy );
+                    BN_LOG("using ",ntt_enemies.size()," enemies in list");
+                    return;
+                }
+            }
+            BN_LOG("Não há ntt_enemies nos slots disponíveis.");
+            if(ntt_enemies.size() < MAX_ENEMIES){
+                ntt_enemies.push_back(enemy);
+            }
+            else{
+                BN_LOG("Não há slots em ntt_enemies list.");
+            }
+        }
+    };
     
 }

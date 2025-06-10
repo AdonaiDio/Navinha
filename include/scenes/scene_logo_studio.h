@@ -8,6 +8,8 @@ namespace adonai
     class Logo_Studio : I_Scene
     {       
         public:
+        void SpawnEnemy() override{
+        }
             Logo_Studio();
             Scene execute();
     };
