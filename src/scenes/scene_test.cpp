@@ -42,7 +42,7 @@ namespace adonai
     namespace GLOBALS {
         extern Player* global_player;
     }
-    
+
     class Test : I_Scene {       
         private:
         const int grid_width = bn::sprite_items::spaceship_1.shape_size().width();
@@ -64,13 +64,6 @@ namespace adonai
             Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot)};
         
         DataBase_Enemies db_e;
-        Boss_Spawn_Enemy_1A_Script BSE_1a = Boss_Spawn_Enemy_1A_Script();
-
-        void SpawnEnemy() {// bn::fixed_point init_pos
-            Enemy e = Enemy(db_e.DefaultEnemy(bn::fixed_point(16,-16)));
-            e.add_script(BSE_1a);
-            add_enemy_ntt(e);
-        }
 
         Test(){
         };
@@ -131,7 +124,6 @@ namespace adonai
 
             Boss1 boss = Boss1(bn::fixed_point(0,0));
             boss.assign_ntt_shots(&ntt_shots);
-            boss.assign_ntt_enemies(&ntt_enemies);
             // Add as partes individuais(que se comportam como inimigos)
             add_enemy_ntt(boss.part_shots);
             add_enemy_ntt(boss.part_laser);
