@@ -15,6 +15,7 @@
 #include "player.h"
 #include "scene.h"
 #include "scenes/scene_stage_1.cpp"
+#include "scenes/scene_stage_1_boss.cpp"
 #include "scenes/scene_test.cpp"
 #include "scene_logo_studio.h"
 #include "bn_display.h"
@@ -40,7 +41,7 @@ int main()
     //guardar referencia global
     adonai::GLOBALS::global_player = &player;
     // inciar a primeira cena
-    adonai::Scene scene = adonai::Scene::TEST_SCENE;
+    adonai::Scene scene = adonai::Scene::STAGE_1_BOSS;
 
     while(true)
     {
@@ -53,6 +54,10 @@ int main()
         else if(scene == adonai::Scene::STAGE_1){
             adonai::Stage_1 stage_1 = adonai::Stage_1();
             scene = stage_1.execute(bn::fixed_point(-48,-11));
+        }
+        else if(scene == adonai::Scene::STAGE_1_BOSS){
+            adonai::Stage_1_Boss stage_1_boss = adonai::Stage_1_Boss();
+            scene = stage_1_boss.execute(bn::fixed_point(player.pos().x(),player.pos().y()));
         }
         else if(scene == adonai::Scene::LOGO_STUDIO){
             adonai::Logo_Studio logo_studio = adonai::Logo_Studio();

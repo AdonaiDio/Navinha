@@ -26,7 +26,7 @@
 #include "scene.h"
 #include "i_scene.h"
 #include "player.h"
-#include "enemy.h"
+#include "enemy.h" //
 #include "shot_enemy.h"
 #include "enemies.cpp"
 #include "controller.h"
@@ -37,15 +37,12 @@
 #include "hud_game_over.h"
 // #include "ntt_list_stage_1.h"
 
+#include "boss1.h"
 
 //scripts
 // #include <D:/Adonai/My_ROMs/Navinha/scripts/i_script.hpp>
 //scripts embbeded
-#include "shoot_script.cpp"
-#include "move_and_destroy_script.cpp"
-#include "move_enemy_dvd_script.cpp"
-#include "shot_n_run_loop_script.cpp"
-#include "follow_n_shot_script.cpp"
+
 
 #define MAX_ENEMIES 20
 #define MAX_SHOTS 40
@@ -62,23 +59,13 @@ namespace adonai
     Teoricamente era pra funcionar apenas declarando aqui, 
     mas ele causou esse erro, então o inline resolveu o problema.*/
 
-    class Stage_1 : I_Scene
+    class Stage_1_Boss : I_Scene
     {       
         private:
 
-        const int grid_width = 16;
-        const int grid_height = 16;
+        const int grid_width = bn::sprite_items::spaceship_1.shape_size().width();
+        const int grid_height = bn::sprite_items::spaceship_1.shape_size().height();
 
-        enum Stage_State : int8_t {
-            Stage_State_NONE    = 0b00000000,
-            Stage_State_START   = 0b00000001,
-            Stage_State_WAVE_1  = 0b00000010,
-            Stage_State_WAVE_2  = 0b00000100,
-            Stage_State_WAVE_3  = 0b00001000,
-            Stage_State_WAVE_4  = 0b00010000,
-            Stage_State_END     = 0b01111111 //max char u_int8
-        };
-        Stage_State _state = Stage_State_NONE;
         
         int timer = 0;
 
@@ -108,20 +95,9 @@ namespace adonai
             Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot)};
         
         DataBase_Enemies db_e;
-        Move_And_Destroy_Script wave1_move_n_destroy_script;
-        Move_Enemy_DVD_Script wave2_medvd_script_1 = Move_Enemy_DVD_Script();
-        Move_Enemy_DVD_Script wave2_medvd_script_2 = Move_Enemy_DVD_Script();
-        Move_Enemy_DVD_Script wave2_medvd_script_3 = Move_Enemy_DVD_Script();
-        Move_Enemy_DVD_Script wave2_medvd_script_4 = Move_Enemy_DVD_Script();
-        Move_Enemy_DVD_Script wave2_medvd_script_5 = Move_Enemy_DVD_Script();
-        Move_Enemy_DVD_Script wave2_medvd_script_6 = Move_Enemy_DVD_Script();
-        Shot_N_Run_Loop_Script wave3_shot_n_run_loop_script_1 = Shot_N_Run_Loop_Script();
-        Shot_N_Run_Loop_Script wave3_shot_n_run_loop_script_2 = Shot_N_Run_Loop_Script();
-        Shot_N_Run_Loop_Script wave3_shot_n_run_loop_script_3 = Shot_N_Run_Loop_Script();
-        Follow_N_Shot_Script wave4_f_n_s_script = Follow_N_Shot_Script();
         
-        Stage_1(){ 
-
+        
+        Stage_1_Boss(){ 
         };
 
 
@@ -146,15 +122,7 @@ namespace adonai
             
             adonai::hud_game_over game_over = adonai::hud_game_over(0, -80-16);
             
-            BN_LOG("Entrou na cena Stage_1");
-            _state = Stage_State::Stage_State_START;
-            ////
-            //iniciar a primeira horda e contadores
-            start_Wave_1();
-            _state = Stage_State::Stage_State_WAVE_1;
-            // start_Wave_4();
-            // _state = Stage_State::Stage_State_WAVE_4;
-            ////
+            BN_LOG("Entrou na cena Stage_1_Boss");
 
             //Start Entities
             adonai::GLOBALS::global_player->pos(spawn_location);
@@ -164,59 +132,36 @@ namespace adonai
             // instancia o controller
             adonai::Controller controller = adonai::Controller(*adonai::GLOBALS::global_player);
 
+            //-----START BOSS-----//
+            Boss1 boss = Boss1(bn::fixed_point(0,0));
+            boss.assign_ntt_shots(&ntt_shots);
+            // Add as partes individuais(que se comportam como inimigos)
+            add_enemy_ntt(boss.part_shots);
+            add_enemy_ntt(boss.part_laser);
+            //retornar para o boss os ponteiros dessas partes
+            for (int i = 0; i < ntt_enemies.size(); i++)
+            {
+                if(ntt_enemies[i].sprite() == boss.part_shots.sprite()){
+                    boss.part_shots_ptr = &ntt_enemies.at(i);
+                }
+                if(ntt_enemies[i].sprite() == boss.part_laser.sprite()){
+                    boss.part_laser_ptr = &ntt_enemies.at(i);
+                }
+            }
+            //---------------------//
+
             bn::music_items::nova_theme.play();
 
-            int count_frames_update = 0;
+            // int count_frames_update = 0;
             
             while(true)
             {
-                ///////
-                //eu não sei... Coloquei isso aí para reutilizar igual em outro lugar. eu acho.
+                //---r_bg_1 side scroll---//
                 #include  "../../include/effects/bg_fx.hpp"
                 BG_GRADIENT_FX(r_bg_1);
-                // r_bg_1 side scroll
                 r_bg_1.set_position( bn::fixed_point(r_bg_1.position().x()-((bn::fixed) 0.033f), 0));
-                ///////
+                //------------------------//
                 
-                /////
-                switch (_state)
-                {
-                case Stage_State::Stage_State_WAVE_1:
-                    if(finished_Wave_1()){
-                        _state = Stage_State::Stage_State_WAVE_2;
-                        start_Wave_2();
-                    };
-                    break;
-
-                case Stage_State::Stage_State_WAVE_2:
-                    if(finished_Wave_2()){
-                        _state = Stage_State::Stage_State_WAVE_3;
-                        start_Wave_3();
-                    };
-                    break;
-                
-                case Stage_State::Stage_State_WAVE_3:
-                    if(finished_Wave_3()){
-                        _state = Stage_State::Stage_State_WAVE_4;
-                        start_Wave_4();
-                    };
-                    break;
-
-                case Stage_State::Stage_State_WAVE_4:
-                    if(finished_Wave_4()){
-                        _state = Stage_State::Stage_State_END;
-                        if(is_stage_clear()){
-                            return quit_stage();
-                        }
-                    };
-                    break;
-                
-                default:
-                    BN_LOG("Estado da fase não esperado!");
-                    break;
-                }
-                /////
-
                 update_all_enemies();
                 update_all_shoots();
 
@@ -227,8 +172,9 @@ namespace adonai
                 hud_hp_bar.update();
                 
                 if(adonai::GLOBALS::global_player->hp() <= 0){ game_over.update(); }
-
-
+                
+                #pragma region DEBUG
+                //---DEBUG KEY---//
                 if (bn::keypad::l_pressed())
                 {
                     BN_LOG("Usados: ", bn::sprites::used_items_count());
@@ -237,19 +183,22 @@ namespace adonai
                     BN_LOG("inimigos: ", ntt_enemies.size());
                     BN_LOG("inimigos dispo.: ", all_available_enemies());
                 }
+                //---------------//
 
-                
-                // //DEBUG CPU USAGE=================
+                //==DEBUG CPU USAGE==//
                 // bn::fixed max_cpu_usage = bn::max(max_cpu_usage, bn::core::last_cpu_usage());
                 // --counter;
-
                 // if(! counter)
                 // {
                 //     BN_LOG((max_cpu_usage * 100).right_shift_integer(), "%");
                 //     max_cpu_usage = 0;
                 //     counter = 10;
                 // }
-                // //=================
+                // ==================//
+                #pragma endregion
+                
+                boss.update();
+                
 
                 bn::core::update();
             }
@@ -307,155 +256,7 @@ namespace adonai
                 }
             }
         }
-        void start_Wave_1(){
-            BN_LOG("WAVE 1: ", ntt_enemies.size());
-
-            bn::fixed_point position;
-
-            position = {grid_width*(0+8),(grid_height*(0))};
-            add_enemy_ntt( db_e.DefaultEnemy(position) );
-
-            for (int i = 1; i <= 4; i++) 
-            {
-                position = {grid_width*(i+8),(grid_height*(i))};
-                add_enemy_ntt( db_e.DefaultEnemy(  position) );
-                
-                position = {grid_width*(i+8),(grid_height*(-1*i))};
-                add_enemy_ntt( db_e.DefaultEnemy(  position) );
-            }
-            for (int i = 0; i < 9; i++)
-            {
-                ntt_enemies.at(i).add_script(wave1_move_n_destroy_script);
-            }
-        }
-
-        //Condição para concluir a primeira wave
-        //não ter mais inimigos em tela
-        bool finished_Wave_1(){
-            for (int i = 0; i < ntt_enemies.size(); i++)
-            {
-                if (ntt_enemies.at(i)._available ==  false) {
-                    return false;
-                }
-            }
-            ntt_enemies.clear();
-            BN_LOG("Finish WAVE 1. size: ", ntt_enemies.size());
-            return true; 
-        }
-
-        void start_Wave_2() {
-            BN_LOG("WAVE 2: ", ntt_enemies.size());
-
-            add_enemy_ntt( db_e.DefaultEnemy(  bn::fixed_point( 16*(8), (grid_height*(-6)) ) ) );
-            add_enemy_ntt( db_e.DefaultEnemy(  bn::fixed_point( 16*(8+1), (grid_height*(-6-1)) ) ) );
-            add_enemy_ntt( db_e.DefaultEnemy(  bn::fixed_point( 16*(8+2), (grid_height*(-6-2)) ) ) );
-            add_enemy_ntt( db_e.DefaultEnemy(  bn::fixed_point( 16*(8), (grid_height*(6)) ) ) );
-            add_enemy_ntt( db_e.DefaultEnemy(  bn::fixed_point( 16*(8+1), (grid_height*(6+1)) ) ) );
-            add_enemy_ntt( db_e.DefaultEnemy(  bn::fixed_point( 16*(8+2), (grid_height*(6+2)) ) ) );
-
-            for (int i = 0; i < ntt_enemies.size(); i++)
-            {
-                switch (i)
-                {
-                case 0:
-                ntt_enemies.at(i).add_script(wave2_medvd_script_1);
-                break;
-                case 1:
-                ntt_enemies.at(i).add_script(wave2_medvd_script_2);
-                break;
-                case 2:
-                ntt_enemies.at(i).add_script(wave2_medvd_script_3);
-                break;
-                case 3:
-                ntt_enemies.at(i).add_script(wave2_medvd_script_4);
-                break;
-                case 4:
-                ntt_enemies.at(i).add_script(wave2_medvd_script_5);
-                break;
-                case 5:
-                ntt_enemies.at(i).add_script(wave2_medvd_script_6);
-                break;
-                default:break;
-                }
-            }
-        }
-
-        bool finished_Wave_2(){
-            for (int i = 0; i < ntt_enemies.size(); i++)
-            {
-                if (ntt_enemies.at(i)._available ==  false) {
-                    return false;
-                }
-            }
-            ntt_enemies.clear();
-            BN_LOG("Finish WAVE 2. size: ", ntt_enemies.size());
-            return true; 
-        }
-        void start_Wave_3() {
-            BN_LOG("WAVE 3: ", ntt_enemies.size());
-            bn::fixed_point position;
-            
-            for (int i = 0; i < 3; i++)
-            {
-                switch (i)
-                {
-                case 0:
-                position = {6*16, (-6*16)};
-                break;
-                case 1:
-                position = {7*16, (-8*16)};
-                break;
-                case 2:
-                position = {8*16, (-10*16)};
-                break;
-                default:break;
-                }
-                ntt_enemies.push_back( db_e.RedEnemy(position,  &ntt_shots) );
-            }
-            for (int i = 0; i < ntt_enemies.size(); i++)
-            {
-                switch (i)
-                {
-                case 0:
-                ntt_enemies.at(i).add_script(wave3_shot_n_run_loop_script_1);
-                break;
-                case 1:
-                ntt_enemies.at(i).add_script(wave3_shot_n_run_loop_script_2);
-                break;
-                case 2:
-                ntt_enemies.at(i).add_script(wave3_shot_n_run_loop_script_3);
-                break;
-                default:break;
-                }
-            }
-        }
-        bool finished_Wave_3(){
-            for (int i = 0; i < ntt_enemies.size(); i++)
-            {
-                if (ntt_enemies.at(i)._available ==  false) {
-                    return false;
-                }
-            }
-            ntt_enemies.clear();
-            BN_LOG("Finish WAVE 3. size: ", ntt_enemies.size());
-            return true; 
-        }
-        void start_Wave_4() {
-            BN_LOG("WAVE 4");
-
-            ntt_enemies.push_back( db_e.PyramidEnemy({6*16, (0*16)},  &ntt_shots) );
-            ntt_enemies.at(0).add_script(wave4_f_n_s_script);
-        }
-        bool finished_Wave_4(){
-            for (int i = 0; i < ntt_enemies.size(); i++)
-            {
-                if (ntt_enemies.at(i)._available ==  false) {
-                    return false;
-                }
-            }
-            ntt_enemies.empty();
-            return true; 
-        }
+        
         bool is_stage_clear(){
             //fazer um interludio para a boss fight em outra cena.
             
@@ -467,7 +268,7 @@ namespace adonai
             return false;
         }
         Scene quit_stage(){
-            return Scene::STAGE_1_BOSS;
+            return Scene::END;
         }
         
     };
