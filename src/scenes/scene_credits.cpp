@@ -7,7 +7,7 @@
 #include "common_info.h"
 #include "common_variable_8x16_sprite_font.h"
 
-#include "bn_regular_bg_items_butano_background.h"
+#include "bn_regular_bg_items_fundo.h"
 
 #include "scene_credits.h"
 
@@ -18,7 +18,7 @@ namespace adonai
 
     Scene Credits::execute()
     {
-        bn::regular_bg_ptr map = bn::regular_bg_items::butano_background.create_bg(0 , 0);
+        bn::regular_bg_ptr map = bn::regular_bg_items::fundo.create_bg(0 , 0);
 
         bn::sprite_text_generator text_generator(common::variable_8x16_sprite_font);
         text_generator.set_center_alignment();
