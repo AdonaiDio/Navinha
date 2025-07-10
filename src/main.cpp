@@ -17,7 +17,10 @@
 #include "scenes/scene_stage_1.cpp"
 #include "scenes/scene_stage_1_boss.cpp"
 #include "scenes/scene_test.cpp"
-#include "scene_logo_studio.h"
+#include "scenes/scene_butano_logo.h"
+#include "scenes/scene_credits.h"
+#include "scenes/scene_start_menu.h"
+#include "scenes/scene_logo_studio.h"
 #include "bn_display.h"
 
 #include "shot.h"
@@ -41,7 +44,7 @@ int main()
     //guardar referencia global
     adonai::GLOBALS::global_player = &player;
     // inciar a primeira cena
-    adonai::Scene scene = adonai::Scene::STAGE_1_BOSS;
+    adonai::Scene scene = adonai::Scene::BUTANO;
 
     while(true)
     {
@@ -51,6 +54,18 @@ int main()
             adonai::Test test_scene = adonai::Test();
             scene = test_scene.execute(bn::fixed_point(-104,0));
         }
+        else if(scene == adonai::Scene::BUTANO){
+            adonai::Butano_Logo butano_logo = adonai::Butano_Logo();
+            scene = butano_logo.execute();
+        }
+        else if(scene == adonai::Scene::LOGO_STUDIO){
+            adonai::Logo_Studio logo_studio = adonai::Logo_Studio();
+            scene = logo_studio.execute();
+        }
+        else if(scene == adonai::Scene::START_MENU){
+            adonai::Start_Menu start_menu = adonai::Start_Menu();
+            scene = start_menu.execute();
+        }
         else if(scene == adonai::Scene::STAGE_1){
             adonai::Stage_1 stage_1 = adonai::Stage_1();
             scene = stage_1.execute(bn::fixed_point(-48,-11));
@@ -59,9 +74,9 @@ int main()
             adonai::Stage_1_Boss stage_1_boss = adonai::Stage_1_Boss();
             scene = stage_1_boss.execute(bn::fixed_point(player.pos().x(),player.pos().y()));
         }
-        else if(scene == adonai::Scene::LOGO_STUDIO){
-            adonai::Logo_Studio logo_studio = adonai::Logo_Studio();
-            scene = logo_studio.execute();
+        else if(scene == adonai::Scene::CREDITS){
+            adonai::Credits credits = adonai::Credits();
+            scene = credits.execute();
         }
         bn::core::update();
     }

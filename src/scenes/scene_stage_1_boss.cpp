@@ -268,7 +268,7 @@ namespace adonai
             return false;
         }
         Scene quit_stage(){
-            return Scene::END;
+            return Scene::CREDITS;
         }
         
     };

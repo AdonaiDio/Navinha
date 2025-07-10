@@ -8,9 +8,9 @@ namespace adonai
         STAGE_1_BOSS,
         LOGO_STUDIO,
         BUTANO,
-        LOADING,
-        TITLE,
-        END,
+        //LOADING,
+        START_MENU,
+        CREDITS,
         TEST_SCENE
     };
 }
