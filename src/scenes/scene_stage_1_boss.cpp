@@ -164,7 +164,7 @@ namespace adonai
                 
                 update_all_enemies();
                 update_all_shoots();
-
+                
                 controller.update();
 
                 if(adonai::GLOBALS::global_player->hp() > 0 || adonai::GLOBALS::global_player->wait_to_destroy) { adonai::GLOBALS::global_player->update(); }
@@ -173,6 +173,7 @@ namespace adonai
                 
                 if(adonai::GLOBALS::global_player->hp() <= 0){ game_over.update(); }
                 
+
                 #pragma region DEBUG
                 //---DEBUG KEY---//
                 if (bn::keypad::l_pressed())
@@ -215,7 +216,8 @@ namespace adonai
             }
             return count;
         }
-        
+
+
         void add_enemy_ntt(Enemy enemy){
             if(ntt_enemies.size() == 0){
                 ntt_enemies.push_back(enemy);

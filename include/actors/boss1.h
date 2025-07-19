@@ -38,9 +38,18 @@ namespace adonai
         bn::regular_bg_ptr boss1_bg;
         const bn::point sprite_pivot = bn::point(72,0);
         bn::fixed_point _pos;
-        
+        const bn::fixed speed = 0.5;
+        int timer_actions = 0;
         //estados da nave
-        bool dead = false;
+        // bool dead = false;
+        bool go_up = true;
+        enum BOSS_1_STATES{
+            BOSS_1_NONE,
+            BOSS_1_MOVING,
+            BOSS_1_SHOOTING,
+            BOSS_1_LASER,
+            BOSS_1_DEAD
+        }state = BOSS_1_STATES::BOSS_1_NONE;
 
         //controle das partes
         const bn::point laser_OFFSET = bn::point(sprite_pivot.x()-8, sprite_pivot.y()+24);
@@ -120,7 +129,8 @@ namespace adonai
         void assign_ntt_shots(bn::array<Shot_Enemy, 40>* ntt_shots_ptr){
             ntt_shots = ntt_shots_ptr;
         }
-        
+
+
         void Move(bn::fixed_point pos){
             _pos = pos;
             //mudar a posição das parts com seus respectivos offsets
@@ -151,6 +161,21 @@ namespace adonai
             laser_state = Laser_State::LASER_START_STATE;
             laser_bg.set_visible(true);
             laser_col_enable = false;
+        }
+
+        void MoveUpDown(){
+            if (_pos.y() > 80) {
+                go_up = true;
+            } else if (_pos.y() < -80) {
+                go_up = false;
+            }
+            BN_LOG("CARAI");
+            if (go_up) {
+                Move(bn::fixed_point(0,_pos.y()-1*speed));
+            } else {
+                Move(bn::fixed_point(0,_pos.y()+1*speed));
+            }
+            BN_LOG("pos bos y:", _pos.y());
         }
 
         // Lida com os estados do ataque de laser todo frame
@@ -205,21 +230,44 @@ namespace adonai
         }
 
         void update(){
-            if(dead) return;
-            //temp buttons for actions
-            if(bn::keypad::l_pressed()){
-                LaserAttack();
-            }
-            if(bn::keypad::r_pressed()){
-                OrbsAttack();
-            }
-            //
+            // if(dead) return;
+            if(state == BOSS_1_STATES::BOSS_1_DEAD) return;
+            // //temp buttons for actions
+            // if(bn::keypad::l_pressed()){
+            //     LaserAttack();
+            // }
+            // if(bn::keypad::r_pressed()){
+            //     OrbsAttack();
+            // }
+            // //
             if(part_laser_ptr->hp()<=0 && part_shots_ptr->hp()<=0){
                 Destroy();
                 return;
             }
             LaserUpdate();
             // UpdateBossSpawnEnemy();
+            timer_actions += 1;
+            if (timer_actions == 2*(30) ||
+                timer_actions == 3*(30) ||
+                timer_actions == 4*(30) ||
+                timer_actions == 5*(30) ||
+                timer_actions == 6*(30) ||
+                timer_actions == 7*(30) ||
+                timer_actions == 8*(30))
+            {
+                /* code X */
+                OrbsAttack();
+            }
+            else if (timer_actions >= 5*(60) &&
+                timer_actions < 12*(60) )
+            {
+                MoveUpDown();
+            }
+            else if (timer_actions >= 12*(60) )
+            {
+                timer_actions = 0;
+            }
+            
         }
 
         void Destroy(){
@@ -284,7 +332,8 @@ namespace adonai
             //faça uma ultima coisa e elimine o boss
             else{
                 BN_LOG("chama transição de Tela de vitória!");
-                dead = true;
+                //dead = true;
+                state = BOSS_1_STATES::BOSS_1_DEAD;
             }
         }
         

@@ -8,7 +8,7 @@ namespace adonai
         STAGE_1_BOSS,
         LOGO_STUDIO,
         BUTANO,
-        //LOADING,
+        CONTROLS,
         START_MENU,
         CREDITS,
         TEST_SCENE

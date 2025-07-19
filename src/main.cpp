@@ -19,6 +19,7 @@
 #include "scenes/scene_test.cpp"
 #include "scenes/scene_butano_logo.h"
 #include "scenes/scene_credits.h"
+#include "scenes/scene_controls.h"
 #include "scenes/scene_start_menu.h"
 #include "scenes/scene_logo_studio.h"
 #include "bn_display.h"
@@ -44,7 +45,7 @@ int main()
     //guardar referencia global
     adonai::GLOBALS::global_player = &player;
     // inciar a primeira cena
-    adonai::Scene scene = adonai::Scene::BUTANO;
+    adonai::Scene scene = adonai::Scene::STAGE_1_BOSS;
 
     while(true)
     {
@@ -65,6 +66,10 @@ int main()
         else if(scene == adonai::Scene::START_MENU){
             adonai::Start_Menu start_menu = adonai::Start_Menu();
             scene = start_menu.execute();
+        }
+        else if(scene == adonai::Scene::CONTROLS){
+            adonai::Controls controls = adonai::Controls();
+            scene = controls.execute();
         }
         else if(scene == adonai::Scene::STAGE_1){
             adonai::Stage_1 stage_1 = adonai::Stage_1();

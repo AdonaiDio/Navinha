@@ -3,24 +3,24 @@
 #include "bn_sound_items.h"
 #include "bn_keypad.h"
 
-#include "bn_regular_bg_items_start_menu_bg.h"
+#include "bn_regular_bg_items_controls_bg.h"
 
-#include "scene_start_menu.h"
+#include "scene_controls.h"
 
 
 namespace adonai
 {
-    Start_Menu::Start_Menu() {}
+    Controls::Controls() {}
 
-    Scene Start_Menu::execute()
+    Scene Controls::execute()
     {
-        bn::regular_bg_ptr map = bn::regular_bg_items::start_menu_bg.create_bg(0 , 0);
+        bn::regular_bg_ptr map = bn::regular_bg_items::controls_bg.create_bg(0 , 0);
         int timer = 0;
         bool started = false;
 
         while(true)
         {
-            if(bn::keypad::start_pressed()){
+            if(bn::keypad::any_pressed()){
                 started = true;
             }
             if(started){
@@ -29,7 +29,7 @@ namespace adonai
                     bn::sound_items::select.play();
                 }
                 if(timer > 50){
-                    return Scene::CONTROLS;
+                    return Scene::STAGE_1;
                 }
                 ++timer;
 
