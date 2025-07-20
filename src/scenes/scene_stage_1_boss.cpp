@@ -161,18 +161,32 @@ namespace adonai
                 BG_GRADIENT_FX(r_bg_1);
                 r_bg_1.set_position( bn::fixed_point(r_bg_1.position().x()-((bn::fixed) 0.033f), 0));
                 //------------------------//
-                
-                update_all_enemies();
-                update_all_shoots();
-                
-                controller.update();
 
-                if(adonai::GLOBALS::global_player->hp() > 0 || adonai::GLOBALS::global_player->wait_to_destroy) { adonai::GLOBALS::global_player->update(); }
-                hud_energy_bar.update();
-                hud_hp_bar.update();
+                if(adonai::GLOBALS::global_player->hp() > 0){
+                    update_all_enemies();
+                    update_all_shoots();
+                    boss.update();
+                    
+                    controller.update();
+                    hud_energy_bar.update();
+                    hud_hp_bar.update();
+                }
+
+                if(adonai::GLOBALS::global_player->hp() > 0 || adonai::GLOBALS::global_player->wait_to_destroy) { 
+                    adonai::GLOBALS::global_player->update(); 
+                }
                 
-                if(adonai::GLOBALS::global_player->hp() <= 0){ game_over.update(); }
-                
+                if(adonai::GLOBALS::global_player->hp() <= 0){ 
+                    game_over.update(); 
+                    if(is_stage_clear()){
+                        return quit_stage();
+                    }
+                }
+                if(boss.state == Boss1::BOSS_1_STATES::BOSS_1_DEAD){
+                    if(is_stage_clear()){
+                        return quit_stage();
+                    }
+                }
 
                 #pragma region DEBUG
                 //---DEBUG KEY---//
@@ -198,7 +212,6 @@ namespace adonai
                 // ==================//
                 #pragma endregion
                 
-                boss.update();
                 
 
                 bn::core::update();
@@ -260,9 +273,8 @@ namespace adonai
         }
         
         bool is_stage_clear(){
-            //fazer um interludio para a boss fight em outra cena.
-            
-            if(timer > 180){
+            BN_LOG("timer:",timer);
+            if(timer > 240){
                 return true;
             }
             ++timer;
@@ -270,6 +282,7 @@ namespace adonai
             return false;
         }
         Scene quit_stage(){
+            GLOBALS::global_player->sprite().set_visible(false);
             return Scene::CREDITS;
         }
         

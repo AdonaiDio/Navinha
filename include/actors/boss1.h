@@ -10,6 +10,7 @@
 #include "bn_sprite_ptr.h"
 #include "bn_keypad.h"
 #include "bn_rect.h"
+#include "bn_random.h"
 
 #include "explosion_big_fx.h"
 
@@ -39,17 +40,12 @@ namespace adonai
         const bn::point sprite_pivot = bn::point(72,0);
         bn::fixed_point _pos;
         const bn::fixed speed = 0.5;
+        int timer = 0;
         int timer_actions = 0;
+        bn::random rand_bool;
         //estados da nave
         // bool dead = false;
         bool go_up = true;
-        enum BOSS_1_STATES{
-            BOSS_1_NONE,
-            BOSS_1_MOVING,
-            BOSS_1_SHOOTING,
-            BOSS_1_LASER,
-            BOSS_1_DEAD
-        }state = BOSS_1_STATES::BOSS_1_NONE;
 
         //controle das partes
         const bn::point laser_OFFSET = bn::point(sprite_pivot.x()-8, sprite_pivot.y()+24);
@@ -104,12 +100,21 @@ namespace adonai
         Enemy* part_laser_ptr;
         Enemy* part_shots_ptr;
         
+        enum BOSS_1_STATES{
+            BOSS_1_NONE,
+            BOSS_1_MOVING,
+            BOSS_1_SHOOTING,
+            BOSS_1_LASER,
+            BOSS_1_DYING,
+            BOSS_1_DEAD
+        }state = BOSS_1_STATES::BOSS_1_NONE;
+        
         Boss1(bn::fixed_point initial_pos):
             boss1_bg (bn::regular_bg_items::boss1.create_bg(initial_pos)),
             laser_bg (bn::regular_bg_items::boss1_laser_anim.create_bg(initial_pos,14)),
             _pos(initial_pos),
-            part_laser(Enemy(initial_pos+bn::point(LASER_OFFSET_X, LASER_OFFSET_Y), bn::sprite_items::boss1_part1, 3)),
-            part_shots(Enemy(initial_pos+bn::point(SHOT_OFFSET_X,SHOT_OFFSET_Y), bn::sprite_items::boss1_part2, 2))
+            part_laser(Enemy(initial_pos+bn::point(LASER_OFFSET_X, LASER_OFFSET_Y), bn::sprite_items::boss1_part1, 20)),
+            part_shots(Enemy(initial_pos+bn::point(SHOT_OFFSET_X,SHOT_OFFSET_Y), bn::sprite_items::boss1_part2, 35))
         {
             boss1_bg.set_priority(3);
             laser_bg.set_priority(1);
@@ -124,7 +129,7 @@ namespace adonai
             part_shots.col(bn::rect((int)part_shots.pos().x()+2, (int)part_shots.pos().y()+0, 28,14));
 
         };
-        ~Boss1();
+        ~Boss1() = default;
         // Para associar a lista de ntt_shots presentes na cena que ele foi criado.
         void assign_ntt_shots(bn::array<Shot_Enemy, 40>* ntt_shots_ptr){
             ntt_shots = ntt_shots_ptr;
@@ -169,17 +174,21 @@ namespace adonai
             } else if (_pos.y() < -80) {
                 go_up = false;
             }
-            BN_LOG("CARAI");
             if (go_up) {
                 Move(bn::fixed_point(0,_pos.y()-1*speed));
             } else {
                 Move(bn::fixed_point(0,_pos.y()+1*speed));
             }
-            BN_LOG("pos bos y:", _pos.y());
         }
 
         // Lida com os estados do ataque de laser todo frame
         void LaserUpdate(){
+            if(part_laser.hp() <= 0){
+                // laser_state = Laser_State::LASER_NONE_STATE;
+                // laser_bg.set_visible(false);
+                // laser_col_enable = false;
+                return;
+            }
             switch (laser_state)
             {
             case Laser_State::LASER_START_STATE:
@@ -225,52 +234,103 @@ namespace adonai
             if (!laser_col_enable) return;
             
             if(GLOBALS::global_player->col().intersects(laser_col)){
-                GLOBALS::global_player->receive_hit(2);
+                GLOBALS::global_player->receive_hit(3);
             }
         }
 
         void update(){
             // if(dead) return;
             if(state == BOSS_1_STATES::BOSS_1_DEAD) return;
-            // //temp buttons for actions
-            // if(bn::keypad::l_pressed()){
-            //     LaserAttack();
-            // }
-            // if(bn::keypad::r_pressed()){
-            //     OrbsAttack();
-            // }
-            // //
+            BossBehavior();
             if(part_laser_ptr->hp()<=0 && part_shots_ptr->hp()<=0){
                 Destroy();
                 return;
             }
             LaserUpdate();
             // UpdateBossSpawnEnemy();
-            timer_actions += 1;
-            if (timer_actions == 2*(30) ||
-                timer_actions == 3*(30) ||
-                timer_actions == 4*(30) ||
-                timer_actions == 5*(30) ||
-                timer_actions == 6*(30) ||
-                timer_actions == 7*(30) ||
-                timer_actions == 8*(30))
+        }
+
+        void BossBehavior()
+        {
+            if(state == BOSS_1_STATES::BOSS_1_DYING){
+                // laser_state = Laser_State::LASER_NONE_STATE;
+                // laser_bg.set_visible(false);
+                // laser_col_enable = false;
+                return;
+            }    
+            timer += 1;
+            if (timer == 2 * (15))
             {
-                /* code X */
-                OrbsAttack();
+                bool new_bool = rand_bool.get_bool();
+                BN_LOG(new_bool);
+                
+                if (new_bool) 
+                {
+                    if(part_shots_ptr->hp() > 0)
+                    {
+                        state = BOSS_1_STATES::BOSS_1_SHOOTING;
+                    }
+                }
+                else
+                {
+                    if(part_laser_ptr->hp() > 0){
+                        state = BOSS_1_STATES::BOSS_1_LASER;
+                        LaserAttack();
+                    }
+                }
             }
-            else if (timer_actions >= 5*(60) &&
-                timer_actions < 12*(60) )
+            // else if (timer == 7 * (60))
+            // {
+            //     state = BOSS_1_STATES::BOSS_1_MOVING;
+            // }
+            else if (timer >= 12 * (60))
             {
-                MoveUpDown();
-            }
-            else if (timer_actions >= 12*(60) )
-            {
+                timer = 0;
                 timer_actions = 0;
             }
-            
+            if (state == BOSS_1_STATES::BOSS_1_SHOOTING)
+            {
+                timer_actions += 1;
+                if (timer_actions == 2 * (15) ||
+                    timer_actions == 3 * (15) ||
+                    timer_actions == 4 * (15) ||
+                    timer_actions == 5 * (15) ||
+                    timer_actions == 6 * (15) ||
+                    timer_actions == 7 * (15) ||
+                    timer_actions == 8 * (15) ||
+                    timer_actions == 9 * (15) ||
+                    timer_actions == 10 * (15) ||
+                    timer_actions == 11 * (15) ||
+                    timer_actions == 12 * (15) ||
+                    timer_actions == 13 * (15) ||
+                    timer_actions == 14 * (15) ||
+                    timer_actions == 15 * (15) ||
+                    timer_actions == 16 * (15))
+                {
+                    if(part_shots_ptr->hp() <= 0)
+                    {
+                        state = BOSS_1_STATES::BOSS_1_NONE;
+                    }else{
+                        OrbsAttack();
+                        if (timer_actions == 16 * (15)) {
+                            timer_actions = 0;
+                        }
+                    }
+                }
+            }
+            // else if (state == BOSS_1_STATES::BOSS_1_MOVING)
+            // {
+            MoveUpDown();
+            // }
         }
 
         void Destroy(){
+            //cancelando behaviors
+            state = BOSS_1_STATES::BOSS_1_DYING;
+            laser_state = Laser_State::LASER_NONE_STATE;
+            laser_bg.set_visible(false);
+            laser_col_enable = false;
+            //////
             //faça algo até o boss ser eliminado
             Move(bn::fixed_point(_pos.x(), _pos.y()+0.3));
             boss1_bg.set_map(bn::regular_bg_items::boss1.map_item(),1);

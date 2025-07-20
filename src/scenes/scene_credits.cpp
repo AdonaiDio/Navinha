@@ -23,17 +23,19 @@ namespace adonai
         bn::sprite_text_generator text_generator(common::variable_8x16_sprite_font);
         text_generator.set_center_alignment();
         bn::vector<bn::sprite_ptr, 32> text_sprites; //output_sprites
-        text_generator.generate(0, -20, "Developed by", text_sprites);
-        text_generator.generate(0, -4, "Adonai Diógenes ( @AdonaiDio )", text_sprites);
-        text_generator.generate(0, 20, "Music by", text_sprites);
-        text_generator.generate(0, 36, "Gilberto Lobo ( @wolf_ezel )", text_sprites);
+        text_generator.generate(0, -36, "Developed by", text_sprites);
+        text_generator.generate(0, -20, "Adonai Diógenes ( @AdonaiDio )", text_sprites);
+        text_generator.generate(0, 4, "Music by", text_sprites);
+        text_generator.generate(0, 20, "Gilberto Lobo ( @wolf_ezel )", text_sprites);
+        text_generator.generate(0, 60, "--end of program--", text_sprites);
+        text_generator.generate(0, 68, "restart the rom", text_sprites);
 
         while(true)
         {
-            if( bn::keypad::start_pressed() )
-            {
-                return Scene::START_MENU;
-            }
+            // if( bn::keypad::start_pressed() )
+            // {
+            //     return Scene::START_MENU;
+            // }
             bn::core::update();
         }   
     }
