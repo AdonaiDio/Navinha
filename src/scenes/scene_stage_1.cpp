@@ -119,6 +119,8 @@ namespace adonai
         Shot_N_Run_Loop_Script wave3_shot_n_run_loop_script_2 = Shot_N_Run_Loop_Script();
         Shot_N_Run_Loop_Script wave3_shot_n_run_loop_script_3 = Shot_N_Run_Loop_Script();
         Follow_N_Shot_Script wave4_f_n_s_script = Follow_N_Shot_Script();
+        Follow_N_Shot_Script wave4_f_n_s_script_2 = Follow_N_Shot_Script();
+        Follow_N_Shot_Script wave4_f_n_s_script_3 = Follow_N_Shot_Script();
         
         Stage_1(){ 
 
@@ -204,8 +206,10 @@ namespace adonai
 
                 case Stage_State::Stage_State_WAVE_4:
                     if(finished_Wave_4()){
+                        BN_LOG("WAVE 4 FINISH");
                         _state = Stage_State::Stage_State_END;
                         if(is_stage_clear()){
+                        BN_LOG("the FINISH");
                             return quit_stage();
                         }
                     };
@@ -444,7 +448,11 @@ namespace adonai
             BN_LOG("WAVE 4");
 
             ntt_enemies.push_back( db_e.PyramidEnemy({6*16, (0*16)},  &ntt_shots) );
+            ntt_enemies.push_back( db_e.PyramidEnemy({8*16, (2*16)},  &ntt_shots) );
+            ntt_enemies.push_back( db_e.PyramidEnemy({8*16, (-2*16)},  &ntt_shots) );
             ntt_enemies.at(0).add_script(wave4_f_n_s_script);
+            ntt_enemies.at(1).add_script(wave4_f_n_s_script_2);
+            ntt_enemies.at(2).add_script(wave4_f_n_s_script_3);
         }
         bool finished_Wave_4(){
             for (int i = 0; i < ntt_enemies.size(); i++)

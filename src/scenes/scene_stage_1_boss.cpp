@@ -188,29 +188,29 @@ namespace adonai
                     }
                 }
 
-                #pragma region DEBUG
-                //---DEBUG KEY---//
-                if (bn::keypad::l_pressed())
-                {
-                    BN_LOG("Usados: ", bn::sprites::used_items_count());
-                    BN_LOG("Disponíveis: ", bn::sprites::available_items_count());
-                    BN_LOG("reservados: ", bn::sprites::reserved_handles_count());
-                    BN_LOG("inimigos: ", ntt_enemies.size());
-                    BN_LOG("inimigos dispo.: ", all_available_enemies());
-                }
-                //---------------//
-
-                //==DEBUG CPU USAGE==//
-                // bn::fixed max_cpu_usage = bn::max(max_cpu_usage, bn::core::last_cpu_usage());
-                // --counter;
-                // if(! counter)
+                // #pragma region DEBUG
+                // //---DEBUG KEY---//
+                // if (bn::keypad::l_pressed())
                 // {
-                //     BN_LOG((max_cpu_usage * 100).right_shift_integer(), "%");
-                //     max_cpu_usage = 0;
-                //     counter = 10;
+                //     BN_LOG("Usados: ", bn::sprites::used_items_count());
+                //     BN_LOG("Disponíveis: ", bn::sprites::available_items_count());
+                //     BN_LOG("reservados: ", bn::sprites::reserved_handles_count());
+                //     BN_LOG("inimigos: ", ntt_enemies.size());
+                //     BN_LOG("inimigos dispo.: ", all_available_enemies());
                 // }
-                // ==================//
-                #pragma endregion
+                // //---------------//
+                // //
+                // //==DEBUG CPU USAGE==//
+                // // bn::fixed max_cpu_usage = bn::max(max_cpu_usage, bn::core::last_cpu_usage());
+                // // --counter;
+                // // if(! counter)
+                // // {
+                // //     BN_LOG((max_cpu_usage * 100).right_shift_integer(), "%");
+                // //     max_cpu_usage = 0;
+                // //     counter = 10;
+                // // }
+                // // ==================//
+                // #pragma endregion
                 
                 
 
