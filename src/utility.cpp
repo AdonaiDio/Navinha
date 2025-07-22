@@ -30,23 +30,23 @@ namespace adonai
         return point / len;
     }
 
-    // int clamp(int i, int min, int max)
-    // {
-    //     if(i < min)
-    //         return min;
-    //     if(i > max)
-    //         return max;
-    //     return i;
-    // }
+    int clamp(int i, int min, int max)
+    {
+        if(i < min)
+            return min;
+        if(i > max)
+            return max;
+        return i;
+    }
 
-    // bn::fixed clamp(bn::fixed i, bn::fixed min, bn::fixed max)
-    // {
-    //     if(i < min)
-    //         return min;
-    //     if(i > max)
-    //         return max;
-    //     return i;
-    // }
+    bn::fixed clamp(bn::fixed i, bn::fixed min, bn::fixed max)
+    {
+        if(i < min)
+            return min;
+        if(i > max)
+            return max;
+        return i;
+    }
 
     bn::fixed move_towards(bn::fixed current, bn::fixed target, bn::fixed offset)
     {

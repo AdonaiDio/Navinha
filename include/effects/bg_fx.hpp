@@ -2,15 +2,15 @@
 // !!! CODIGO COLADO DIRETAMENTE NO ESCOPO !!!
 #include "bn_regular_bg_ptr.h"
 // criando macro para acessar parametros externos como numa função
-#define BG_GRADIENT_FX(_bg) \
+#define BG_GRADIENT_FX(_bg, c_1, c_2, c_3, c_4, c_5, c_6) \
 bn::regular_bg_ptr* r_bg = &_bg; \
 alignas(int) bn::color palette_colors[6]; \
-palette_colors[0] = r_bg->palette().colors().at(2); \
-palette_colors[1] = r_bg->palette().colors().at(3); \
-palette_colors[2] = r_bg->palette().colors().at(4); \
-palette_colors[3] = r_bg->palette().colors().at(5); \
-palette_colors[4] = r_bg->palette().colors().at(6); \
-palette_colors[5] = r_bg->palette().colors().at(7); \
+palette_colors[0] = r_bg->palette().colors().at(c_1); \
+palette_colors[1] = r_bg->palette().colors().at(c_2); \
+palette_colors[2] = r_bg->palette().colors().at(c_3); \
+palette_colors[3] = r_bg->palette().colors().at(c_4); \
+palette_colors[4] = r_bg->palette().colors().at(c_5); \
+palette_colors[5] = r_bg->palette().colors().at(c_6); \
 alignas(int) bn::color colors[bn::display::height()]; \
 bn::fixed max_blue_dec(16); \
 const int amplitude = (bn::display::height() /6)+1; \

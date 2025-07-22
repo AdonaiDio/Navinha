@@ -15,7 +15,7 @@
 
 #define MAX_FRAMES_ANIM 10
 #define MAX_ENEMY_SHOTS 12
-#define MAX_ENEMIES 20
+#define MAX_ENEMIES 12
 
 namespace adonai
 {  

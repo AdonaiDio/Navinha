@@ -1,7 +1,7 @@
 #pragma once
 
 #include "shot.h"
-#define MAX_ENEMIES 20
+#define MAX_ENEMIES 12
 
 namespace adonai
 {

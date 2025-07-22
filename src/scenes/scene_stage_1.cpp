@@ -18,6 +18,7 @@
 //assets
 // #include "bn_sprite_items_gizmos_16x16.h"
 #include "bn_regular_bg_items_sky_solid_color.h"
+#include "bn_regular_bg_items_boss1.h"
 #include "bn_sprite_items_shoot.h"
 #include "bn_music_items.h"
 
@@ -47,7 +48,7 @@
 #include "shot_n_run_loop_script.cpp"
 #include "follow_n_shot_script.cpp"
 
-#define MAX_ENEMIES 20
+#define MAX_ENEMIES 12
 #define MAX_SHOTS 40
 
 namespace adonai 
@@ -81,6 +82,8 @@ namespace adonai
         Stage_State _state = Stage_State_NONE;
         
         int timer = 0;
+        int bg_color_1 = 2, bg_color_2 = 3, bg_color_3 = 4, bg_color_4 = 5, bg_color_5 = 6, bg_color_6 = 7;
+            
 
         public:
         // bn::vector<Enemy*, 20> ntt_enemies = bn::vector<Enemy*,20>();
@@ -135,7 +138,10 @@ namespace adonai
             
             //Start Background
             bn::regular_bg_ptr r_bg_1 = bn::regular_bg_items::sky_solid_color.create_bg(0, 0);
-
+            //boss BG
+            bn::regular_bg_ptr boss_bg_ptr = bn::regular_bg_items::boss1.create_bg();//(106,0),2
+            boss_bg_ptr.set_map(bn::regular_bg_items::boss1.map_item(),2);
+            boss_bg_ptr.set_position(bn::fixed_point(106,0));
             //Start Scripts
             //Start HUD
             adonai::hud_energy_bar hud_energy_bar = adonai::hud_energy_bar(*adonai::GLOBALS::global_player);
@@ -175,7 +181,7 @@ namespace adonai
                 ///////
                 //eu não sei... Coloquei isso aí para reutilizar igual em outro lugar. eu acho.
                 #include  "../../include/effects/bg_fx.hpp"
-                BG_GRADIENT_FX(r_bg_1);
+                BG_GRADIENT_FX(r_bg_1, bg_color_1, bg_color_2, bg_color_3, bg_color_4, bg_color_5, bg_color_6);
                 // r_bg_1 side scroll
                 r_bg_1.set_position( bn::fixed_point(r_bg_1.position().x()-((bn::fixed) 0.033f), 0));
                 ///////
@@ -206,10 +212,9 @@ namespace adonai
 
                 case Stage_State::Stage_State_WAVE_4:
                     if(finished_Wave_4()){
-                        BN_LOG("WAVE 4 FINISH");
-                        _state = Stage_State::Stage_State_END;
-                        if(is_stage_clear()){
-                        BN_LOG("the FINISH");
+                        if(is_stage_clear(boss_bg_ptr)){
+                            BN_LOG("WAVE 4 FINISH");
+                            _state = Stage_State::Stage_State_END;
                             return quit_stage();
                         }
                     };
@@ -233,14 +238,14 @@ namespace adonai
                 if(adonai::GLOBALS::global_player->hp() <= 0){ game_over.update(); }
 
 
-                if (bn::keypad::l_pressed())
-                {
-                    BN_LOG("Usados: ", bn::sprites::used_items_count());
-                    BN_LOG("Disponíveis: ", bn::sprites::available_items_count());
-                    BN_LOG("reservados: ", bn::sprites::reserved_handles_count());
-                    BN_LOG("inimigos: ", ntt_enemies.size());
-                    BN_LOG("inimigos dispo.: ", all_available_enemies());
-                }
+                // if (bn::keypad::l_pressed())
+                // {
+                //     BN_LOG("Usados: ", bn::sprites::used_items_count());
+                //     BN_LOG("Disponíveis: ", bn::sprites::available_items_count());
+                //     BN_LOG("reservados: ", bn::sprites::reserved_handles_count());
+                //     BN_LOG("inimigos: ", ntt_enemies.size());
+                //     BN_LOG("inimigos dispo.: ", all_available_enemies());
+                // }
 
                 
                 // //DEBUG CPU USAGE=================
@@ -448,8 +453,8 @@ namespace adonai
             BN_LOG("WAVE 4");
 
             ntt_enemies.push_back( db_e.PyramidEnemy({6*16, (0*16)},  &ntt_shots) );
-            ntt_enemies.push_back( db_e.PyramidEnemy({8*16, (2*16)},  &ntt_shots) );
-            ntt_enemies.push_back( db_e.PyramidEnemy({8*16, (-2*16)},  &ntt_shots) );
+            ntt_enemies.push_back( db_e.PyramidEnemy({8*16, (3*16)},  &ntt_shots) );
+            ntt_enemies.push_back( db_e.PyramidEnemy({8*16, (-3*16)},  &ntt_shots) );
             ntt_enemies.at(0).add_script(wave4_f_n_s_script);
             ntt_enemies.at(1).add_script(wave4_f_n_s_script_2);
             ntt_enemies.at(2).add_script(wave4_f_n_s_script_3);
@@ -461,15 +466,130 @@ namespace adonai
                     return false;
                 }
             }
-            ntt_enemies.empty();
+            ntt_enemies.clear();
+            // BN_LOG("Finish WAVE 4. size: ", ntt_enemies.size());
             return true; 
         }
-        bool is_stage_clear(){
+        bool is_stage_clear(bn::regular_bg_ptr boss){
             //fazer um interludio para a boss fight em outra cena.
-            
             if(timer > 180){
                 return true;
             }
+            switch (timer)
+            {
+            case 0:
+                bg_color_1 = 3;
+                bg_color_2 = 4;
+                bg_color_3 = 5;
+                bg_color_4 = 6;
+                bg_color_5 = 7;
+                bg_color_6 = 1;
+                break;
+            
+            case 15:
+                bg_color_1 = 4;
+                bg_color_2 = 5;
+                bg_color_3 = 6;
+                bg_color_4 = 7;
+                bg_color_5 = 1;
+                bg_color_6 = 1;
+                break;
+            
+            case 30:
+                bg_color_1 = 5;
+                bg_color_2 = 6;
+                bg_color_3 = 7;
+                bg_color_4 = 1;
+                bg_color_5 = 1;
+                bg_color_6 = 1;
+                break;
+            
+            case 45:
+                bg_color_1 = 6;
+                bg_color_2 = 7;
+                bg_color_3 = 1;
+                bg_color_4 = 1;
+                bg_color_5 = 1;
+                bg_color_6 = 1;
+                break;
+            
+            case 60:
+                bg_color_1 = 7;
+                bg_color_2 = 1;
+                bg_color_3 = 1;
+                bg_color_4 = 1;
+                bg_color_5 = 1;
+                bg_color_6 = 1;
+                break;
+            
+            case 75:
+                bg_color_1 = 1;
+                bg_color_2 = 1;
+                bg_color_3 = 1;
+                bg_color_4 = 1;
+                bg_color_5 = 1;
+                bg_color_6 = 1;
+                break;
+            
+            case 90:
+                bg_color_1 = 14;
+                bg_color_2 = 1;
+                bg_color_3 = 1;
+                bg_color_4 = 1;
+                bg_color_5 = 1;
+                bg_color_6 = 1;
+                break;
+            
+            case 105:
+                bg_color_1 = 13;
+                bg_color_2 = 14;
+                bg_color_3 = 1;
+                bg_color_4 = 1;
+                bg_color_5 = 1;
+                bg_color_6 = 1;
+                break;
+            
+            case 120:
+                bg_color_1 = 12;
+                bg_color_2 = 13;
+                bg_color_3 = 14;
+                bg_color_4 = 1;
+                bg_color_5 = 1;
+                bg_color_6 = 1;
+                break;
+            
+            case 135:
+                bg_color_1 = 11;
+                bg_color_2 = 12;
+                bg_color_3 = 13;
+                bg_color_4 = 14;
+                bg_color_5 = 1;
+                bg_color_6 = 1;
+                break;
+            
+            case 150:
+                bg_color_1 = 10;
+                bg_color_2 = 11;
+                bg_color_3 = 12;
+                bg_color_4 = 13;
+                bg_color_5 = 14;
+                bg_color_6 = 1;
+                break;
+            
+            case 165:
+                bg_color_1 = 9;
+                bg_color_2 = 10;
+                bg_color_3 = 11;
+                bg_color_4 = 12;
+                bg_color_5 = 13;
+                bg_color_6 = 14;
+                break;
+            
+            default:
+                break;
+            }
+            
+            boss.set_position(bn::fixed_point(clamp(boss.position().x()-1, 0, 106), 0));
             ++timer;
 
             return false;

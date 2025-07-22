@@ -14,7 +14,7 @@
 
 #include "bn_log.h"
 
-#define MAX_ENEMIES 20
+#define MAX_ENEMIES 12
 #define MAX_PLAYER_SHOTS 12
 
 namespace adonai

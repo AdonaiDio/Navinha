@@ -46,6 +46,7 @@ int main()
     adonai::GLOBALS::global_player = &player;
     // inciar a primeira cena
     adonai::Scene scene = adonai::Scene::BUTANO;
+    // adonai::Scene scene = adonai::Scene::STAGE_1_BOSS;
 
     while(true)
     {

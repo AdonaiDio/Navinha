@@ -44,7 +44,7 @@
 //scripts embbeded
 
 
-#define MAX_ENEMIES 20
+#define MAX_ENEMIES 12
 #define MAX_SHOTS 40
 
 namespace adonai 
@@ -68,6 +68,7 @@ namespace adonai
 
         
         int timer = 0;
+        int bg_color_1 = 9, bg_color_2 = 10, bg_color_3 = 11, bg_color_4 = 12, bg_color_5 = 13, bg_color_6 = 14;
 
         public:
         // bn::vector<Enemy*, 20> ntt_enemies = bn::vector<Enemy*,20>();
@@ -109,7 +110,7 @@ namespace adonai
             
             //Start Background
             bn::regular_bg_ptr r_bg_1 = bn::regular_bg_items::sky_solid_color.create_bg(0, 0);
-
+            
             //Start Scripts
             //Start HUD
             adonai::hud_energy_bar hud_energy_bar = adonai::hud_energy_bar(*adonai::GLOBALS::global_player);
@@ -158,7 +159,7 @@ namespace adonai
             {
                 //---r_bg_1 side scroll---//
                 #include  "../../include/effects/bg_fx.hpp"
-                BG_GRADIENT_FX(r_bg_1);
+                BG_GRADIENT_FX(r_bg_1, bg_color_1, bg_color_2, bg_color_3, bg_color_4, bg_color_5, bg_color_6);
                 r_bg_1.set_position( bn::fixed_point(r_bg_1.position().x()-((bn::fixed) 0.033f), 0));
                 //------------------------//
 
@@ -283,6 +284,9 @@ namespace adonai
         }
         Scene quit_stage(){
             GLOBALS::global_player->sprite().set_visible(false);
+            GLOBALS::global_player->shadow_sprites[0].set_visible(false);
+            GLOBALS::global_player->shadow_sprites[1].set_visible(false);
+            GLOBALS::global_player->shadow_sprites[2].set_visible(false);
             return Scene::CREDITS;
         }
         

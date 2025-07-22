@@ -34,7 +34,7 @@
 
 #include "obj.h"
 
-#define MAX_ENEMIES 20
+#define MAX_ENEMIES 12
 #define MAX_SHOTS 40
 
 namespace adonai

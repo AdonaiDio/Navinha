@@ -14,7 +14,7 @@
 #include "obj.h"
 //other script embbeded
 
-#define MAX_ENEMIES 20
+#define MAX_ENEMIES 12
 
 namespace adonai
 {

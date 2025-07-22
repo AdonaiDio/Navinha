@@ -103,9 +103,9 @@ namespace adonai
 
     void Controller::InputAction_Shoot()
     {
-        if (bn::keypad::b_pressed()) {
+        if (bn::keypad::b_pressed()) {// || bn::keypad::a_pressed()) {
             start_shoot();
-        }else if (bn::keypad::b_held()) {
+        }else if (bn::keypad::b_held()) {// || bn::keypad::a_held()) {
             _player.shotButton_held_time++;
             if(_player.shotButton_held_time >= 10) {
                 start_shoot();
