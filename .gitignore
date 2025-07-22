@@ -36,6 +36,9 @@
 # Backup
 /[Bb]ackup/
 
+# Tools
+/[Tt]ools/
+
 # Others
 anotaçoes.txt
 Navinha.elf
@@ -47,17 +50,7 @@ Navinha.code-workspace
 .vs/slnx.sqlite
 .vs/ProjectSettings.json
 Navinha.map
-tools/index.html
 Spacenova.elf
 Spacenova.gba
-bn_ofiles.txt
-bn_ofiles.txt
-tools/Spacenova-0.png
-tools/Spacenova-1.png
-tools/Spacenova-2.png
-tools/Spacenova-3.png
-tools/Spacenova.sav
-tools/Spacenova.zip
-tools/Spacenova_Web.zip
 Spacenova.sav
 bn_ofiles.txt
