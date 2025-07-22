@@ -11,12 +11,12 @@
 #include "bn_keypad.h"
 #include "bn_rect.h"
 #include "bn_random.h"
+#include "bn_audio.h"
 
 #include "explosion_big_fx.h"
 
 #include "enemy.h"
-#include "shot_enemy.h"
-#include "bn_sprite_items_shot_4.h"
+#include "shot_boss1.h"
 
 #include "bn_sprite_items_boss1_part1.h"
 #include "bn_sprite_items_boss1_part2.h"
@@ -89,8 +89,8 @@ namespace adonai
         const int LASER_DURATION = 5*60; // duração em frames
 
         const bn::fixed_point ORBS_OFFSET = bn::fixed_point{70,-8};
-        bn::array<Shot_Enemy, 40>* ntt_shots; 
-        Shot_Enemy _shot = Shot_Enemy(bn::sprite_items::shot_4);
+        bn::array<Shot_Boss1, 40>* ntt_shots; 
+        Shot_Boss1 _shot = Shot_Boss1();
 
         int destroy_frame_counter = 0;
 
@@ -131,7 +131,7 @@ namespace adonai
         };
         ~Boss1() = default;
         // Para associar a lista de ntt_shots presentes na cena que ele foi criado.
-        void assign_ntt_shots(bn::array<Shot_Enemy, 40>* ntt_shots_ptr){
+        void assign_ntt_shots(bn::array<Shot_Boss1, 40>* ntt_shots_ptr){
             ntt_shots = ntt_shots_ptr;
         }
 
@@ -152,7 +152,7 @@ namespace adonai
             {
                 if(ntt_shots->at(i)._available == true){
                     ntt_shots->at(i)._available = false;
-                    ntt_shots->at(i).copy_Shot_Enemy( Shot_Enemy(_shot, (_pos + ORBS_OFFSET) ));
+                    ntt_shots->at(i).copy_Shot_Boss1( Shot_Boss1(_pos + ORBS_OFFSET ));
                     ntt_shots->at(i).pre_direction = normalize(GLOBALS::global_player->pos() - (_pos + ORBS_OFFSET));
                     ntt_shots->at(i).sprite().set_bg_priority(1);
                     break;
@@ -276,6 +276,7 @@ namespace adonai
                     if(part_laser_ptr->hp() > 0){
                         state = BOSS_1_STATES::BOSS_1_LASER;
                         LaserAttack();
+                        bn::sound_items::mega_laser.play();
                     }
                 }
             }
@@ -312,6 +313,7 @@ namespace adonai
                         state = BOSS_1_STATES::BOSS_1_NONE;
                     }else{
                         OrbsAttack();
+                        bn::sound_items::loop_energy_atk.play();
                         if (timer_actions == 16 * (15)) {
                             timer_actions = 0;
                         }

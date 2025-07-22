@@ -7,37 +7,37 @@
 
 #include "player.h"
 
-#include "shot_enemy.h"
+#include "shot_boss1.h"
 
 
 namespace adonai
 {
 
-    extern bn::array<Shot_Enemy, 40> ntt_shots;
+    extern bn::array<Shot_Boss1, 40> ntt_shots;
 
-    Shot_Enemy::Shot_Enemy( const bn::sprite_item& sprite_item ) :
-        Shot( sprite_item, {0,0} ),
-        _sprite_item(sprite_item)
+    Shot_Boss1::Shot_Boss1(bn::fixed_point pos) :
+        Shot( bn::sprite_items::shot_4, pos ),
+        _sprite_item(bn::sprite_items::shot_4)
     {
         _sprite.set_visible(false);
         _available = true;
     }
-    Shot_Enemy::Shot_Enemy(const Shot_Enemy &shot, const bn::fixed_point &initial_position) : 
-        Shot(shot._sprite_item, initial_position, shot._col, shot.velocity),
-        _sprite_item(shot._sprite_item)
-    {
-        _available = true;
-    }
     // muda as infos do shot para as mesmas de outro passado por parametro.
-    void Shot_Enemy::copy_Shot_Enemy(const Shot_Enemy& shot)
+    void Shot_Boss1::copy_Shot_Boss1(const Shot_Boss1& shot)
     {
         copy_Shot(shot);
         _sprite = shot._sprite_item.create_sprite(_pos);
         _sprite_item = shot._sprite_item;
+        shot_anim = bn::create_sprite_animate_action_forever (
+            _sprite,
+            8,
+            bn::sprite_items::shot_4.tiles_item(),
+            0,1,2
+        );
     }
 
     // o valor do owner_pos_y deve ser criado ao disparar o tiro
-    void Shot_Enemy::move_forward()
+    void Shot_Boss1::move_forward()
     {
         //não mover se colidir
         if(check_collision()){
@@ -72,7 +72,7 @@ namespace adonai
         }
     }
 
-    bool Shot_Enemy::is_out_of_screen() {
+    bool Shot_Boss1::is_out_of_screen() {
         if(_pos.x() < (-bn::display::width() / 2) - 8){
             return true;
         }
@@ -89,7 +89,7 @@ namespace adonai
     }
 
 
-    bool Shot_Enemy::check_collision() {
+    bool Shot_Boss1::check_collision() {
         //ATUALIZAR COLLISION
         col_position({(int)_pos.x(), (int)_pos.y()});
         // BN_LOG("shot col: x",col().x(),",y",col().y(),",w",col().width(),",h",col().height());
@@ -101,17 +101,18 @@ namespace adonai
         return false;
     }
 
-    void Shot_Enemy::reset_shot()
+    void Shot_Boss1::reset_shot()
     {
         _available = true;
         _pos = bn::fixed_point(((-bn::display::width()/2)-8),0);
         sprite().set_position(_pos);
     }
 
-    void Shot_Enemy::update()
+    void Shot_Boss1::update()
     {
         if(_available == true){return;}
         move_forward();
         //se tiver que piscar imagem ou algo que aconteça com o passar do tempo deve ser executado aqui. vvv
+        shot_anim.update();
     }
 }

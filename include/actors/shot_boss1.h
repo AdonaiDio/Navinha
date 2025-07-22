@@ -1,5 +1,8 @@
 #pragma once
 
+#include "bn_sprite_animate_actions.h"
+#include "bn_sprite_items_shot_4.h"
+
 #include "shot.h"
 
 namespace adonai
@@ -10,18 +13,23 @@ namespace adonai
         extern Player* global_player;
     }
 
-    class Shot_Enemy : public Shot
+    class Shot_Boss1 : public Shot
     {
     private:
         bn::rect _col;
         bn::sprite_item _sprite_item;
     public:
-        Shot_Enemy(const bn::sprite_item& sprite_item);
-        //cria uma copia de outro shot_enemy
-        Shot_Enemy(const Shot_Enemy& shot, const bn::fixed_point& initial_position = {0,0});
-        void copy_Shot_Enemy(const Shot_Enemy& shot);
-        // ~Shot_Enemy();
+        Shot_Boss1(bn::fixed_point pos = {0,0});
+        //cria uma copia de outro shot_boss1
+        void copy_Shot_Boss1(const Shot_Boss1& shot);
+        // ~Shot_Boss1();
         
+        bn::sprite_animate_action<3> shot_anim = bn::create_sprite_animate_action_forever (
+            _sprite,
+            8,
+            bn::sprite_items::shot_4.tiles_item(),
+            0,1,2
+        );
 
         bool _available = true;//um substituto ao state NONE e SHOOTING. Seve para tiro predefinidos não instanciados.
         // Direção pré-definida para casos de tiros com movimento especial.

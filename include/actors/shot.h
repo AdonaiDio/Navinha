@@ -28,12 +28,12 @@ namespace adonai
     {
         protected:
             bn::fixed_point _pos;
-            bn::sprite_ptr _sprite;
             bn::rect _col;
             int velocity; //era const
-
-
-        public:
+            
+            
+            public:
+            bn::sprite_ptr _sprite;
             Shot( const bn::sprite_item& sprite_item, 
                   const bn::fixed_point& initial_position,
                   const bn::rect col = bn::rect{0,0,2,2},

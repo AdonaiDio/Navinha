@@ -27,11 +27,11 @@
 #include "i_scene.h"
 #include "player.h"
 #include "enemy.h" //
-#include "shot_enemy.h"
+#include "shot_boss1.h"
 #include "enemies.cpp"
 #include "controller.h"
 #include "../../include/effects/bg_fx.h"
-#include "../../include/actors/shot_enemy.h"
+#include "../../include/actors/shot_boss1.h"
 #include "../../include/hud/hud_energy_bar.h"
 #include "../../include/hud/hud_hp_bar.h"
 #include "hud_game_over.h"
@@ -83,17 +83,17 @@ namespace adonai
         // bn::vector<Explosion_FX, (MAX_ENEMIES/2)> ntt_explosions = bn::vector<Explosion_FX, (MAX_ENEMIES/2)>();
         
         //receberá novas configurações de Shot_enemy nos slots não usados.
-        bn::array<Shot_Enemy, 40> ntt_shots = { 
-            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),
-            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),
-            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),
-            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),
-            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),
-            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),
-            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),
-            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),
-            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),
-            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot)};
+        bn::array<Shot_Boss1, MAX_SHOTS> ntt_shots = { 
+            Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),
+            Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),
+            Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),
+            Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),
+            Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),
+            Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),
+            Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),
+            Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),
+            Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),
+            Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),Shot_Boss1()};
         
         DataBase_Enemies db_e;
         

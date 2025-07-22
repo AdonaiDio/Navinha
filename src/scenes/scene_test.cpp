@@ -51,18 +51,17 @@ namespace adonai
         public:
         bn::vector<Enemy, MAX_ENEMIES> ntt_enemies = bn::vector<Enemy, MAX_ENEMIES>();
         // bn::array<New_Shot_Enemy*, 40> ntt_shots;
-        bn::array<Shot_Enemy, 40> ntt_shots = { 
-            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),
-            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),
-            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),
-            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),
-            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),
-            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),
-            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),
-            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),
-            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),
-            Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot),Shot_Enemy(bn::sprite_items::shoot)};
-        
+        bn::array<Shot_Boss1, MAX_SHOTS> ntt_shots = { 
+            Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),
+            Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),
+            Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),
+            Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),
+            Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),
+            Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),
+            Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),
+            Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),
+            Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),
+            Shot_Boss1(),Shot_Boss1(),Shot_Boss1(),Shot_Boss1()};
         DataBase_Enemies db_e;
 
         Test(){
